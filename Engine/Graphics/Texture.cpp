@@ -17,7 +17,7 @@ Texture::Texture(int _id)
 {
   id = _id;
 
-  if (!GetTextureParams())
+  if (!getTextureParams())
   {
     std::cout << "Error loading image with ID: " << id << std::endl;
   }
@@ -29,32 +29,32 @@ Texture::Texture(std::string path)
   // Load a texture from a path, and give it an ID
   id = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MULTIPLY_ALPHA | SOIL_FLAG_INVERT_Y);
 
-  if (!GetTextureParams())
+  if (!getTextureParams())
   {
     std::cout << "Error loading image: " << path << std::endl;
   }
 }
 
 
-int Texture::GetID()
+int Texture::getID()
 {
   return id;
 }
 
 
-int Texture::GetWidth()
+int Texture::getWidth()
 {
   return width;
 }
 
 
-int Texture::GetHeight()
+int Texture::getHeight()
 {
   return height;
 }
 
 
-bool Texture::GetTextureParams()
+bool Texture::getTextureParams()
 {
   // If a valid ID, set it up
   if (id > 0)

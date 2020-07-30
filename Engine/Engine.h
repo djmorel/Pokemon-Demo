@@ -1,9 +1,11 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
+
 #include <iostream>
 #include "GLFW/glfw3.h"
 #pragma comment(lib, "opengl32.lib")
+
 
 class Engine
 {
@@ -25,5 +27,6 @@ class Engine
     static GLFWwindow* window;
 
 };
+
 
 #endif

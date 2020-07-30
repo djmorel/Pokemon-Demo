@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include "IO/Mouse.h"
 
 
 // Declare our static variables from Engine.h
@@ -38,11 +39,15 @@ bool::Engine::Initialize(const char* windowTitle)
     return false;
   }
 
-  // OpenGL Setup
+  // GLFW Setup
   glfwMakeContextCurrent(window);
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
   glfwSwapInterval(1);  // How often we swap between buffers (current screen & next drawn screen)
+
+  // Get mouse data
+  glfwSetCursorPosCallback(window, Mouse::mousePosCallback);
+  glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
 
   // Get the context of our actual monitor
   const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -73,7 +78,7 @@ bool::Engine::Initialize(const char* windowTitle)
 
 void Engine::Update()
 {
-  glfwPollEvents();  // Allows I/O events to be processed
+  glfwPollEvents();  // Allows I/O events to be processed (handles commands in the queue)
 }
 
 
