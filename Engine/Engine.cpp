@@ -77,11 +77,14 @@ void Engine::Update()
 }
 
 
-void Engine::Render()
+void Engine::BeginRender()
 {
-  glClearColor(0, 1, 0, 1);                            // Clear back buffer to green
+  glClearColor(0.56, 0.4, 0.32, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the depth
+}
 
+void Engine::EndRender()
+{
   // Render to the back buffer (next screen)
 
 

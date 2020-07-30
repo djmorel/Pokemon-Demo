@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Sprite.h"
 
 
 // Note:
@@ -18,11 +19,17 @@ int main()
   Engine engine;
   engine.Initialize("Pokemon");
 
+  Sprite testSprite = Sprite("Assets/Art/Tyranitar.png", 100, 100);
+
   // Game loop
   while (true)
   {
     engine.Update();
-    engine.Render();
+    testSprite.Update();
+
+    engine.BeginRender();
+    testSprite.Render();
+    engine.EndRender();
   }
 
   return 0;

@@ -16,8 +16,9 @@ class Engine
 
     bool Initialize(const char* windowTitle);
 
-    void Update();  // Update the current state
-    void Render();  // Render the new state
+    void Update();       // Update the current state
+    void BeginRender();  // Render the new state (clear back buffer)
+    void EndRender();    // Render the new state (swap buffers)
 
 
   private:
