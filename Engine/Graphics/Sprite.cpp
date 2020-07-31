@@ -1,8 +1,10 @@
 #include "Sprite.h"
+#include "../Engine.h"
 
 
 Sprite::Sprite()
 {
+  speed = 100;
   xPos = 0;
   yPos = 0;
   rot = 0;
@@ -15,6 +17,7 @@ Sprite::Sprite()
 Sprite::Sprite(std::string imagePath)
 {
   texture = Texture(imagePath);
+  speed = 100;
   xPos = 0;
   yPos = 0;
   rot = 0;
@@ -26,6 +29,7 @@ Sprite::Sprite(std::string imagePath)
 Sprite::Sprite(std::string imagePath, float _xPos, float _yPos)
 {
   texture = Texture(imagePath);
+  speed = 100;
   xPos = _xPos;
   yPos = _yPos;
   rot = 0;
@@ -77,22 +81,62 @@ void Sprite::Render()
 }
 
 
-void Sprite::setPos(float x, float y)
+void Sprite::setSpeedTo(float x)
+{
+  speed = x;
+}
+
+
+void Sprite::moveTo(float x, float y)
 {
   xPos = x;
   yPos = y;
 }
 
 
-void Sprite::setRotTo(float x)
+void Sprite::moveBy(float x, float y)
+{
+  xPos += x * Engine::getDT();
+  yPos += y * Engine::getDT();
+}
+
+
+void Sprite::moveLeft()
+{
+  xPos -= speed * Engine::getDT();
+}
+
+
+void Sprite::moveRight()
+{
+  xPos += speed * Engine::getDT();
+}
+
+
+void Sprite::moveUp()
+{
+  yPos += speed * Engine::getDT();
+}
+
+
+void Sprite::moveDown()
+{
+  yPos -= speed * Engine::getDT();
+}
+
+
+void Sprite::rotateTo(float x)
 {
   rot = x;
 }
 
 
-void Sprite::setRotBy(float x)
+void Sprite::rotateBy(float x)
 {
+  // Rotate by x degrees
   rot += x;
+  // Rotation to match all machine performances
+  //rot += x * Engine::getDT();
 }
 
 

@@ -19,14 +19,21 @@ class Sprite
     void Update();
     void Render();
 
-    void setPos(float x, float y);
-    void setRotTo(float x);  // Set the rotation to an absolute value
-    void setRotBy(float x);  // Set the rotation relative to x
-    void setScale(float x);
-    void setScale(float x, float y);
+    void setSpeedTo(float x);         // Set the speed to an absolute value
+    void moveTo(float x, float y);    // Set the position to an absolute value
+    void moveBy(float x, float y);    // Set the position relative by x
+    void moveLeft();                  // Move left by one unit
+    void moveRight();                 // Move right by one unit
+    void moveUp();                    // Move up by one unit
+    void moveDown();                  // Move down by one unit
+    void rotateTo(float x);           // Set the rotation to an absolute value
+    void rotateBy(float x);           // Set the rotation relative by x
+    void setScale(float x);           // Set the scale to x by x
+    void setScale(float x, float y);  // Set the scale to x by y
 
   private:
     Texture texture;
+    float speed;
     float xPos;
     float yPos;
     float rot;

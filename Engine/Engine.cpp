@@ -1,11 +1,14 @@
 #include "Engine.h"
 #include "IO/Mouse.h"
+#include "IO/Keyboard.h"
 
 
 // Declare our static variables from Engine.h
 int Engine::SCREEN_WIDTH = 1024;
 int Engine::SCREEN_HEIGHT = 768;
 GLFWwindow* Engine::window = NULL;
+double Engine::dt = 0;
+double Engine::lastTime = 0;
 
 
 Engine::Engine()
@@ -49,6 +52,9 @@ bool::Engine::Initialize(const char* windowTitle)
   glfwSetCursorPosCallback(window, Mouse::mousePosCallback);
   glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
 
+  // Get keyboard data
+  glfwSetKeyCallback(window, Keyboard::keyCallback);
+
   // Get the context of our actual monitor
   const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
@@ -72,13 +78,22 @@ bool::Engine::Initialize(const char* windowTitle)
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  // Update lastTime
+  lastTime = glfwGetTime();
+
   return true;
 }
 
 
 void Engine::Update()
 {
-  glfwPollEvents();  // Allows I/O events to be processed (handles commands in the queue)
+  // Update the times
+  double now = glfwGetTime();
+  dt = (now - lastTime);
+  lastTime = now;
+
+  // Allow I/O events to be processed
+  glfwPollEvents();  // Handles commands in the queue
 }
 
 
@@ -98,4 +113,10 @@ void Engine::EndRender()
 
   // Note: NOTHING after here will be presented to the screen
   // Already swapped buffer and Render() begins with a clear
+}
+
+
+double Engine::getDT()
+{
+  return dt;
 }

@@ -32,3 +32,25 @@ void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action
   // Update the keys[] array (current state)
   keys[key] = action != GLFW_RELEASE;
 }
+
+
+bool Keyboard::keyDown(int key)
+{
+  bool x = keysDown[key];
+  keysDown[key] = false;
+  return x;
+}
+
+
+bool Keyboard::keyUp(int key)
+{
+  bool x = keysUp[key];
+  keysUp[key] = false;
+  return x;
+}
+
+
+bool Keyboard::key(int key)
+{
+  return keys[key];
+}

@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Sprite.h"
 #include "Engine/IO/Mouse.h"
+#include "Engine/IO/Keyboard.h"
 
 
 // Note:
@@ -28,18 +29,20 @@ int main()
     engine.Update();
     testSprite.Update();
 
-    testSprite.setPos((float)Mouse::getMouseX(), (float)Mouse::getMouseY());
+    // Enable mouse movement support
+    //testSprite.setPos((float)Mouse::getMouseX(), (float)Mouse::getMouseY());
     //testSprite.setScale(0.25f);
 
+    // Enable mouse button support
     if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_LEFT))
     {
       // Left click means rotate counter clockwise
-      testSprite.setRotBy(10);
+      testSprite.rotateBy(10);
     }
     if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_RIGHT))
     {
       // Right click means rotate clockwise once
-      testSprite.setRotBy(-10);
+      testSprite.rotateBy(-10);
     }
     /*
     // More mouse movements
@@ -54,6 +57,28 @@ int main()
       testSprite.setRotBy(10);
     }
     */
+
+    // Enable keyboard support (WASD movement)
+    if (Keyboard::key(GLFW_KEY_W) || Keyboard::key(GLFW_KEY_UP))
+    {
+      // "W" and "UP Arrow" keys set to move up
+      testSprite.moveUp();
+    }
+    if (Keyboard::key(GLFW_KEY_A) || Keyboard::key(GLFW_KEY_LEFT))
+    {
+      // "A" and "Left Arrow" keys set to move left
+      testSprite.moveLeft();
+    }
+    if (Keyboard::key(GLFW_KEY_S) || Keyboard::key(GLFW_KEY_DOWN))
+    {
+      // "S" and "Down Arrow" keys set to move down
+      testSprite.moveDown();
+    }
+    if (Keyboard::key(GLFW_KEY_D) || Keyboard::key(GLFW_KEY_RIGHT))
+    {
+      // "D" and "Right Arrow" keys set to move right
+      testSprite.moveRight();
+    }
 
     engine.BeginRender();
     testSprite.Render();
