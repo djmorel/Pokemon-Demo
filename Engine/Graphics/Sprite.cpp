@@ -4,12 +4,10 @@
 
 Sprite::Sprite()
 {
-  speed = 100;
-  xPos = 0;
-  yPos = 0;
+  pos = Vector3D(0);
   rot = 0;
-  xScale = 1;
-  yScale = 1;
+  speed = 100;
+  scale = Vector3D(1);
   texture = Texture();
 }
 
@@ -17,24 +15,20 @@ Sprite::Sprite()
 Sprite::Sprite(std::string imagePath)
 {
   texture = Texture(imagePath);
-  speed = 100;
-  xPos = 0;
-  yPos = 0;
+  pos = Vector3D(0);
   rot = 0;
-  xScale = 1;
-  yScale = 1;
+  scale = Vector3D(1);
+  speed = 100;
 }
 
 
-Sprite::Sprite(std::string imagePath, float _xPos, float _yPos)
+Sprite::Sprite(std::string imagePath, Vector3D v)
 {
   texture = Texture(imagePath);
-  speed = 100;
-  xPos = _xPos;
-  yPos = _yPos;
+  pos = v;
   rot = 0;
-  xScale = 1;
-  yScale = 1;
+  speed = 100;
+  scale = Vector3D(1);
 }
 
 
@@ -53,28 +47,26 @@ void Sprite::Render()
   // Obey the following order for the math to work out
   // Load Idenity -> Translate -> Rotate -> Scale
   glLoadIdentity();
-  glTranslatef(xPos, yPos, 0);  // In 2D so zPos = 0
+  glTranslatef(pos.x, pos.y, 0);  // In 2D so zPos = 0
   glRotatef(rot, 0, 0, 1);      // Rotate about the z axis since 2D
-  glScalef(xScale, yScale, 1);
+  glScalef(scale.x, scale.y, 1);
 
   // Rendering
-  glColor4f(1, 1, 1, 1);   // Set asset color to white in case some other code changed it
-  glBegin(GL_QUADS);       // Begin rendering with a mode (2D sprites means use quads)
-  // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
-  // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
-  glTexCoord2f(0, 0);  glVertex2f(0, 0);                                     // Bottom left
-  glTexCoord2f(1, 0);  glVertex2f(texture.getWidth(), 0);                    // Bottom right
-  glTexCoord2f(1, 1);  glVertex2f(texture.getWidth(), texture.getHeight());  // Up right
-  glTexCoord2f(0, 1);  glVertex2f(0, texture.getHeight());                   // Up left
-  // Note:
-  // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
-  // glVertex2f() -> Start drawing at a given position
-  //
-  // If we didn't translate, we would replace 0 with xPos and yPos like so:
-  // glTexCoord2f(0, 0);  glVertex2f(xPos, yPos);
-  // glTexCoord2f(1, 0);  glVertex2f(xPos + texture.getWidth(), yPos);
-  // glTexCoord2f(1, 1);  glVertex2f(xPos + texture.getWidth(), yPos + texture.getHeight());
-  // glTexCoord2f(0, 1);  glVertex2f(xPos, yPos + texture.getHeight());
+  glColor4f(1, 1, 1, 1);  // Set asset color to white in case some other code changed it
+  glBegin(GL_QUADS);      // Begin rendering with a mode (2D sprites means use quads)
+  {
+    // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
+    // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
+    glTexCoord2f(0, 0);  glVertex2i(0, 0);                                     // Bottom left
+    glTexCoord2f(1, 0);  glVertex2i(texture.getWidth(), 0);                    // Bottom right
+    glTexCoord2f(1, 1);  glVertex2i(texture.getWidth(), texture.getHeight());  // Up right
+    glTexCoord2f(0, 1);  glVertex2i(0, texture.getHeight());                   // Up left
+    // Note:
+    // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
+    // glVertex2i() -> Start drawing at a given position
+    //
+    // If we didn't translate, we would replace 0 with xPos and yPos like so:
+  }
   glEnd();  // End our drawing
 
   glDisable(GL_TEXTURE_2D);
@@ -87,41 +79,39 @@ void Sprite::setSpeedTo(float x)
 }
 
 
-void Sprite::moveTo(float x, float y)
+void Sprite::moveTo(Vector3D v)
 {
-  xPos = x;
-  yPos = y;
+  pos = v;
 }
 
 
-void Sprite::moveBy(float x, float y)
+void Sprite::moveBy(Vector3D v)
 {
-  xPos += x * Engine::getDT();
-  yPos += y * Engine::getDT();
+  pos = pos + (v * Engine::getDT());
 }
 
 
 void Sprite::moveLeft()
 {
-  xPos -= speed * Engine::getDT();
+  pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
 void Sprite::moveRight()
 {
-  xPos += speed * Engine::getDT();
+  pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
 void Sprite::moveUp()
 {
-  yPos += speed * Engine::getDT();
+  pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
 void Sprite::moveDown()
 {
-  yPos -= speed * Engine::getDT();
+  pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
@@ -142,13 +132,11 @@ void Sprite::rotateBy(float x)
 
 void Sprite::setScale(float x)
 {
-  xScale = x;
-  yScale = x;
+  scale = Vector3D(x, x, 0);
 }
 
 
-void Sprite::setScale(float x, float y)
+void Sprite::setScale(Vector3D v)
 {
-  xScale = x;
-  yScale = y;
+  scale = v;
 }

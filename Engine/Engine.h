@@ -12,7 +12,7 @@ class Engine
   public:
     static int SCREEN_WIDTH;
     static int SCREEN_HEIGHT;
-    static double getDT();
+    static float getDT();
 
     Engine();
     ~Engine();
@@ -26,8 +26,8 @@ class Engine
 
   private:
     static GLFWwindow* window;
-    static double dt;  // Delta time used for movement (ensures speed is same for all machines)
-    static double lastTime;
+    static float dt;  // Delta time used for movement (ensures speed is same for all machines)
+    static float lastTime;
 
 };
 

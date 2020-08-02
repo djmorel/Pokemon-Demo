@@ -8,6 +8,7 @@
 #include "soil.h"
 
 
+// The image itself
 // Only handles OpenGL texture and its data
 class Texture
 {

@@ -7,8 +7,8 @@
 int Engine::SCREEN_WIDTH = 1024;
 int Engine::SCREEN_HEIGHT = 768;
 GLFWwindow* Engine::window = NULL;
-double Engine::dt = 0;
-double Engine::lastTime = 0;
+float Engine::dt = 0;
+float Engine::lastTime = 0;
 
 
 Engine::Engine()
@@ -79,7 +79,7 @@ bool::Engine::Initialize(const char* windowTitle)
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Update lastTime
-  lastTime = glfwGetTime();
+  lastTime = (float)glfwGetTime();
 
   return true;
 }
@@ -88,7 +88,7 @@ bool::Engine::Initialize(const char* windowTitle)
 void Engine::Update()
 {
   // Update the times
-  double now = glfwGetTime();
+  float now = (float)glfwGetTime();
   dt = (now - lastTime);
   lastTime = now;
 
@@ -99,7 +99,7 @@ void Engine::Update()
 
 void Engine::BeginRender()
 {
-  glClearColor(0.56, 0.4, 0.32, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
+  glClearColor((float)0.56, (float)0.4, (float)0.32, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the depth
 }
 
@@ -116,7 +116,7 @@ void Engine::EndRender()
 }
 
 
-double Engine::getDT()
+float Engine::getDT()
 {
   return dt;
 }

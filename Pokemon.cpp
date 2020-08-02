@@ -21,7 +21,7 @@ int main()
   Engine engine;
   engine.Initialize("Pokemon");
 
-  Sprite testSprite = Sprite("Assets/Art/Tyranitar.png", 100, 100);
+  Sprite testSprite = Sprite("Assets/Art/Tyranitar.png", Vector3D(100, 100, 0));
 
   // Game loop
   while (true)
