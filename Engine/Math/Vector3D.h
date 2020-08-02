@@ -24,8 +24,6 @@ class Vector3D
     float x;
     float y;
     float z;
-  private:
-
 };
 
 

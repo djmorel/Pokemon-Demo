@@ -3,6 +3,7 @@
 #include "Engine/Graphics/Sprite.h"
 #include "Engine/IO/Mouse.h"
 #include "Engine/IO/Keyboard.h"
+#include "Engine/Actors/Character.h"
 
 
 // Note:
@@ -22,27 +23,30 @@ int main()
   engine.Initialize("Pokemon");
 
   Sprite testSprite = Sprite("Assets/Art/Tyranitar.png", Vector3D(100, 100, 0));
+  //testSprite.setScale(0.25f);
+
+  Character player(testSprite);
 
   // Game loop
   while (true)
   {
     engine.Update();
-    testSprite.Update();
+    //testSprite.Update()
+    player.Update();
 
     // Enable mouse movement support
     //testSprite.setPos((float)Mouse::getMouseX(), (float)Mouse::getMouseY());
-    //testSprite.setScale(0.25f);
 
     // Enable mouse button support
     if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_LEFT))
     {
       // Left click means rotate counter clockwise
-      testSprite.rotateBy(10);
+      player.getSprite().rotateBy(10);
     }
     if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_RIGHT))
     {
       // Right click means rotate clockwise once
-      testSprite.rotateBy(-10);
+      player.getSprite().rotateBy(-10);
     }
     /*
     // More mouse movements
@@ -62,26 +66,30 @@ int main()
     if (Keyboard::key(GLFW_KEY_W) || Keyboard::key(GLFW_KEY_UP))
     {
       // "W" and "UP Arrow" keys set to move up
-      testSprite.moveUp();
+      //player.getSprite().moveUp();  // Move directly
+      player.getRB().addForce(Vector3D(0, 20, 0));  // Apply force
     }
     if (Keyboard::key(GLFW_KEY_A) || Keyboard::key(GLFW_KEY_LEFT))
     {
       // "A" and "Left Arrow" keys set to move left
-      testSprite.moveLeft();
+      //player.getSprite().moveLeft();  // Move directly
+      player.getRB().addForce(Vector3D(-20, 0, 0));  // Apply force
     }
     if (Keyboard::key(GLFW_KEY_S) || Keyboard::key(GLFW_KEY_DOWN))
     {
       // "S" and "Down Arrow" keys set to move down
-      testSprite.moveDown();
+      //player.getSprite().moveDown();  // Move directly
+      player.getRB().addForce(Vector3D(0, -20, 0));  // Apply force
     }
     if (Keyboard::key(GLFW_KEY_D) || Keyboard::key(GLFW_KEY_RIGHT))
     {
       // "D" and "Right Arrow" keys set to move right
-      testSprite.moveRight();
+      //player.getSprite().moveRight();  // Move directly
+      player.getRB().addForce(Vector3D(20, 0, 0));  // Apply force
     }
 
     engine.BeginRender();
-    testSprite.Render();
+    player.Render();
     engine.EndRender();
   }
 

@@ -33,12 +33,18 @@ class Sprite
     void setScale(float x);     // Set the scale to x by x
     void setScale(Vector3D v);  // Set the scale to x by y
 
+    Vector3D* getPos();
+    float* getRot();
+    Vector3D* getScale();
+    Vector3D* getSize();
+
   private:
     Texture texture;
     float speed;
     Vector3D pos;
     float rot;
     Vector3D scale;
+    Vector3D size;
 
 };
 

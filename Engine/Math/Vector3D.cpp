@@ -83,9 +83,9 @@ Vector3D Vector3D::operator*(float _x)
 {
   Vector3D ret;
 
-  ret.x *= _x;
-  ret.y *= _x;
-  ret.z *= _x;
+  ret.x = x * _x;
+  ret.y = y * _x;
+  ret.z = z * _x;
 
   return ret;
 }

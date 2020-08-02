@@ -4,11 +4,12 @@
 
 Sprite::Sprite()
 {
+  texture = Texture();
   pos = Vector3D(0);
   rot = 0;
-  speed = 100;
   scale = Vector3D(1);
-  texture = Texture();
+  size = Vector3D(0);
+  speed = 100;
 }
 
 
@@ -18,6 +19,7 @@ Sprite::Sprite(std::string imagePath)
   pos = Vector3D(0);
   rot = 0;
   scale = Vector3D(1);
+  size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   speed = 100;
 }
 
@@ -27,8 +29,9 @@ Sprite::Sprite(std::string imagePath, Vector3D v)
   texture = Texture(imagePath);
   pos = v;
   rot = 0;
-  speed = 100;
   scale = Vector3D(1);
+  size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+  speed = 100;
 }
 
 
@@ -57,10 +60,10 @@ void Sprite::Render()
   {
     // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
-    glTexCoord2f(0, 0);  glVertex2i(0, 0);                                     // Bottom left
-    glTexCoord2f(1, 0);  glVertex2i(texture.getWidth(), 0);                    // Bottom right
-    glTexCoord2f(1, 1);  glVertex2i(texture.getWidth(), texture.getHeight());  // Up right
-    glTexCoord2f(0, 1);  glVertex2i(0, texture.getHeight());                   // Up left
+    glTexCoord2i(0, 0);  glVertex2i(0, 0);                                     // Bottom left
+    glTexCoord2i(1, 0);  glVertex2i(texture.getWidth(), 0);                    // Bottom right
+    glTexCoord2i(1, 1);  glVertex2i(texture.getWidth(), texture.getHeight());  // Top right
+    glTexCoord2i(0, 1);  glVertex2i(0, texture.getHeight());                   // Top left
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
     // glVertex2i() -> Start drawing at a given position
@@ -139,4 +142,28 @@ void Sprite::setScale(float x)
 void Sprite::setScale(Vector3D v)
 {
   scale = v;
+}
+
+
+Vector3D* Sprite::getPos()
+{
+  return &pos;
+}
+
+
+float* Sprite::getRot()
+{
+  return & rot;
+}
+
+
+Vector3D* Sprite::getScale()
+{
+  return &scale;
+}
+
+
+Vector3D* Sprite::getSize()
+{
+  return &size;
 }
