@@ -60,15 +60,16 @@ void Sprite::Render()
   {
     // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
-    glTexCoord2i(0, 0);  glVertex2i(0, 0);                                     // Bottom left
-    glTexCoord2i(1, 0);  glVertex2i(texture.getWidth(), 0);                    // Bottom right
-    glTexCoord2i(1, 1);  glVertex2i(texture.getWidth(), texture.getHeight());  // Top right
-    glTexCoord2i(0, 1);  glVertex2i(0, texture.getHeight());                   // Top left
+    // Use the "/ 2" part to set anchor point at the center of the image
+    glTexCoord2i(0, 0);  glVertex2i(-texture.getWidth() / 2, -texture.getHeight() / 2);  // Bottom left
+    glTexCoord2i(1, 0);  glVertex2i( texture.getWidth() / 2, -texture.getHeight() / 2);  // Bottom right
+    glTexCoord2i(1, 1);  glVertex2i( texture.getWidth() / 2,  texture.getHeight() / 2);  // Top right
+    glTexCoord2i(0, 1);  glVertex2i(-texture.getWidth() / 2,  texture.getHeight() / 2);  // Top left
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
     // glVertex2i() -> Start drawing at a given position
     //
-    // If we didn't translate, we would replace 0 with xPos and yPos like so:
+    // If we didn't translate, we would replace 0 with xPos and yPos
   }
   glEnd();  // End our drawing
 

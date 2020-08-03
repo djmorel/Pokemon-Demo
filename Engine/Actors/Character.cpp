@@ -10,7 +10,7 @@ Character::Character()
 Character::Character(Sprite _sprite)
 {
   sprite = _sprite;
-  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), -10, 0.9f);
+  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1);  // No gravity or friction
 }
 
 

@@ -49,20 +49,20 @@ void RigidBody::Render(Vector3D c)
     // Note: Drawing lines come in pairs (NOT the same as drawing full sprites)
 
     // Draw line from bottom left to bottom right
-    glVertex2f(0, 0);              // Bottom left
-    glVertex2f(size->x, 0);        // Bottom right
+    glVertex2f(-size->x / 2, -size->y / 2);  // Bottom left
+    glVertex2f( size->x / 2, -size->y / 2);  // Bottom right
 
     // Draw line from bottom right to top right
-    glVertex2f(size->x, 0);        // Bottom right
-    glVertex2f(size->x, size->y);  // Top right
+    glVertex2f( size->x / 2, -size->y / 2);  // Bottom right
+    glVertex2f( size->x / 2,  size->y / 2);  // Top right
 
     // Draw line from top right to top left
-    glVertex2f(size->x, size->y);  // Top right
-    glVertex2f(0, size->y);        // Top left
+    glVertex2f( size->x / 2,  size->y / 2);  // Top right
+    glVertex2f(-size->x / 2,  size->y / 2);  // Top left
 
     // Draw line from top left to bottom left
-    glVertex2f(0, size->y);        // Top left
-    glVertex2f(0, 0);              // Bottom left
+    glVertex2f(-size->x / 2,  size->y / 2);  // Top left
+    glVertex2f(-size->x / 2, -size->y / 2);  // Bottom left
 
   }
   glEnd();  // End our drawing
