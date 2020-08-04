@@ -20,6 +20,10 @@ class Vector3D
     bool operator==(const Vector3D& other);
     bool operator!=(const Vector3D& other);
 
+    // Functions for the Separating Axis Theorem
+    static float dot(const Vector3D& a, const Vector3D& b);
+    static Vector3D project(const Vector3D& a, const Vector3D& b);
+
     // Make members public for easier access
     float x;
     float y;

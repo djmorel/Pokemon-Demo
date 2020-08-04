@@ -89,32 +89,42 @@ void Sprite::moveTo(Vector3D v)
 }
 
 
+// TODO: Use getDT()?
 void Sprite::moveBy(Vector3D v)
 {
+  //pos = pos + v;
   pos = pos + (v * Engine::getDT());
 }
 
 
+// TODO: Use getDT()?
 void Sprite::moveLeft()
 {
+  //pos = pos - Vector3D(speed, 0, 0);
   pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
+// TODO: Use getDT()?
 void Sprite::moveRight()
 {
+  //pos = pos + Vector3D(speed, 0, 0);
   pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
+// TODO: Use getDT()?
 void Sprite::moveUp()
 {
+  //pos = pos + Vector3D(0, speed, 0);
   pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
+// TODO: Use getDT()?
 void Sprite::moveDown()
 {
+  //pos = pos - Vector3D(0, speed, 0);
   pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
 }
 

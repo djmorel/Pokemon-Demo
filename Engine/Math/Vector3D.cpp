@@ -1,4 +1,5 @@
 #include "Vector3D.h"
+#include <math.h>
 
 
 Vector3D::Vector3D()
@@ -100,4 +101,19 @@ bool Vector3D::operator==(const Vector3D& other)
 bool Vector3D::operator!=(const Vector3D& other)
 {
   return !operator==(other);
+}
+
+
+float Vector3D::dot(const Vector3D& a, const Vector3D& b)
+{
+  return (a.x * b.x + a.y * b.y);
+}
+
+
+Vector3D Vector3D::project(const Vector3D& a, const Vector3D& b)
+{
+  // Projects vector a onto vector b
+  return Vector3D( (Vector3D::dot(a, b) / ( (float)pow(b.x, 2) + (float)pow(b.y, 2) )) * b.x,
+                   (Vector3D::dot(a, b) / ( (float)pow(b.x, 2) + (float)pow(b.y, 2) )) * b.y,
+                   0);
 }

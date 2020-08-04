@@ -4,6 +4,7 @@
 
 #include "../Graphics/Sprite.h"
 #include "../Physics/RigidBody.h"
+#include "../Math/Rect.h"
 
 
 class Character
@@ -21,6 +22,7 @@ class Character
   private:
     Sprite sprite;
     RigidBody rb;
+    Rect boundingRect;
 
 };
 
