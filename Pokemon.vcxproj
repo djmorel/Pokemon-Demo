@@ -140,7 +140,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Assets\AssetLookUpTable.cpp" />
     <ClCompile Include="Engine\Actors\Character.cpp" />
+    <ClCompile Include="Engine\Actors\ImmovableObject.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Graphics\Sprite.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
@@ -149,12 +151,15 @@
     <ClCompile Include="Engine\IO\Mouse.cpp" />
     <ClCompile Include="Engine\Math\Math.cpp" />
     <ClCompile Include="Engine\Math\Rect.cpp" />
+    <ClCompile Include="Engine\Math\Vector2D.cpp" />
     <ClCompile Include="Engine\Math\Vector3D.cpp" />
     <ClCompile Include="Engine\Physics\RigidBody.cpp" />
     <ClCompile Include="Pokemon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\AssetLookupTable.h" />
     <ClInclude Include="Engine\Actors\Character.h" />
+    <ClInclude Include="Engine\Actors\ImmovableObject.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Graphics\Sprite.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
@@ -163,6 +168,7 @@
     <ClInclude Include="Engine\IO\Mouse.h" />
     <ClInclude Include="Engine\Math\Math.h" />
     <ClInclude Include="Engine\Math\Rect.h" />
+    <ClInclude Include="Engine\Math\Vector2D.h" />
     <ClInclude Include="Engine\Math\Vector3D.h" />
     <ClInclude Include="Engine\Physics\RigidBody.h" />
   </ItemGroup>

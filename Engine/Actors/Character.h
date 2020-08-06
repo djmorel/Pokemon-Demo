@@ -7,6 +7,7 @@
 #include "../Math/Rect.h"
 
 
+// Characters in the overworld (i.e. NPCs and Pokemon) that have animations & movement
 class Character
 {
   public:

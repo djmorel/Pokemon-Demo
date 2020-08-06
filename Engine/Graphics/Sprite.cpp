@@ -4,6 +4,8 @@
 
 Sprite::Sprite()
 {
+  spriteInfo.assetPath = "";
+  spriteInfo.sheetIndex = Vector2D(-1, -1);
   texture = Texture();
   pos = Vector3D(0);
   rot = 0;
@@ -13,9 +15,22 @@ Sprite::Sprite()
 }
 
 
-Sprite::Sprite(std::string imagePath)
+// TODO: Implement a lookup table where I pass in the name of the image here, and the table includes the path(?)
+// Sounds good especially for tile sheets (means I don't have to memorize the exact sprite dimensions)
+Sprite::Sprite(std::string assetName)
 {
-  texture = Texture(imagePath);
+  // TODO: Implement details for sprite sheets
+  spriteInfo = AssetLT::findAsset(assetName);
+
+  // Check if valid asset name passed
+  if (spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName
+    std::cout << "ERROR Invalid asset name: " << assetName << std::endl;
+    return;
+  }
+
+  texture = Texture(spriteInfo.assetPath);
   pos = Vector3D(0);
   rot = 0;
   scale = Vector3D(1);
@@ -24,9 +39,20 @@ Sprite::Sprite(std::string imagePath)
 }
 
 
-Sprite::Sprite(std::string imagePath, Vector3D v)
+Sprite::Sprite(std::string assetName, Vector3D v)
 {
-  texture = Texture(imagePath);
+  // TODO: Implement details for sprite sheets
+  spriteInfo = AssetLT::findAsset(assetName);
+
+  // Check if valid asset name passed
+  if (spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName
+    std::cout << "ERROR Invalid asset name: " << assetName << std::endl;
+    return;
+  }
+
+  texture = Texture(spriteInfo.assetPath);
   pos = v;
   rot = 0;
   scale = Vector3D(1);
@@ -35,6 +61,7 @@ Sprite::Sprite(std::string imagePath, Vector3D v)
 }
 
 
+// TODO: Do something?!?!
 void Sprite::Update()
 {
   // Do nothing until we get I/O going
@@ -58,6 +85,10 @@ void Sprite::Render()
   glColor4f(1, 1, 1, 1);  // Set asset color to white in case some other code changed it
   glBegin(GL_QUADS);      // Begin rendering with a mode (2D sprites means use quads)
   {
+    // TODO: Implement subsprite stuff!!!
+
+
+
     // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
     // Use the "/ 2" part to set anchor point at the center of the image
@@ -177,4 +208,18 @@ Vector3D* Sprite::getScale()
 Vector3D* Sprite::getSize()
 {
   return &size;
+}
+
+
+// Reads a texture
+void Sprite::initSpritesheet(std::string imagePath)
+{
+  //
+}
+
+
+// Generate quads with the appropriate screen position and texture coordinates
+void Sprite::drawSprite(int id, Vector3D _pos, float _scale)
+{
+  //
 }

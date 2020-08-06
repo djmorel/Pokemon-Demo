@@ -69,4 +69,14 @@ namespace Math
     return max;
   }
 
+
+  float abs(float x)
+  {
+    if (x > 0)
+    {
+      return x;
+    }
+    return -x;
+  }
+
 }

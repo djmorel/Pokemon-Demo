@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Sprite.h"
 #include "Engine/Actors/Character.h"
+#include "Engine/Actors/ImmovableObject.h"
 #include "Engine/IO/InputManager.h"
 
 
@@ -25,10 +26,10 @@ int main()
   Engine engine;
   engine.Initialize("Pokemon");
 
-  Sprite testSprite = Sprite("Assets/Art/Tyranitar.png", Vector3D((float)engine.SCREEN_WIDTH/2, (float)engine.SCREEN_HEIGHT/2, 0));
+  Sprite testSprite = Sprite("Miku", Vector3D((float)engine.SCREEN_WIDTH/2, (float)engine.SCREEN_HEIGHT/2, 0));
   testSprite.setScale(0.5f);
 
-  Sprite testSprite2 = Sprite("Assets/Art/Tyranitar.png", Vector3D((float)(engine.SCREEN_WIDTH / 1.3), (float)(engine.SCREEN_HEIGHT / 1.3), 0));
+  Sprite testSprite2 = Sprite("Tyranitar", Vector3D((float)(engine.SCREEN_WIDTH / 1.3), (float)(engine.SCREEN_HEIGHT / 1.3), 0));
   testSprite2.setScale(0.5f);
   //testSprite2.moveBy(Vector3D(50, 50, 0));  // Won't do much with current implementation
 
@@ -37,6 +38,8 @@ int main()
 
   InputManager im(&player);
 
+  ImmovableObject tree = ImmovableObject("Trees", Vector3D(100, 100, 0), 0, 2.0f);
+
   // Game loop
   while (true)
   {
@@ -44,6 +47,7 @@ int main()
     //testSprite.Update()
     player.Update();
     npc.Update();
+    tree.Update();
     bool collision = RigidBody::isColliding(player.getRB(), npc.getRB());
     std::cout << (collision ? "Colliding!" : "...") << std::endl;
     im.Update();
@@ -54,6 +58,7 @@ int main()
     engine.BeginRender();
     player.Render();
     npc.Render();
+    tree.Render();
     engine.EndRender();
   }
 
