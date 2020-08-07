@@ -39,7 +39,7 @@ Sprite::Sprite(std::string assetName)
   rot = 0;
   scale = Vector3D(1);
 
-  if (spriteInfo.spriteRows == spriteInfo.spriteColumns)
+  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
@@ -75,7 +75,7 @@ Sprite::Sprite(std::string assetName, Vector3D v)
   rot = 0;
   scale = Vector3D(1);
 
-  if (spriteInfo.spriteRows == spriteInfo.spriteColumns)
+  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
@@ -121,8 +121,8 @@ void Sprite::Render()
     // Pull information about the spritesheet
     float x = (float)spriteInfo.sheetIndex.x;
     float y = (float)spriteInfo.sheetIndex.y;
-    float xRatio = 1.0 / (float)spriteInfo.spriteColumns;
-    float yRatio = 1.0 / (float)spriteInfo.spriteRows;
+    float xRatio = 1.0f / (float)spriteInfo.spriteColumns;
+    float yRatio = 1.0f / (float)spriteInfo.spriteRows;
 
     // Setup texture coordinates with our real scene coordinates (where our matrix moved to) (first quadrant coordinates)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
@@ -130,19 +130,19 @@ void Sprite::Render()
 
     // Top left vertex
     glTexCoord2f( (0 + x) * xRatio, (0 + y) * yRatio);
-    glVertex2i(-texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+    glVertex2f(-texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
 
     // Bottom left vertex
     glTexCoord2f( (1 + x) * xRatio, (0 + y) * yRatio);
-    glVertex2i( texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+    glVertex2f( texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
 
     // Bottom right vertex
     glTexCoord2f( (1 + x) * xRatio, (1 + y) * yRatio);
-    glVertex2i( texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+    glVertex2f( texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
 
     // Top right vertex
     glTexCoord2f( (0 + x) * xRatio, (1 + y) * yRatio);
-    glVertex2i(-texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+    glVertex2f(-texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
 
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
