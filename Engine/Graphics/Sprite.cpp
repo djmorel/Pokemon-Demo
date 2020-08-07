@@ -6,6 +6,10 @@ Sprite::Sprite()
 {
   spriteInfo.assetPath = "";
   spriteInfo.sheetIndex = Vector2D(-1, -1);
+  spriteInfo.spriteRows = -1;
+  spriteInfo.spriteColumns = -1;
+  spriteInfo.unitsHigh = -1;
+  spriteInfo.unitsWide = -1;
   texture = Texture();
   pos = Vector3D(0);
   rot = 0;
@@ -34,7 +38,21 @@ Sprite::Sprite(std::string assetName)
   pos = Vector3D(0);
   rot = 0;
   scale = Vector3D(1);
-  size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+
+  if (spriteInfo.spriteRows == spriteInfo.spriteColumns)
+  {
+    size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+  }
+  else
+  {
+    // Caclulate the sprite unit height and width
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
+    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+
+    size = Vector3D(spriteWidth, spriteHeight, 1);
+  }
   speed = 100;
 }
 
@@ -56,7 +74,21 @@ Sprite::Sprite(std::string assetName, Vector3D v)
   pos = v;
   rot = 0;
   scale = Vector3D(1);
-  size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+
+  if (spriteInfo.spriteRows == spriteInfo.spriteColumns)
+  {
+    size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+  }
+  else
+  {
+    // Caclulate the sprite unit height and width
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
+    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+
+    size = Vector3D(spriteWidth, spriteHeight, 1);
+  }
   speed = 100;
 }
 
@@ -68,6 +100,7 @@ void Sprite::Update()
 }
 
 
+// TODO: Adjust logic for different size sprites (uses unitsHigh and unitsWide that aren't 1)
 void Sprite::Render()
 {
   // Render our texture via OpenGL code
@@ -78,29 +111,44 @@ void Sprite::Render()
   // Load Idenity -> Translate -> Rotate -> Scale
   glLoadIdentity();
   glTranslatef(pos.x, pos.y, 0);  // In 2D so zPos = 0
-  glRotatef(rot, 0, 0, 1);      // Rotate about the z axis since 2D
+  glRotatef(rot, 0, 0, 1);        // Rotate about the z axis since 2D
   glScalef(scale.x, scale.y, 1);
 
   // Rendering
   glColor4f(1, 1, 1, 1);  // Set asset color to white in case some other code changed it
   glBegin(GL_QUADS);      // Begin rendering with a mode (2D sprites means use quads)
   {
-    // TODO: Implement subsprite stuff!!!
+    // Pull information about the spritesheet
+    float x = (float)spriteInfo.sheetIndex.x;
+    float y = (float)spriteInfo.sheetIndex.y;
+    float xRatio = 1.0 / (float)spriteInfo.spriteColumns;
+    float yRatio = 1.0 / (float)spriteInfo.spriteRows;
 
-
-
-    // Setup texture coordinates with our real scene coordinates (where our matrix moved to)
+    // Setup texture coordinates with our real scene coordinates (where our matrix moved to) (first quadrant coordinates)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
     // Use the "/ 2" part to set anchor point at the center of the image
-    glTexCoord2i(0, 0);  glVertex2i(-texture.getWidth() / 2, -texture.getHeight() / 2);  // Bottom left
-    glTexCoord2i(1, 0);  glVertex2i( texture.getWidth() / 2, -texture.getHeight() / 2);  // Bottom right
-    glTexCoord2i(1, 1);  glVertex2i( texture.getWidth() / 2,  texture.getHeight() / 2);  // Top right
-    glTexCoord2i(0, 1);  glVertex2i(-texture.getWidth() / 2,  texture.getHeight() / 2);  // Top left
+
+    // Top left vertex
+    glTexCoord2f( (0 + x) * xRatio, (0 + y) * yRatio);
+    glVertex2i(-texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+
+    // Bottom left vertex
+    glTexCoord2f( (1 + x) * xRatio, (0 + y) * yRatio);
+    glVertex2i( texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+
+    // Bottom right vertex
+    glTexCoord2f( (1 + x) * xRatio, (1 + y) * yRatio);
+    glVertex2i( texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+
+    // Top right vertex
+    glTexCoord2f( (0 + x) * xRatio, (1 + y) * yRatio);
+    glVertex2i(-texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
     // glVertex2i() -> Start drawing at a given position
-    //
-    // If we didn't translate, we would replace 0 with xPos and yPos
+    // First Quadrant: (0, 0) is the bottom left & (1, 1) is the top right
+    // If we didn't translate, we would replace 0 with xPos and yPos (in glVertex2i() function)
   }
   glEnd();  // End our drawing
 
@@ -208,18 +256,4 @@ Vector3D* Sprite::getScale()
 Vector3D* Sprite::getSize()
 {
   return &size;
-}
-
-
-// Reads a texture
-void Sprite::initSpritesheet(std::string imagePath)
-{
-  //
-}
-
-
-// Generate quads with the appropriate screen position and texture coordinates
-void Sprite::drawSprite(int id, Vector3D _pos, float _scale)
-{
-  //
 }

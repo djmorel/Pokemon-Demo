@@ -41,10 +41,6 @@ class Sprite
     Vector3D* getScale();
     Vector3D* getSize();
 
-    // Static so non-class members can call the function
-    static void initSpritesheet(std::string assetName);
-    static void drawSprite(int id, Vector3D _pos, float _scale);
-
   private:
     assetInfo spriteInfo;
     Texture texture;
@@ -53,14 +49,6 @@ class Sprite
     float rot;
     Vector3D scale;
     Vector3D size;
-
-    /*
-    // For sprite/tile sheets
-    std::vector<Vector2D> vertices;  // 4 vertices that define the quad of the sprite
-    //std::vector<Vector2D> UVs;       // Used as the sprite ID in the overall sheet
-    bool isSheet;                    // Tells if using a sheet (adjusts glTexCoord() and glVertex() values)
-    */
-
 };
 
 

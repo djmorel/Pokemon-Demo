@@ -8,17 +8,26 @@
 
 struct tableElement
 {
-  std::string assetName;
-  std::string assetPath;
-  bool isSheet;
-  Vector2D sheetIndex;
+  std::string assetName;  // Name ID for the asset
+  std::string assetPath;  // Path for the asset
+  Vector2D sheetIndex;    // Index of the sprite on the sheet (first quadrant coordinates)
+  int spriteRows;         // Number of sprite units per sheet row
+  int spriteColumns;      // Number of sprite units per sheet column
+  int unitsHigh;          // How many sprite units make up this sprite's height
+  int unitsWide;          // How many sprite units make up this sprite's width
 };
 typedef struct tableElement tableElement;
 
+
+// Struct initialized to invalid asset entry
 struct assetInfo
 {
-  std::string assetPath;
-  Vector2D sheetIndex;
+  std::string assetPath = "";
+  Vector2D sheetIndex   = Vector2D(-1, -1);
+  int spriteRows        = -1;
+  int spriteColumns     = -1;
+  int unitsHigh         = -1;
+  int unitsWide         = -1;
 };
 typedef struct assetInfo assetInfo;
 

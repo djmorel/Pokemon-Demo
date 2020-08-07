@@ -26,8 +26,9 @@ int main()
   Engine engine;
   engine.Initialize("Pokemon");
 
-  Sprite testSprite = Sprite("Miku", Vector3D((float)engine.SCREEN_WIDTH/2, (float)engine.SCREEN_HEIGHT/2, 0));
-  testSprite.setScale(0.5f);
+  std::cout << "6.0 / 480.0 = " << 6.0f / 480.0f << std::endl;
+  Sprite testSprite = Sprite("Hilda_F_Stand", Vector3D((float)engine.SCREEN_WIDTH/2, (float)engine.SCREEN_HEIGHT/2, 0));
+  testSprite.setScale(2.0f);
 
   Sprite testSprite2 = Sprite("Tyranitar", Vector3D((float)(engine.SCREEN_WIDTH / 1.3), (float)(engine.SCREEN_HEIGHT / 1.3), 0));
   testSprite2.setScale(0.5f);
@@ -48,8 +49,8 @@ int main()
     player.Update();
     npc.Update();
     tree.Update();
-    bool collision = RigidBody::isColliding(player.getRB(), npc.getRB());
-    std::cout << (collision ? "Colliding!" : "...") << std::endl;
+    //bool collision = RigidBody::isColliding(player.getRB(), npc.getRB());
+    //std::cout << (collision ? "Colliding!" : "...") << std::endl;
     im.Update();
 
     // Enable mouse movement support
