@@ -53,6 +53,12 @@ Vector2D ImmovableObject::getDimensions()
 }
 
 
+Vector3D ImmovableObject::getPos()
+{
+  return Vector3D(objSprite.getPos()->x, objSprite.getPos()->y, objSprite.getPos()->z);
+}
+
+
 void ImmovableObject::Update()
 {
   rb.Update();

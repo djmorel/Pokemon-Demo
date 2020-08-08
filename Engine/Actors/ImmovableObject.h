@@ -19,6 +19,7 @@ class ImmovableObject
     ImmovableObject(std::string imagePath, Vector3D _pos, float rot, float scale);
 
     Vector2D getDimensions();
+    Vector3D getPos();
 
     void Update();
     void Render();

@@ -45,9 +45,32 @@ unsigned int WorldManager::getSize()
 
 void WorldManager::Update()
 {
+  // Vector to hold offscreen tiles
+  std::vector<int> tilesToDelete;
+
   for (unsigned int i = 0; i < tiles.size(); i++)
   {
     tiles[i]->Update();
+
+    // Check if tiles are offscreen
+    if (tiles[i]->getPos().x < 0 || tiles[i]->getPos().x > Engine::SCREEN_WIDTH)
+    {
+      // Tile is out if the valid x range
+      tilesToDelete.push_back(i);
+    }
+    else if (tiles[i]->getPos().y < 0 || tiles[i]->getPos().y > Engine::SCREEN_HEIGHT)
+    {
+      // Tile is out of the valid y range
+      tilesToDelete.push_back(i);
+    }
+  }
+
+  // Clean up unecessary tiles
+  for (int i = tilesToDelete.size() - 1; i >= 0; i--)
+  {
+    // Go backwards to prevent element misalignment from smaller element erases
+    delete tiles[tilesToDelete[i]];                 // Free the allocated memory
+    tiles.erase(tiles.begin() + tilesToDelete[i]);  // Remove the entry
   }
 }
 
