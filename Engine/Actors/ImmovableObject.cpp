@@ -2,9 +2,27 @@
 #include "../Math/Rect.h"
 
 
+Sprite* ImmovableObject::objSprite_ptr = nullptr;
+
+
+void ImmovableObject::Initialize()
+{
+  objSprite_ptr = new Sprite("DirtBlock");
+  objSprite_ptr->setScale(0.8f);
+}
+
+
 ImmovableObject::ImmovableObject()
 {
+  /*
+  if (objSprite_ptr == nullptr)
+  {
+    std::cout << "Error: Trying to instantiate an ImmovableObject without calling Initialize()" << std::endl;
+    return;
+  }
+  */
   objSprite = Sprite("Assets/Art/DefaultObj.png");
+  //objSprite = Sprite(*objSprite_ptr);
 }
 
 
@@ -26,6 +44,12 @@ ImmovableObject::ImmovableObject(std::string imagePath, Vector3D _pos, float rot
 
   rb = RigidBody();
   rb.Initialize(objSprite.getPos(), objSprite.getRot(), objSprite.getScale(), objSprite.getSize(), 0, 0, rc);
+}
+
+
+Vector2D ImmovableObject::getDimensions()
+{
+  return Vector2D(objSprite.getSize()->x * objSprite.getScale()->x, objSprite.getSize()->x * objSprite.getScale()->y);
 }
 
 

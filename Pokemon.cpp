@@ -4,6 +4,7 @@
 #include "Engine/Actors/Character.h"
 #include "Engine/Actors/ImmovableObject.h"
 #include "Engine/IO/InputManager.h"
+#include "Engine/WorldManager.h"
 
 
 // Note:
@@ -26,7 +27,7 @@ int main()
   Engine engine;
   engine.Initialize("Pokemon");
 
-  Sprite testSprite = Sprite("Hilda_F_Stand", Vector3D((float)engine.SCREEN_WIDTH/2, (float)engine.SCREEN_HEIGHT/2, 0));
+  Sprite testSprite = Sprite("Hilda_F_Stand", Vector3D((float)engine.SCREEN_WIDTH/2 + 32.0f, (float)engine.SCREEN_HEIGHT/2 - 16.0f, 0));
   testSprite.setScale(2.0f);
 
   Sprite testSprite2 = Sprite("Tyranitar", Vector3D((float)(engine.SCREEN_WIDTH / 1.3), (float)(engine.SCREEN_HEIGHT / 1.3), 0));
@@ -36,26 +37,32 @@ int main()
   Character player(testSprite);
   Character npc(testSprite2);
 
+  WorldManager tileManager;
   InputManager im(&player);
 
   ImmovableObject tree = ImmovableObject("Trees", Vector3D(100, 100, 0), 0, 2.0f);
+  std::cout << "Tree tile scale is: " << tree.getDimensions().x << " x " << tree.getDimensions().y << std::endl;
+
+  std::cout << "There are " << tileManager.getSize() << " tiles" << std::endl;
 
   // Game loop
   while (true)
   {
     engine.Update();
     //testSprite.Update()
+    tileManager.Update();
     player.Update();
     npc.Update();
     tree.Update();
-    bool collision = RigidBody::isColliding(player.getRB(), npc.getRB());
-    std::cout << (collision ? "Colliding!" : "...") << std::endl;
+    //bool collision = RigidBody::isColliding(player.getRB(), npc.getRB());
+    //std::cout << (collision ? "Colliding!" : "...") << std::endl;
     im.Update();
 
     // Enable mouse movement support
     //testSprite.setPos((float)Mouse::getMouseX(), (float)Mouse::getMouseY());
 
     engine.BeginRender();
+    tileManager.Render();
     player.Render();
     npc.Render();
     tree.Render();

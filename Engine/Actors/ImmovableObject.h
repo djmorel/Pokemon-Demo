@@ -10,13 +10,15 @@
 class ImmovableObject
 {
   public:
-    // Unneeded since not creating multiple copies of the same thing
-    //static Sprite* objSprite_ptr;
-    //static void Initialize();
+    // Consider adding these if I want to have a base tile to render multiple times...
+    static Sprite* objSprite_ptr;
+    static void Initialize();
 
     ImmovableObject();
     ImmovableObject(std::string imagePath);
     ImmovableObject(std::string imagePath, Vector3D _pos, float rot, float scale);
+
+    Vector2D getDimensions();
 
     void Update();
     void Render();

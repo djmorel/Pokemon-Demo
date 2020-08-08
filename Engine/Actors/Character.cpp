@@ -27,7 +27,8 @@ void Character::Update()
 void Character::Render()
 {
   sprite.Render();
-  rb.Render(Vector3D(0.51f, 0.86f, 0.87f));  // Light-Blue rigid body
+  rb.Render(Vector3D(0, 0, 0));  // Black rigid body
+  //rb.Render(Vector3D(0.51f, 0.86f, 0.87f));  // Light-Blue rigid body
 }
 
 

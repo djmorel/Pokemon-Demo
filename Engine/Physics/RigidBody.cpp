@@ -58,7 +58,7 @@ void RigidBody::Render(Vector3D c)
   //glScalef(scale->x, scale->y, scale->z);
 
   // Rendering
-  glColor4f(c.x, c.y, c.z, 1);  // Set asset color to white in case some other code changed it
+  glColor4f(c.x, c.y, c.z, 1);  // Set asset color to white in case some other code changed it (set to 0 for no visibility)
   glBegin(GL_LINES);            // Begin rendering as lines
   {
     // Note: Drawing lines come in pairs (NOT the same as drawing full sprites)

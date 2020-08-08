@@ -10,8 +10,8 @@
 class Engine
 {
   public:
-    static int SCREEN_WIDTH;
-    static int SCREEN_HEIGHT;
+    static const int SCREEN_WIDTH = 1024;
+    static const int SCREEN_HEIGHT = 768;
     static float getDT();
 
     Engine();

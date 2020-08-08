@@ -15,7 +15,7 @@ Sprite::Sprite()
   rot = 0;
   scale = Vector3D(1);
   size = Vector3D(0);
-  speed = 100;
+  speed = 0;
 }
 
 
@@ -53,7 +53,7 @@ Sprite::Sprite(std::string assetName)
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
-  speed = 100;
+  speed = 0;
 }
 
 
@@ -179,32 +179,36 @@ void Sprite::moveBy(Vector3D v)
 // TODO: Use getDT()?
 void Sprite::moveLeft()
 {
+  pos = pos - Vector3D(64, 0, 0);
   //pos = pos - Vector3D(speed, 0, 0);
-  pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
+  //pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
 // TODO: Use getDT()?
 void Sprite::moveRight()
 {
+  pos = pos + Vector3D(64, 0, 0);
   //pos = pos + Vector3D(speed, 0, 0);
-  pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
+  //pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
 // TODO: Use getDT()?
 void Sprite::moveUp()
 {
+  pos = pos + Vector3D(0, 64, 0);
   //pos = pos + Vector3D(0, speed, 0);
-  pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
+  //pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
 // TODO: Use getDT()?
 void Sprite::moveDown()
 {
+  pos = pos - Vector3D(0, 64, 0);
   //pos = pos - Vector3D(0, speed, 0);
-  pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
+  //pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 

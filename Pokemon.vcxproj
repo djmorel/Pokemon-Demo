@@ -154,6 +154,7 @@
     <ClCompile Include="Engine\Math\Vector2D.cpp" />
     <ClCompile Include="Engine\Math\Vector3D.cpp" />
     <ClCompile Include="Engine\Physics\RigidBody.cpp" />
+    <ClCompile Include="Engine\WorldManager.cpp" />
     <ClCompile Include="Pokemon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,12 +172,10 @@
     <ClInclude Include="Engine\Math\Vector2D.h" />
     <ClInclude Include="Engine\Math\Vector3D.h" />
     <ClInclude Include="Engine\Physics\RigidBody.h" />
+    <ClInclude Include="Engine\WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\Downloads\Tyranitar.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -60,6 +60,9 @@
     <ClCompile Include="Assets\AssetLookUpTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\WorldManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Engine.h">
@@ -104,13 +107,11 @@
     <ClInclude Include="Assets\AssetLookupTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\WorldManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\Downloads\Tyranitar.png">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

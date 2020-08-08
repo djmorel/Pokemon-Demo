@@ -4,8 +4,8 @@
 
 
 // Declare our static variables from Engine.h
-int Engine::SCREEN_WIDTH = 1024;
-int Engine::SCREEN_HEIGHT = 768;
+//int Engine::SCREEN_WIDTH = 1024;
+//int Engine::SCREEN_HEIGHT = 768;
 GLFWwindow* Engine::window = NULL;
 float Engine::dt = 0;
 float Engine::lastTime = 0;
@@ -99,14 +99,14 @@ void Engine::Update()
 
 void Engine::BeginRender()
 {
-  glClearColor(0.56f, 0.4f, 0.32f, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
+  //glClearColor(0.56f, 0.4f, 0.32f, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
+  glClearColor(0.0f/255.0f, 128.0f/255.0f, 64.0f/255.0f, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the depth
 }
 
 void Engine::EndRender()
 {
   // Render to the back buffer (next screen)
-
 
   // Swap the buffer
   glfwSwapBuffers(window);
