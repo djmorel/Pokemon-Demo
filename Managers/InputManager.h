@@ -2,10 +2,10 @@
 #define INPUTMANAGER_H
 
 
-#include "../Actors/Character.h"
-#include "../Engine.h"
-#include "Mouse.h"
-#include "Keyboard.h"
+#include "../Engine/Actors/Character.h"
+#include "../Engine/Engine.h"
+#include "../Engine/IO/Mouse.h"
+#include "../Engine/IO/Keyboard.h"
 
 
 class InputManager

@@ -8,6 +8,9 @@
 // If the texture isn't a spritesheet, spriteRows == sprite Columns
 const tableElement AssetLookupTable[] = {
   {"DefaultObj"     , "Assets/Art/DefaultObject.png"              , Vector2D(0, 0), 1, 1, 1, 1 },
+  {"StartScreen"    , "Assets/Art/Emerald_StartScreen.png"        , Vector2D(0, 0), 1, 1, 1, 1 },
+  {"EndScreen"      , "Assets/Art/GameOverScreen.png"             , Vector2D(0, 0), 1, 1, 1, 1 },
+  {"Loading"        , "Assets/Art/Loading.png"                    , Vector2D(0, 0), 1, 1, 1, 1 },
   {"GrassBlock"     , "Assets/Art/MinecraftBlocks_Spritesheet.png", Vector2D(0, 2), 3, 6, 1, 1 },
   {"DirtBlock"      , "Assets/Art/MinecraftBlocks_Spritesheet.png", Vector2D(1, 2), 3, 6, 1, 1 },
   {"StoneBlock"     , "Assets/Art/MinecraftBlocks_Spritesheet.png", Vector2D(2, 2), 3, 6, 1, 1 },

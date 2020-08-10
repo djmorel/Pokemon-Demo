@@ -42,9 +42,6 @@
     <ClCompile Include="Engine\Actors\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\IO\InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Math\Rect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,7 +57,13 @@
     <ClCompile Include="Assets\AssetLookUpTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\WorldManager.cpp">
+    <ClCompile Include="Managers\WorldManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,9 +92,6 @@
     <ClInclude Include="Engine\Actors\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\IO\InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Math\Rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -107,7 +107,13 @@
     <ClInclude Include="Assets\AssetLookupTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\WorldManager.h">
+    <ClInclude Include="Managers\WorldManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\GameManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

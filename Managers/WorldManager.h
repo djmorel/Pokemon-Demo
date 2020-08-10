@@ -2,7 +2,7 @@
 #define WORLDMANAGER_H
 
 
-#include "Actors/ImmovableObject.h"
+#include "../Engine/Actors/ImmovableObject.h"
 #include <vector>
 
 
@@ -12,7 +12,8 @@ class WorldManager
     WorldManager();
     ~WorldManager();
 
-    unsigned int getSize();
+    void buildWorld();  // Sets the environment to that of the save file
+    void clearWorld();  // Clears the environment
 
     void Update();
     void Render();

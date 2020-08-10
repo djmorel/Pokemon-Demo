@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "../Engine.h"
 
 
 Character::Character()
@@ -13,6 +14,17 @@ Character::Character(Sprite _sprite)
 
   Rect boundingRect = Rect();
   boundingRect.setSize(*sprite.getSize() * *sprite.getScale());
+  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, boundingRect);  // No gravity or friction
+}
+
+
+Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOffset)
+{
+  sprite = _sprite;
+
+  Rect boundingRect = Rect();
+  boundingRect.setSize(*sprite.getSize() * *sprite.getScale() * rectSizeOffset);  // Scale the boundingRect
+  boundingRect.moveBy(rectPosOffset);                                             // Move the boundingRect
   rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, boundingRect);  // No gravity or friction
 }
 

@@ -13,6 +13,7 @@ class Character
   public:
     Character();
     Character(Sprite _sprite);
+    Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOffset);
 
     void Update();
     void Render();

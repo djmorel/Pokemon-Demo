@@ -1,29 +1,16 @@
 #include "WorldManager.h"
-#include "Engine.h"
+#include "../Engine/Engine.h"
 
 
 WorldManager::WorldManager()
 {
+  // Note: If I were to include an Initialize method for the tiles, I would call it here
+
   // TODO: Load the map blueprints
 
   // Create the tiles
-  for (unsigned int j = 0; j < Engine::SCREEN_HEIGHT / 64; j++)
-  {
-    for (unsigned int i = 0; i < Engine::SCREEN_WIDTH / 64; i++)
-    {
-      // Create a new instance of the tile ImmovableObject
-      if (j < 9)
-      {
-        tiles.push_back(new ImmovableObject("LeafBlock", Vector3D(i * 64 + 64 / 2, j * 64 + 64 / 2, 0), 0, 0.8f));
-      }
-      else
-      {
-        tiles.push_back(new ImmovableObject("WaterBlock", Vector3D(i * 64 + 64 / 2, j * 64 + 64 / 2, 0), 0, 0.8f));
-      }
-      // NOTE: Implement a better way to ensure the tiles are 64x64p (they are with the above config,
-      //       but it may not be clearly visible)
-    }
-  }
+  buildWorld();
+
 }
 
 
@@ -37,9 +24,45 @@ WorldManager::~WorldManager()
 }
 
 
-unsigned int WorldManager::getSize()
+void WorldManager::buildWorld()
 {
-  return tiles.size();
+  // TODO: Load the environment save file (map blueprints), and add the proper tiles to the vector
+  // Can have a 2D array with codes for blocks (requires adding codes to AssetLookUpTable)
+  // OR just save the tile names in the 2D array
+  // --> 2D array works well since already using i and j
+  // --> May want to pass the environment as a setTiles parameter...
+
+
+  for (unsigned int j = 0; j < Engine::SCREEN_HEIGHT / 64; j++)
+  {
+    for (unsigned int i = 0; i < Engine::SCREEN_WIDTH / 64; i++)
+    {
+      // Create a new instance of the tile ImmovableObject
+      if (j < 9)
+      {
+        tiles.push_back(new ImmovableObject("LeafBlock", Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+      }
+      else
+      {
+        tiles.push_back(new ImmovableObject("WaterBlock", Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+      }
+      // NOTE: Implement a better way to ensure the tiles are 64x64p (they are with the above config,
+      //       but it may not be clearly visible)
+    }
+  }  // End of tile for loop
+
+}
+
+
+void WorldManager::clearWorld()
+{
+  // Delete tiles
+  for (unsigned int i = 0; i < tiles.size(); i++)
+  {
+    delete tiles[i];  // Delete the pointers
+  }
+  tiles.clear();  // Clear the vector entries
+
 }
 
 
