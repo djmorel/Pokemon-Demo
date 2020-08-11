@@ -19,7 +19,9 @@ class Sprite
   public:
     Sprite();
     Sprite(std::string assetName);
+    Sprite(int _id);
     Sprite(std::string assetName, Vector3D _pos);
+    Sprite(int _id, Vector3D _pos);
 
     void Update();
     void Render();

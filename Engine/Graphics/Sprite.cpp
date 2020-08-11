@@ -19,11 +19,9 @@ Sprite::Sprite()
 }
 
 
-// TODO: Implement a lookup table where I pass in the name of the image here, and the table includes the path(?)
-// Sounds good especially for tile sheets (means I don't have to memorize the exact sprite dimensions)
 Sprite::Sprite(std::string assetName)
 {
-  // TODO: Implement details for sprite sheets
+  // Retrieve spriteInfo from the AssetLookupTable
   spriteInfo = AssetLT::findAsset(assetName);
 
   // Check if valid asset name passed
@@ -57,9 +55,45 @@ Sprite::Sprite(std::string assetName)
 }
 
 
-Sprite::Sprite(std::string assetName, Vector3D v)
+Sprite::Sprite(int _id)
 {
-  // TODO: Implement details for sprite sheets
+  // Retrieve spriteInfo from the AssetLookupTable
+  spriteInfo = AssetLT::findAsset(_id);
+
+  // Check if valid asset name passed
+  if (spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName
+    std::cout << "ERROR Invalid asset ID: " << _id << std::endl;
+    return;
+  }
+
+  texture = Texture(spriteInfo.assetPath);
+  pos = Vector3D(0);
+  rot = 0;
+  scale = Vector3D(1);
+
+  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  {
+    size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+  }
+  else
+  {
+    // Caclulate the sprite unit height and width
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
+    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+
+    size = Vector3D(spriteWidth, spriteHeight, 1);
+  }
+  speed = 0;
+}
+
+
+Sprite::Sprite(std::string assetName, Vector3D _pos)
+{
+  // Retrieve spriteInfo from the AssetLookupTable
   spriteInfo = AssetLT::findAsset(assetName);
 
   // Check if valid asset name passed
@@ -71,7 +105,43 @@ Sprite::Sprite(std::string assetName, Vector3D v)
   }
 
   texture = Texture(spriteInfo.assetPath);
-  pos = v;
+  pos = _pos;
+  rot = 0;
+  scale = Vector3D(1);
+
+  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  {
+    size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
+  }
+  else
+  {
+    // Caclulate the sprite unit height and width
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
+    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+
+    size = Vector3D(spriteWidth, spriteHeight, 1);
+  }
+  speed = 100;
+}
+
+
+Sprite::Sprite(int _id, Vector3D _pos)
+{
+  // Retrieve spriteInfo from the AssetLookupTable
+  spriteInfo = AssetLT::findAsset(_id);
+
+  // Check if valid asset name passed
+  if (spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName
+    std::cout << "ERROR Invalid asset ID: " << _id << std::endl;
+    return;
+  }
+
+  texture = Texture(spriteInfo.assetPath);
+  pos = _pos;
   rot = 0;
   scale = Vector3D(1);
 
@@ -171,8 +241,8 @@ void Sprite::moveTo(Vector3D v)
 // TODO: Use getDT()?
 void Sprite::moveBy(Vector3D v)
 {
-  //pos = pos + v;
-  pos = pos + (v * Engine::getDT());
+  pos = pos + v;
+  //pos = pos + (v * Engine::getDT());
 }
 
 
@@ -222,8 +292,6 @@ void Sprite::rotateBy(float x)
 {
   // Rotate by x degrees
   rot += x;
-  // Rotation to match all machine performances
-  //rot += x * Engine::getDT();
 }
 
 

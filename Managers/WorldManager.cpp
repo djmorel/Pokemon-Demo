@@ -40,11 +40,13 @@ void WorldManager::buildWorld()
       // Create a new instance of the tile ImmovableObject
       if (j < 9)
       {
-        tiles.push_back(new ImmovableObject("LeafBlock", Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+        // LeafBlock is Asset ID 10
+        tiles.push_back(new ImmovableObject(10, Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
       }
       else
       {
-        tiles.push_back(new ImmovableObject("WaterBlock", Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+        // WaterBlock is Asset ID 7
+        tiles.push_back(new ImmovableObject(7, Vector3D(i * 64.0f + 64.0f / 2, j * 64.0f + 64.0f / 2, 0), 0, 0.8f));
       }
       // NOTE: Implement a better way to ensure the tiles are 64x64p (they are with the above config,
       //       but it may not be clearly visible)

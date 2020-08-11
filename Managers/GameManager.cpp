@@ -3,7 +3,6 @@
 
 // TODO
 // - Establish npc and objects as a vector (allows for proper updating and rendering)
-// - Include error checking
 // - Implement save file system
 
 
@@ -44,9 +43,7 @@ int GameManager::Start()
   // Optional stuff
   Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0));
   npcSprite.setScale(0.5f);
-  //testSprite2.moveBy(Vector3D(50, 50, 0));  // Won't do much with current implementation
   Character npc(npcSprite);
-
   ImmovableObject tree = ImmovableObject("Trees", Vector3D(100, 100, 0), 0, 2.0f);
   // End of optional stuff
 
@@ -108,9 +105,6 @@ int GameManager::Start()
         npc.Update();
         tree.Update();
         mInputManager->Update();
-
-        // Enable mouse movement support
-        //testSprite.setPos((float)Mouse::getMouseX(), (float)Mouse::getMouseY());
 
         mEngine->BeginRender();
         mTileManager->Render();

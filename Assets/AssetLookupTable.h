@@ -8,6 +8,7 @@
 
 struct tableElement
 {
+  int assetID;            // Numerical ID for the asset (indexable)
   std::string assetName;  // Name ID for the asset
   std::string assetPath;  // Path for the asset
   Vector2D sheetIndex;    // Index of the sprite on the sheet (first quadrant coordinates)
@@ -34,7 +35,8 @@ typedef struct assetInfo assetInfo;
 
 namespace AssetLT
 {
-  assetInfo findAsset(std::string assetName);  // Returns the asset's path and sheet index
+  assetInfo findAsset(std::string assetName);  // Returns the asset's path and sheet index from assetName
+  assetInfo findAsset(int _id);                // Returns the asset's path and sheet index from ID #
 }
 
 #endif
