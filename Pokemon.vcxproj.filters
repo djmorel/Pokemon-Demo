@@ -120,4 +120,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Assets\WorldMaps\Map_World.txt" />
+    <Text Include="Assets\WorldMaps\Map_Beach.txt" />
+    <Text Include="Assets\WorldMaps\Map_Iceberg.txt" />
+  </ItemGroup>
 </Project>

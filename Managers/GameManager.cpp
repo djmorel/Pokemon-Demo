@@ -59,7 +59,7 @@ int GameManager::Start()
     {
       // TODO: Ask player if he/she wants to save game
 
-      break;
+      return 0;
     }
 
     // Always update the Engine, regardless of the state
@@ -164,13 +164,16 @@ void GameManager::setState(State state)
   {
     // Clear the world's contents
     mTileManager->clearWorld();
-    delete mTileManager;
-    delete mPlayer;
+
+    // Don't delete these pointers in case ~WorldManager() is called after GAMEOVER switches to START state
+    //delete mTileManager;
+    //delete mPlayer;
+    // Rely on LoadGame() to handle the check for us
   }
 }
 
 
-void GameManager::LoadGame()
+int GameManager::LoadGame()
 {
   // TODO: Implement save file system
 
@@ -178,11 +181,29 @@ void GameManager::LoadGame()
   // Load the player
   Sprite playerSprite = Sprite("Hilda_F_Stand", Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0));
   playerSprite.setScale(2.0f);
+  if (mPlayer != nullptr)
+  {
+    // Free the memory
+    delete mPlayer;
+  }
   mPlayer = new Character(playerSprite, Vector3D(1, 0.66f, 1), Vector3D(0, -16.0f, 0));  // Parameters ensure boundingRect matches the tiles
 
   // Enable player input
+  if (mInputManager != nullptr)
+  {
+    // Free the memory
+    delete mInputManager;
+  }
   mInputManager = new InputManager(mPlayer);
 
   // Load the world
-  mTileManager = new WorldManager();
+  if (mTileManager != nullptr)
+  {
+    // Free the memory
+    delete mTileManager;
+  }
+  mTileManager = new WorldManager("Assets/WorldMaps/Map_Iceberg.txt");
+
+  // Successfully loaded game
+  return 0;
 }

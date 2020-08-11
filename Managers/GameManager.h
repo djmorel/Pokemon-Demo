@@ -23,7 +23,7 @@ class GameManager
     };
 
     int Start();
-    void LoadGame();
+    int LoadGame();
 
   private:
     Engine* mEngine;
