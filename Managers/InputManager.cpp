@@ -4,6 +4,7 @@
 InputManager::InputManager(Character* _character)
 {
   character = _character;
+  animationDir = Character::dir::DOWN;  // Arbitrary default value
 }
 
 
