@@ -13,9 +13,9 @@ GameManager::GameManager()
   mEngine->Initialize("Pokemon");
 
   // Initialize the start and end screens
-  mStartSprite = Sprite("StartScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0));
-  mStartSprite.setScale(1.07f);
-  mGameOverSprite = Sprite("EndScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0));
+  mStartSprite = Sprite("StartScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0), 0, Vector3D(1.07f));
+  //mStartSprite.setScale(1.07f);
+  mGameOverSprite = Sprite("EndScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0), 0, Vector3D(1));
 
   // Set the player and world pointers to null for now (haven't loaded save file yet)
   mPlayer = nullptr;
@@ -41,15 +41,15 @@ GameManager::~GameManager()
 int GameManager::Start()
 {
   // Optional stuff
-  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0));
-  npcSprite.setScale(0.5f);
+  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
+  //npcSprite.setScale(0.5f);
   Character npc(npcSprite);
   ImmovableObject tree = ImmovableObject("Trees", Vector3D(100, 100, 0), 0, 2.0f);
   // End of optional stuff
 
   // Add a Loading Icon for state changes
-  Sprite loadingIcon = Sprite("Loading", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 5), 0));
-  loadingIcon.setScale(0.3f);
+  Sprite loadingIcon = Sprite("Loading", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 5), 0), 0, Vector3D(0.3f));
+  //loadingIcon.setScale(0.3f);
 
   // Game loop
   while (true)
@@ -178,15 +178,64 @@ int GameManager::LoadGame()
   // TODO: Implement save file system
 
 
-  // Load the player
-  Sprite playerSprite = Sprite("Hilda_F_Stand", Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0));
-  playerSprite.setScale(2.0f);
+  // TODO: Load the player from the save file
+
+
+  // Load the player default sprite
+  // "Hilda_D_Stand" is assetID 18
+  Sprite playerSprite = Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
   if (mPlayer != nullptr)
   {
     // Free the memory
     delete mPlayer;
   }
   mPlayer = new Character(playerSprite, Vector3D(1, 0.66f, 1), Vector3D(0, -16.0f, 0));  // Parameters ensure boundingRect matches the tiles
+
+  Sprite* spriteAnimation;
+
+  // Load the player DOWN animation sprites
+  // Hilda_D sprites have assetID's 18, 19, 20, and 21
+  spriteAnimation = new Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::DOWN, spriteAnimation);
+  spriteAnimation = new Sprite(19, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::DOWN, spriteAnimation);
+  spriteAnimation = new Sprite(20, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::DOWN, spriteAnimation);
+  spriteAnimation = new Sprite(21, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::DOWN, spriteAnimation);
+
+  // Load the player UP animation sprites
+  // Hilda_U sprites have assetID's 30, 31, 32, and 33
+  spriteAnimation = new Sprite(30, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::UP, spriteAnimation);
+  spriteAnimation = new Sprite(31, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::UP, spriteAnimation);
+  spriteAnimation = new Sprite(32, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::UP, spriteAnimation);
+  spriteAnimation = new Sprite(33, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::UP, spriteAnimation);
+
+  // Load the player LEFT animation sprites
+  // Hilda_U sprites have assetID's 22, 23, 24, and 25
+  spriteAnimation = new Sprite(22, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::LEFT, spriteAnimation);
+  spriteAnimation = new Sprite(23, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::LEFT, spriteAnimation);
+  spriteAnimation = new Sprite(24, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::LEFT, spriteAnimation);
+  spriteAnimation = new Sprite(25, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::LEFT, spriteAnimation);
+
+  // Load the player RIGHT animation sprites
+  // Hilda_U sprites have assetID's 26, 27, 28, and 29
+  spriteAnimation = new Sprite(26, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::RIGHT, spriteAnimation);
+  spriteAnimation = new Sprite(27, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::RIGHT, spriteAnimation);
+  spriteAnimation = new Sprite(28, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::RIGHT, spriteAnimation);
+  spriteAnimation = new Sprite(29, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  mPlayer->pushSpriteVector(Character::dir::RIGHT, spriteAnimation);
 
   // Enable player input
   if (mInputManager != nullptr)
@@ -202,7 +251,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mTileManager;
   }
-  mTileManager = new WorldManager("Assets/WorldMaps/Map_Iceberg.txt");
+  mTileManager = new WorldManager("Assets/WorldMaps/Map_World.txt");
 
   // Successfully loaded game
   return 0;

@@ -20,11 +20,9 @@ ImmovableObject::ImmovableObject(int _id)
 }
 
 
-ImmovableObject::ImmovableObject(std::string assetName, Vector3D _pos, float rot, float scale)
+ImmovableObject::ImmovableObject(std::string assetName, Vector3D _pos, float _rot, float _scale)
 {
-  objSprite = Sprite(assetName, _pos);
-  objSprite.rotateTo(rot);
-  objSprite.setScale(scale);
+  objSprite = Sprite(assetName, _pos, _rot, _scale);
 
   // Configure the Rect
   Rect rc = Rect();
@@ -35,11 +33,9 @@ ImmovableObject::ImmovableObject(std::string assetName, Vector3D _pos, float rot
 }
 
 
-ImmovableObject::ImmovableObject(int _id, Vector3D _pos, float rot, float scale)
+ImmovableObject::ImmovableObject(int _id, Vector3D _pos, float _rot, float _scale)
 {
-  objSprite = Sprite(_id, _pos);
-  objSprite.rotateTo(rot);
-  objSprite.setScale(scale);
+  objSprite = Sprite(_id, _pos, _rot, _scale);
 
   // Configure the Rect
   Rect rc = Rect();

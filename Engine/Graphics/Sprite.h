@@ -19,9 +19,9 @@ class Sprite
   public:
     Sprite();
     Sprite(std::string assetName);
-    Sprite(int _id);
-    Sprite(std::string assetName, Vector3D _pos);
-    Sprite(int _id, Vector3D _pos);
+    Sprite(int assetID);
+    Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale);
+    Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale);
 
     void Update();
     void Render();
@@ -42,6 +42,7 @@ class Sprite
     float* getRot();
     Vector3D* getScale();
     Vector3D* getSize();
+
 
   private:
     assetInfo spriteInfo;

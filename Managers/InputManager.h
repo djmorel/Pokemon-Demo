@@ -17,7 +17,9 @@ class InputManager
 
   private:
     Character* character;
-
+    int animationCount = 0;  // Counter for how many times walk has to be called
+    bool isActive = false;
+    Character::dir animationDir;  // Specifies the animation's direction
 };
 
 #endif

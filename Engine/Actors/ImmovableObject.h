@@ -13,8 +13,8 @@ class ImmovableObject
     ImmovableObject();
     ImmovableObject(std::string assetName);
     ImmovableObject(int _id);
-    ImmovableObject(std::string assetName, Vector3D _pos, float rot, float scale);
-    ImmovableObject(int _id, Vector3D _pos, float rot, float scale);
+    ImmovableObject(std::string assetName, Vector3D _pos, float _rot, float _scale);
+    ImmovableObject(int _id, Vector3D _pos, float _rot, float _scale);
 
     Vector2D getDimensions();
     Vector3D getPos();

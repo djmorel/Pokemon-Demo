@@ -55,16 +55,16 @@ Sprite::Sprite(std::string assetName)
 }
 
 
-Sprite::Sprite(int _id)
+Sprite::Sprite(int assetID)
 {
   // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(_id);
+  spriteInfo = AssetLT::findAsset(assetID);
 
   // Check if valid asset name passed
   if (spriteInfo.assetPath == "")
   {
     // Invalid passed assetName
-    std::cout << "ERROR Invalid asset ID: " << _id << std::endl;
+    std::cout << "ERROR Invalid asset ID: " << assetID << std::endl;
     return;
   }
 
@@ -91,7 +91,7 @@ Sprite::Sprite(int _id)
 }
 
 
-Sprite::Sprite(std::string assetName, Vector3D _pos)
+Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale)
 {
   // Retrieve spriteInfo from the AssetLookupTable
   spriteInfo = AssetLT::findAsset(assetName);
@@ -106,8 +106,8 @@ Sprite::Sprite(std::string assetName, Vector3D _pos)
 
   texture = Texture(spriteInfo.assetPath);
   pos = _pos;
-  rot = 0;
-  scale = Vector3D(1);
+  rot = _rot;
+  scale = _scale;
 
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
@@ -127,23 +127,23 @@ Sprite::Sprite(std::string assetName, Vector3D _pos)
 }
 
 
-Sprite::Sprite(int _id, Vector3D _pos)
+Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
 {
   // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(_id);
+  spriteInfo = AssetLT::findAsset(assetID);
 
   // Check if valid asset name passed
   if (spriteInfo.assetPath == "")
   {
     // Invalid passed assetName
-    std::cout << "ERROR Invalid asset ID: " << _id << std::endl;
+    std::cout << "ERROR Invalid asset ID: " << assetID << std::endl;
     return;
   }
 
   texture = Texture(spriteInfo.assetPath);
   pos = _pos;
-  rot = 0;
-  scale = Vector3D(1);
+  rot = _rot;
+  scale = _scale;
 
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {

@@ -12,8 +12,18 @@ class Character
 {
   public:
     Character();
+    ~Character();
     Character(Sprite _sprite);
     Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOffset);
+
+    // Identifies sprite orientation
+    enum class dir
+    {
+      UP,
+      DOWN,
+      LEFT,
+      RIGHT
+    };
 
     void Update();
     void Render();
@@ -21,11 +31,33 @@ class Character
     Sprite& getSprite();
     RigidBody& getRB();
 
+    void setSprite(Sprite _sprite);
+    void pushSpriteVector(dir _dir, Sprite* _sprite);
+    void popSpriteVector(dir _dir);
+
+    void updateIndex(dir _dir);
+
+    void moveSprites(Vector3D v);
+
+    void walkUp();
+    void walkDown();
+    void walkLeft();
+    void walkRight();
+
   private:
-    Sprite sprite;
+    Sprite sprite;  // Current sprite
     RigidBody rb;
     Rect boundingRect;
 
+    // ASSUME each vector contains sequential elements
+    std::vector<Sprite*> upSprites;     // Vector of UP sprites (idle, walk1, walk2, walk3)
+    int upIndex = 0;                    // Tracks current UP sprite animation
+    std::vector<Sprite*> downSprites;   // Vector of DOWN sprites (idle, walk1, walk2, walk3)
+    int downIndex = 0;                  // Tracks current DOWN sprite animation
+    std::vector<Sprite*> leftSprites;   // Vector of LEFT sprites (idle, walk1, walk2, walk3)
+    int leftIndex = 0;                  // Tracks current LEFT sprite animation
+    std::vector<Sprite*> rightSprites;  // Vector of RIGHT sprites (idle, walk1, walk2, walk3)
+    int rightIndex = 0;                 // Tracks current RIGHT sprite animation
 };
 
 
