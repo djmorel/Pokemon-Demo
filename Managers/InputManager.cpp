@@ -1,10 +1,12 @@
 #include "InputManager.h"
 
 
-InputManager::InputManager(Character* _character)
+InputManager::InputManager(Character* _player)
 {
-  character = _character;
-  animationDir = Character::dir::DOWN;  // Arbitrary default value
+  player = _player;
+  currentDirection = WalkAnimation::dir::DOWN;   // Player starts in the front-facing (DOWN) direction
+  previousDirection = currentDirection;
+  newDirection = false;
 }
 
 
@@ -14,43 +16,82 @@ void InputManager::Update()
   if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_LEFT))
   {
     // Left click means rotate counter clockwise
-    character->getSprite().rotateBy(10);
+    player->getSprite().rotateBy(10);
   }
   if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_RIGHT))
   {
     // Right click means rotate clockwise once
-    character->getSprite().rotateBy(-10);
+    player->getSprite().rotateBy(-10);
   }
 
-  // TODO: Decide if an elseif structure is best for trainer movement on grid
   // Enable keyboard support (WASD movement)
   if ( !isActive && (Keyboard::key(GLFW_KEY_W) || Keyboard::key(GLFW_KEY_UP)) )
   {
     // "W" and "UP Arrow" keys set to move up
-    //character->walkUp();
     isActive = true;
-    animationDir = Character::dir::UP;
+    currentDirection = WalkAnimation::dir::UP;
+
+    // Check if going in a new direction
+    if (previousDirection != currentDirection)
+    {
+      newDirection = true;
+    }
+    else
+    {
+      newDirection = false;
+    }
+    previousDirection = currentDirection;
   }
   if ( !isActive && (Keyboard::key(GLFW_KEY_A) || Keyboard::key(GLFW_KEY_LEFT)) )
   {
     // "A" and "Left Arrow" keys set to move left
-    //character->walkLeft();
     isActive = true;
-    animationDir = Character::dir::LEFT;
+    currentDirection = WalkAnimation::dir::LEFT;
+
+    // Check if going in a new direction
+    if (previousDirection != currentDirection)
+    {
+      newDirection = true;
+    }
+    else
+    {
+      newDirection = false;
+    }
+    previousDirection = currentDirection;
   }
   if ( !isActive && (Keyboard::key(GLFW_KEY_S) || Keyboard::key(GLFW_KEY_DOWN)) )
   {
     // "S" and "Down Arrow" keys set to move down
-    //character->walkDown();
     isActive = true;
-    animationDir = Character::dir::DOWN;
+    currentDirection = WalkAnimation::dir::DOWN;
+
+    // Check if going in a new direction
+    if (previousDirection != currentDirection)
+    {
+      newDirection = true;
+    }
+    else
+    {
+      newDirection = false;
+    }
+    previousDirection = currentDirection;
   }
   if ( !isActive && (Keyboard::key(GLFW_KEY_D) || Keyboard::key(GLFW_KEY_RIGHT)) )
   {
     // "D" and "Right Arrow" keys set to move right
-    //character->walkRight();
     isActive = true;
-    animationDir = Character::dir::RIGHT;
+    currentDirection = WalkAnimation::dir::RIGHT;
+
+    // Check if going in a new direction
+    if (previousDirection != currentDirection)
+    {
+      newDirection = true;
+    }
+    else
+    {
+      newDirection = false;
+    }
+    previousDirection = currentDirection;
   }
 
 
@@ -61,29 +102,29 @@ void InputManager::Update()
     bool movePlayer = true;
 
     // Determine which animation to process
-    switch (animationDir)
+    switch (currentDirection)
     {
-      case Character::dir::UP:
+      case WalkAnimation::dir::UP:
       {
-        character->walkUp(movePlayer, changeSprite);
+        player->walkAnimation.walkUp(movePlayer, changeSprite, newDirection);
         animationCount++;
         break;
       }
-      case Character::dir::DOWN:
+      case WalkAnimation::dir::DOWN:
       {
-        character->walkDown(movePlayer, changeSprite);
+        player->walkAnimation.walkDown(movePlayer, changeSprite, newDirection);
         animationCount++;
         break;
       }
-      case Character::dir::LEFT:
+      case WalkAnimation::dir::LEFT:
       {
-        character->walkLeft(movePlayer, changeSprite);
+        player->walkAnimation.walkLeft(movePlayer, changeSprite, newDirection);
         animationCount++;
         break;
       }
-      case Character::dir::RIGHT:
+      case WalkAnimation::dir::RIGHT:
       {
-        character->walkRight(movePlayer, changeSprite);
+        player->walkAnimation.walkRight(movePlayer, changeSprite, newDirection);
         animationCount++;
         break;
       }
@@ -95,6 +136,9 @@ void InputManager::Update()
         break;
       }
     }
+
+    // Reset newDirection
+    newDirection = false;
 
     // Check if we completed enough movement animations
     if (animationCount >= 8)

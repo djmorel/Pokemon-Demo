@@ -14,7 +14,7 @@ class WorldManager
     ~WorldManager();
 
     int readMap(std::string mapPath);
-    int buildWorld();  // Sets the environment to that of the save file
+    int buildWorld();   // Sets the environment to that of the save file
     void clearWorld();  // Clears the environment
 
     void Update();

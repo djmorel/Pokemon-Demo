@@ -143,6 +143,7 @@
     <ClCompile Include="Assets\AssetLookUpTable.cpp" />
     <ClCompile Include="Engine\Actors\Character.cpp" />
     <ClCompile Include="Engine\Actors\ImmovableObject.cpp" />
+    <ClCompile Include="Engine\Animations\WalkAnimation.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Graphics\Sprite.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Assets\AssetLookupTable.h" />
     <ClInclude Include="Engine\Actors\Character.h" />
     <ClInclude Include="Engine\Actors\ImmovableObject.h" />
+    <ClInclude Include="Engine\Animations\WalkAnimation.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Graphics\Sprite.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
