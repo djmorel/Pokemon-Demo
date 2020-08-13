@@ -13,19 +13,19 @@ Character::Character()
 Character::~Character()
 {
   // Clean the animation sprite vectors
-  for (int i = 0; i < upSprites.size(); i++)
+  for (unsigned int i = 0; i < (int)upSprites.size(); i++)
   {
     delete upSprites[i];
   }
-  for (int i = 0; i < downSprites.size(); i++)
+  for (unsigned int i = 0; i < (int)downSprites.size(); i++)
   {
     delete downSprites[i];
   }
-  for (int i = 0; i < leftSprites.size(); i++)
+  for (unsigned int i = 0; i < (int)leftSprites.size(); i++)
   {
     delete leftSprites[i];
   }
-  for (int i = 0; i < rightSprites.size(); i++)
+  for (unsigned int i = 0; i < rightSprites.size(); i++)
   {
     delete rightSprites[i];
   }
@@ -192,88 +192,120 @@ void Character::updateIndex(dir _dir)
 void Character::moveSprites(Vector3D v)
 {
   // Update each of the sprite positions by v
-  for (int i = 0; i < upSprites.size(); i++)
+  for (unsigned int i = 0; i < upSprites.size(); i++)
   {
     upSprites[i]->moveBy(v);
   }
-  for (int i = 0; i < downSprites.size(); i++)
+  for (unsigned int i = 0; i < downSprites.size(); i++)
   {
     downSprites[i]->moveBy(v);
   }
-  for (int i = 0; i < leftSprites.size(); i++)
+  for (unsigned int i = 0; i < leftSprites.size(); i++)
   {
     leftSprites[i]->moveBy(v);
   }
-  for (int i = 0; i < rightSprites.size(); i++)
+  for (unsigned int i = 0; i < rightSprites.size(); i++)
   {
     rightSprites[i]->moveBy(v);
   }
 }
 
 
-void Character::walkUp()
+void Character::walkUp(bool move, bool changeSprite)
 {
   // Reset the animations for the other directions
   downIndex = 0;
   leftIndex = 0;
   rightIndex = 0;
 
-  // Check the animation index
-  sprite.moveBy(Vector3D(0, 16, 0));
-  moveSprites(Vector3D(0, 16, 0));
+  // Check if the character sprite should move
+  if (move)
+  {
+    sprite.moveBy(Vector3D(0, 8, 0));
+    moveSprites(Vector3D(0, 8, 0));
+  }
 
-  updateIndex(dir::UP);
-  sprite = *(upSprites.at(upIndex));
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Add delay
+  // Check if the character sprite should change
+  if (changeSprite)
+  {
+    // Adjust the animation index
+    updateIndex(dir::UP);
+    sprite = *(upSprites.at(upIndex));
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(40));  // Add delay
 }
 
 
-void Character::walkDown()
+void Character::walkDown(bool move, bool changeSprite)
 {
   // Reset the animations for the other directions
   upIndex = 0;
   leftIndex = 0;
   rightIndex = 0;
 
-  // Check the animation index
-  sprite.moveBy(Vector3D(0, -16, 0));
-  moveSprites(Vector3D(0, -16, 0));
+  // Check if the character sprite should move
+  if (move)
+  {
+    sprite.moveBy(Vector3D(0, -8, 0));
+    moveSprites(Vector3D(0, -8, 0));
+  }
 
-  updateIndex(dir::DOWN);
-  sprite = *(downSprites.at(downIndex));
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Add delay
+  // Check if the character sprite should change
+  if (changeSprite)
+  {
+    // Adjust the animation index
+    updateIndex(dir::DOWN);
+    sprite = *(downSprites.at(downIndex));
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(40));  // Add delay
 }
 
 
-void Character::walkLeft()
+void Character::walkLeft(bool move, bool changeSprite)
 {
   // Reset the animations for the other directions
   upIndex = 0;
   downIndex = 0;
   rightIndex = 0;
 
-  // Check the animation index
-  sprite.moveBy(Vector3D(-16, 0, 0));
-  moveSprites(Vector3D(-16, 0, 0));
+  // Check if the character sprite should move
+  if (move)
+  {
+    sprite.moveBy(Vector3D(-8, 0, 0));
+    moveSprites(Vector3D(-8, 0, 0));
+  }
 
-  updateIndex(dir::LEFT);
-  sprite = *(leftSprites.at(leftIndex));
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Add delay
+  // Check if the character sprite should change
+  if (changeSprite)
+  {
+    // Adjust the animation index
+    updateIndex(dir::LEFT);
+    sprite = *(leftSprites.at(leftIndex));
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(40));  // Add delay
 }
 
 
-void Character::walkRight()
+void Character::walkRight(bool move, bool changeSprite)
 {
   // Reset the animations for the other directions
   upIndex = 0;
   downIndex = 0;
   leftIndex = 0;
 
-  // Check the animation index
-  sprite.moveBy(Vector3D(16, 0, 0));
-  moveSprites(Vector3D(16, 0, 0));
+  // Check if the character sprite should move
+  if (move)
+  {
+    sprite.moveBy(Vector3D(8, 0, 0));
+    moveSprites(Vector3D(8, 0, 0));
+  }
 
-  updateIndex(dir::RIGHT);
-  sprite = *(rightSprites.at(rightIndex));
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Add delay
+  // Check if the character sprite should change
+  if (changeSprite)
+  {
+    // Adjust the animation index
+    updateIndex(dir::RIGHT);
+    sprite = *(rightSprites.at(rightIndex));
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(40));  // Add delay
 }

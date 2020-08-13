@@ -39,10 +39,10 @@ class Character
 
     void moveSprites(Vector3D v);
 
-    void walkUp();
-    void walkDown();
-    void walkLeft();
-    void walkRight();
+    void walkUp(bool move, bool changeSprite);
+    void walkDown(bool move, bool changeSprite);
+    void walkLeft(bool move, bool changeSprite);
+    void walkRight(bool move, bool changeSprite);
 
   private:
     Sprite sprite;  // Current sprite

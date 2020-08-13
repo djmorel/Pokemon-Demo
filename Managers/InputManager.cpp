@@ -56,30 +56,34 @@ void InputManager::Update()
 
   if (isActive)
   {
+    // Flag for changing sprite
+    bool changeSprite = (animationCount == 2) || (animationCount == 6);
+    bool movePlayer = true;
+
     // Determine which animation to process
     switch (animationDir)
     {
       case Character::dir::UP:
       {
-        character->walkUp();
+        character->walkUp(movePlayer, changeSprite);
         animationCount++;
         break;
       }
       case Character::dir::DOWN:
       {
-        character->walkDown();
+        character->walkDown(movePlayer, changeSprite);
         animationCount++;
         break;
       }
       case Character::dir::LEFT:
       {
-        character->walkLeft();
+        character->walkLeft(movePlayer, changeSprite);
         animationCount++;
         break;
       }
       case Character::dir::RIGHT:
       {
-        character->walkRight();
+        character->walkRight(movePlayer, changeSprite);
         animationCount++;
         break;
       }
@@ -93,7 +97,7 @@ void InputManager::Update()
     }
 
     // Check if we completed enough movement animations
-    if (animationCount >= 4)
+    if (animationCount >= 8)
     {
       isActive = false;    // Remove the processing flag
       animationCount = 0;  // Reset the count
