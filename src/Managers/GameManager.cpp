@@ -183,7 +183,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mTileManager;
   }
-  mTileManager = new WorldManager("Assets/WorldMaps/Map_World.txt");
+  mTileManager = new WorldManager("src/Assets/WorldMaps/Map_World.txt");
 
   // TODO: Load the player from the save file
 
