@@ -202,8 +202,8 @@ int WorldManager::buildWorld()
       // Get the current map index
       int index = (mapCols * row) + col;
 
-      // Create a new instance of the tile ImmovableObject
-      tiles.push_back(new ImmovableObject(map[index], Vector3D(col * 64.0f + 64.0f / 2, row * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+      // Create a new instance of the tile Entity
+      tiles.push_back(new Entity(map[index], Vector3D(col * 64.0f + 64.0f / 2, row * 64.0f + 64.0f / 2, 0), 0, 0.8f));
     }
   }  // End of tile for loop
 

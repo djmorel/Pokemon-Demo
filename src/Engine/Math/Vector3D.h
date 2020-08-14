@@ -17,6 +17,8 @@ class Vector3D
     Vector3D operator-(const Vector3D& other);
     Vector3D operator*(const Vector3D& other);
     Vector3D operator*(float _x);
+    Vector3D operator/(const Vector3D& other);
+    Vector3D operator/(float _x);
     bool operator==(const Vector3D& other);
     bool operator!=(const Vector3D& other);
 

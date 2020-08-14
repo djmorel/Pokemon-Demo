@@ -43,8 +43,9 @@ int GameManager::Start()
   // Optional stuff
   Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
   //npcSprite.setScale(0.5f);
+  npcSprite.setDimensions(64.0f);
   Character npc(npcSprite);
-  ImmovableObject tree = ImmovableObject("Trees", Vector3D(100, 100, 0), 0, 2.0f);
+  Entity tree = Entity("Trees", Vector3D(100, 100, 0), 0, 2.0f);
   // End of optional stuff
 
   // Add a Loading Icon for state changes
@@ -190,6 +191,7 @@ int GameManager::LoadGame()
   // Load the player default sprite
   // "Hilda_D_Stand" is assetID 18
   Sprite playerSprite = Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
+  // Scale was 2.0f to make it look right
   if (mPlayer != nullptr)
   {
     // Free the memory

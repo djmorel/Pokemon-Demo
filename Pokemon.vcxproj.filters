@@ -33,9 +33,6 @@
     <ClCompile Include="src\Engine\Actors\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine\Actors\ImmovableObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Animations\WalkAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,6 +81,9 @@
     <ClCompile Include="src\States\TransitionState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Actors\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Managers\GameManager.h">
@@ -96,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Actors\Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Engine\Actors\ImmovableObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\Animations\WalkAnimation.h">
@@ -147,6 +144,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\States\TransitionState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="packages\soil.1.16.0\build\native\include\soil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\Actors\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

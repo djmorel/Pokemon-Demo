@@ -5,7 +5,7 @@
 Character::Character()
 {
   // Do nothing
-  bool isPlayer = false;
+  isPlayer = false;
 }
 
 

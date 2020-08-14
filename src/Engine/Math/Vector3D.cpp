@@ -92,6 +92,30 @@ Vector3D Vector3D::operator*(float _x)
 }
 
 
+Vector3D Vector3D::operator/(const Vector3D& other)
+{
+  Vector3D ret;
+
+  ret.x = x / other.x;
+  ret.y = y / other.y;
+  ret.z = z / other.z;
+
+  return ret;
+}
+
+
+Vector3D Vector3D::operator/(float _x)
+{
+  Vector3D ret;
+
+  ret.x = x / _x;
+  ret.y = y / _x;
+  ret.z = z / _x;
+
+  return ret;
+}
+
+
 bool Vector3D::operator==(const Vector3D& other)
 {
   return (x == other.x && y == other.y && z == other.z);

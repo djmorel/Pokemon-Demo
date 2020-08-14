@@ -11,7 +11,7 @@ WalkAnimation::WalkAnimation()
 }
 
 
-WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, std::vector<ImmovableObject*>* _tiles_ptr, bool _isPlayer)
+WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, std::vector<Entity*>* _tiles_ptr, bool _isPlayer)
 {
   sprite_ptr = _sprite_ptr;
   tiles_ptr = _tiles_ptr;
@@ -47,7 +47,7 @@ void WalkAnimation::setSpritePtr(Sprite* _sprite_ptr)
 }
 
 
-void WalkAnimation::setTilesPtr(std::vector<ImmovableObject*>* _tiles_ptr)
+void WalkAnimation::setTilesPtr(std::vector<Entity*>* _tiles_ptr)
 {
   tiles_ptr = _tiles_ptr;
 }
@@ -178,7 +178,7 @@ void WalkAnimation::moveSprites(Vector3D v)
 }
 
 
-// TODO: Figure out how I want to call tiles (may need to redefine ImmovableObject)
+// TODO: Figure out how I want to call tiles (may need to redefine Entity)
 void WalkAnimation::moveWorld(Vector3D v)
 {
   /*

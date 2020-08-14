@@ -2,7 +2,7 @@
 #define WORLDMANAGER_H
 
 
-#include "../Engine/Actors/ImmovableObject.h"
+#include "../Engine/Actors/Entity.h"
 #include <vector>
 
 
@@ -26,7 +26,7 @@ class WorldManager
     int mapRows = 0;       // Tracks the map's row count
     int mapCols = 0;       // Tracks the map's column count
     int originTileIndex;   // Indexes into map to find tile belonging at the bottom left-hand corner of game window
-    std::vector<ImmovableObject*> tiles;
+    std::vector<Entity*> tiles;
 
 };
 

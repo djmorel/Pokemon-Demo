@@ -3,7 +3,7 @@
 
 
 #include "../Graphics/Sprite.h"
-#include "../Actors/ImmovableObject.h"
+#include "../Actors/Entity.h"
 #include <vector>
 
 
@@ -11,7 +11,7 @@ class WalkAnimation
 {
   public:
     WalkAnimation();
-    WalkAnimation(Sprite* _sprite_ptr, std::vector<ImmovableObject*>* _tiles_ptr, bool _isPlayer);
+    WalkAnimation(Sprite* _sprite_ptr, std::vector<Entity*>* _tiles_ptr, bool _isPlayer);
     ~WalkAnimation();
 
     // Identifies sprite orientation
@@ -24,7 +24,7 @@ class WalkAnimation
     };
 
     void setSpritePtr(Sprite* _sprite_ptr);
-    void setTilesPtr(std::vector<ImmovableObject*>* _tiles_ptr);
+    void setTilesPtr(std::vector<Entity*>* _tiles_ptr);
 
     void pushSpriteVector(dir _dir, Sprite* _sprite_ptr);
     void popSpriteVector(dir _dir);
@@ -43,7 +43,7 @@ class WalkAnimation
 
   private:
     Sprite* sprite_ptr;                        // Pointer to the actor sprite (i.e. player or NPC)
-    std::vector<ImmovableObject*>* tiles_ptr;  // Pointer to the world tiles
+    std::vector<Entity*>* tiles_ptr;  // Pointer to the world tiles
     bool isPlayer;                             // Flag if the actor is the player
 
     // ASSUME each vector's elements are in sequential frame order

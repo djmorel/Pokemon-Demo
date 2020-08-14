@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include <string>
-#include "GLFW/glfw3.h"
-#include "soil.h"
+#include "GLFW/glfw3.h"  // In the nupengl package
+#include "soil.h"        // In the soil.1.16.0 package
 
 
 // The image itself

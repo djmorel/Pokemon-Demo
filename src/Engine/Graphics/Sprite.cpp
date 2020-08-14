@@ -35,8 +35,8 @@ Sprite::Sprite(std::string assetName)
   texture = Texture(spriteInfo.assetPath);
   pos = Vector3D(0);
   rot = 0;
-  scale = Vector3D(1);
 
+  // Set the size based on the texture dimensions
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
@@ -51,6 +51,7 @@ Sprite::Sprite(std::string assetName)
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
+  scale = Vector3D(1);
   speed = 0;
 }
 
@@ -71,8 +72,8 @@ Sprite::Sprite(int assetID)
   texture = Texture(spriteInfo.assetPath);
   pos = Vector3D(0);
   rot = 0;
-  scale = Vector3D(1);
 
+  // Set the size based on the texture dimensions
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
@@ -87,6 +88,7 @@ Sprite::Sprite(int assetID)
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
+  scale = Vector3D(1);
   speed = 0;
 }
 
@@ -107,8 +109,8 @@ Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale
   texture = Texture(spriteInfo.assetPath);
   pos = _pos;
   rot = _rot;
-  scale = _scale;
 
+  // Set the size based on the texture dimensions
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
@@ -123,6 +125,7 @@ Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
+  scale = _scale;
   speed = 100;
 }
 
@@ -143,8 +146,8 @@ Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
   texture = Texture(spriteInfo.assetPath);
   pos = _pos;
   rot = _rot;
-  scale = _scale;
 
+  // Set the size based on the texture dimensions
   if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
@@ -159,6 +162,7 @@ Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
+  scale = _scale;
   speed = 100;
 }
 
@@ -307,6 +311,18 @@ void Sprite::setScale(Vector3D v)
 }
 
 
+void Sprite::setDimensions(float x)
+{
+  scale = Vector3D(x, x, 0) / size;
+}
+
+
+void Sprite::setDimensions(Vector3D v)
+{
+  scale = v / size;
+}
+
+
 Vector3D* Sprite::getPos()
 {
   return &pos;
@@ -315,7 +331,7 @@ Vector3D* Sprite::getPos()
 
 float* Sprite::getRot()
 {
-  return & rot;
+  return &rot;
 }
 
 
