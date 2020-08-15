@@ -29,7 +29,7 @@ class GameManager
     Engine* mEngine;
     Character* mPlayer;
     InputManager* mInputManager;
-    WorldManager* mTileManager;
+    WorldManager* mWorldManager;
     Sprite mStartSprite;
     Sprite mGameOverSprite;
     State mState;

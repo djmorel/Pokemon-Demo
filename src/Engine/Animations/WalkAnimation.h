@@ -11,7 +11,7 @@ class WalkAnimation
 {
   public:
     WalkAnimation();
-    WalkAnimation(Sprite* _sprite_ptr, std::vector<Entity*>* _tiles_ptr, bool _isPlayer);
+    WalkAnimation(Sprite* _sprite_ptr, bool _isPlayer);
     ~WalkAnimation();
 
     // Identifies sprite orientation
@@ -24,15 +24,13 @@ class WalkAnimation
     };
 
     void setSpritePtr(Sprite* _sprite_ptr);
-    void setTilesPtr(std::vector<Entity*>* _tiles_ptr);
 
     void pushSpriteVector(dir _dir, Sprite* _sprite_ptr);
     void popSpriteVector(dir _dir);
 
     void updateIndex(dir _dir);
 
-    void moveSprites(Vector3D v);  // Moves actor sprite
-    void moveWorld(Vector3D v);    // Moves world tiles and entities
+    void moveSprites(Vector3D v);  // Moves character sprite
 
     // Movement functions with respect
     void walkUp(bool move, bool changeSprite, bool newDirection);
@@ -42,9 +40,8 @@ class WalkAnimation
 
 
   private:
-    Sprite* sprite_ptr;                        // Pointer to the actor sprite (i.e. player or NPC)
-    std::vector<Entity*>* tiles_ptr;  // Pointer to the world tiles
-    bool isPlayer;                             // Flag if the actor is the player
+    Sprite* sprite_ptr;                 // Pointer to the actor sprite (i.e. player or NPC)
+    bool isPlayer;                      // Flag if the character is the player
 
     // ASSUME each vector's elements are in sequential frame order
     std::vector<Sprite*> upSprites;     // Vector of UP sprites (idle, walk1, walk2, walk3)

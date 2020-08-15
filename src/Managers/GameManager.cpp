@@ -19,7 +19,7 @@ GameManager::GameManager()
 
   // Set the player and world pointers to null for now (haven't loaded save file yet)
   mPlayer = nullptr;
-  mTileManager = nullptr;
+  mWorldManager = nullptr;
 
   // Set the state to START
   mState = State::START;
@@ -32,7 +32,7 @@ GameManager::~GameManager()
   delete mEngine;
   delete mPlayer;
   delete mInputManager;
-  delete mTileManager;
+  delete mWorldManager;
 }
 
 
@@ -94,21 +94,21 @@ int GameManager::Start()
       case State::GAMEPLAY:
       {
         // Error checking to ensure LoadGame() was called
-        if (mTileManager == nullptr || mPlayer == nullptr)
+        if (mWorldManager == nullptr || mPlayer == nullptr)
         {
           // Game wasn't properly loaded so terminate the program
           std::cout << "ERROR: World not initialized" << std::endl;
           return -1;
         }
 
-        mTileManager->Update();
+        mWorldManager->Update();
         mPlayer->Update();
         npc.Update();
         tree.Update();
         mInputManager->Update();
 
         mEngine->BeginRender();
-        mTileManager->Render();
+        mWorldManager->Render();
         mPlayer->Render();
         npc.Render();
         tree.Render();
@@ -126,7 +126,7 @@ int GameManager::Start()
       case State::GAMEOVER:
       {
         mEngine->BeginRender();
-        mTileManager->Render();
+        mWorldManager->Render();
         mPlayer->Render();
         npc.Render();
         tree.Render();
@@ -164,10 +164,10 @@ void GameManager::setState(State state)
   if (mState == State::START)
   {
     // Clear the world's contents
-    mTileManager->clearWorld();
+    mWorldManager->clearWorld();
 
     // Don't delete these pointers in case ~WorldManager() is called after GAMEOVER switches to START state
-    //   delete mTileManager;
+    //   delete mWorldManager;
     //   delete mPlayer;
     // Rely on LoadGame() to handle the check for us
   }
@@ -179,12 +179,12 @@ int GameManager::LoadGame()
   // TODO: Implement save file system
 
   // Load the world
-  if (mTileManager != nullptr)
+  if (mWorldManager != nullptr)
   {
     // Free the memory
-    delete mTileManager;
+    delete mWorldManager;
   }
-  mTileManager = new WorldManager("src/Assets/WorldMaps/Map_World.txt");
+  mWorldManager = new WorldManager("src/Assets/WorldMaps/Map_World.txt");
 
   // TODO: Load the player from the save file
 
@@ -200,7 +200,7 @@ int GameManager::LoadGame()
   mPlayer = new Character(playerSprite, Vector3D(1, 0.66f, 1), Vector3D(0, -16.0f, 0));  // Parameters ensure boundingRect matches the tiles
 
   // Set the mPlayer as the player
-  mPlayer->setAsPlayer(true);
+  mPlayer->setPlayerStatus(true);
 
   // Give mPlayer a walking animation
   mPlayer->enableWalkAnimation();
@@ -210,46 +210,46 @@ int GameManager::LoadGame()
   // Load the player DOWN animation sprites
   // Hilda_D sprites have assetID's 18, 19, 20, and 21
   spriteAnimation = new Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
   spriteAnimation = new Sprite(19, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
   spriteAnimation = new Sprite(20, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
   spriteAnimation = new Sprite(21, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
 
   // Load the player UP animation sprites
   // Hilda_U sprites have assetID's 30, 31, 32, and 33
   spriteAnimation = new Sprite(30, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
   spriteAnimation = new Sprite(31, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
   spriteAnimation = new Sprite(32, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
   spriteAnimation = new Sprite(33, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
 
   // Load the player LEFT animation sprites
   // Hilda_U sprites have assetID's 22, 23, 24, and 25
   spriteAnimation = new Sprite(22, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
   spriteAnimation = new Sprite(23, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
   spriteAnimation = new Sprite(24, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
   spriteAnimation = new Sprite(25, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
 
   // Load the player RIGHT animation sprites
   // Hilda_U sprites have assetID's 26, 27, 28, and 29
   spriteAnimation = new Sprite(26, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
   spriteAnimation = new Sprite(27, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
   spriteAnimation = new Sprite(28, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
   spriteAnimation = new Sprite(29, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->walkAnimation.pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
+  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
 
   // Enable player input
   if (mInputManager != nullptr)
@@ -257,7 +257,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mInputManager;
   }
-  mInputManager = new InputManager(mPlayer);
+  mInputManager = new InputManager(mPlayer, mWorldManager);
 
   // Successfully loaded game
   return 0;

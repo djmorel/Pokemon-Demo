@@ -14,8 +14,11 @@ class WorldManager
     ~WorldManager();
 
     int readMap(std::string mapPath);
-    int buildWorld();   // Sets the environment to that of the save file
-    void clearWorld();  // Clears the environment
+    int buildWorld();            // Sets the environment to that of the save file
+    void moveWorld(Vector3D v);  // Moves the environment (InputManager determines if it needs to move player or world)
+    void clearWorld();           // Clears the environment
+
+    std::vector<Entity*>& getTiles();
 
     void Update();
     void Render();

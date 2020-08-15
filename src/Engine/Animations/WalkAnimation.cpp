@@ -6,15 +6,13 @@
 WalkAnimation::WalkAnimation()
 {
   sprite_ptr = nullptr;
-  tiles_ptr = nullptr;
   isPlayer = false;
 }
 
 
-WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, std::vector<Entity*>* _tiles_ptr, bool _isPlayer)
+WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, bool _isPlayer)
 {
   sprite_ptr = _sprite_ptr;
-  tiles_ptr = _tiles_ptr;
   isPlayer = _isPlayer;
 }
 
@@ -44,12 +42,6 @@ WalkAnimation::~WalkAnimation()
 void WalkAnimation::setSpritePtr(Sprite* _sprite_ptr)
 {
   sprite_ptr = _sprite_ptr;
-}
-
-
-void WalkAnimation::setTilesPtr(std::vector<Entity*>* _tiles_ptr)
-{
-  tiles_ptr = _tiles_ptr;
 }
 
 
@@ -175,22 +167,6 @@ void WalkAnimation::moveSprites(Vector3D v)
   {
     rightSprites[i]->moveBy(v);
   }
-}
-
-
-// TODO: Figure out how I want to call tiles (may need to redefine Entity)
-void WalkAnimation::moveWorld(Vector3D v)
-{
-  /*
-  // Move world elements found in tiles
-  for (unsigned int i = 0; i < tiles->size(); i++)
-  {
-    tiles->at(i).moveBy(v);
-  }
-  */
-
-
-  // TODO: Move world elements found in NPC & object vectors
 }
 
 

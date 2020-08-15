@@ -1,9 +1,10 @@
 #include "InputManager.h"
 
 
-InputManager::InputManager(Character* _player)
+InputManager::InputManager(Character* _player, WorldManager* _world)
 {
   player = _player;
+  world = _world;
   currentDirection = WalkAnimation::dir::DOWN;   // Player starts in the front-facing (DOWN) direction
   previousDirection = currentDirection;
   newDirection = false;
@@ -99,32 +100,36 @@ void InputManager::Update()
   {
     // Flag for changing sprite
     bool changeSprite = (animationCount == 2) || (animationCount == 6);
-    bool movePlayer = true;
+    bool movePlayer = false;
 
     // Determine which animation to process
     switch (currentDirection)
     {
       case WalkAnimation::dir::UP:
       {
-        player->walkAnimation.walkUp(movePlayer, changeSprite, newDirection);
+        player->getWalkAnimation().walkUp(movePlayer, changeSprite, newDirection);
+        world->moveWorld(Vector3D(0, -8, 0));  // World moves opposite of the character's direction
         animationCount++;
         break;
       }
       case WalkAnimation::dir::DOWN:
       {
-        player->walkAnimation.walkDown(movePlayer, changeSprite, newDirection);
+        player->getWalkAnimation().walkDown(movePlayer, changeSprite, newDirection);
+        world->moveWorld(Vector3D(0, 8, 0));  // World moves opposite of the character's direction
         animationCount++;
         break;
       }
       case WalkAnimation::dir::LEFT:
       {
-        player->walkAnimation.walkLeft(movePlayer, changeSprite, newDirection);
+        player->getWalkAnimation().walkLeft(movePlayer, changeSprite, newDirection);
+        world->moveWorld(Vector3D(8, 0, 0));  // World moves opposite of the character's direction
         animationCount++;
         break;
       }
       case WalkAnimation::dir::RIGHT:
       {
-        player->walkAnimation.walkRight(movePlayer, changeSprite, newDirection);
+        player->getWalkAnimation().walkRight(movePlayer, changeSprite, newDirection);
+        world->moveWorld(Vector3D(-8, 0, 0));  // World moves opposite of the character's direction
         animationCount++;
         break;
       }

@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\Assets\WorldMaps\Map_Beach.txt" />
+    <Text Include="src\Assets\WorldMaps\Map_Grasslands_Big.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Iceberg.txt" />
     <Text Include="src\Assets\WorldMaps\Map_World.txt" />
   </ItemGroup>

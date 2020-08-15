@@ -4,7 +4,6 @@
 
 Character::Character()
 {
-  // Do nothing
   isPlayer = false;
 }
 
@@ -65,20 +64,26 @@ RigidBody& Character::getRB()
 }
 
 
+WalkAnimation& Character::getWalkAnimation()
+{
+  return walkAnimation;
+}
+
+
 void Character::setSprite(Sprite _sprite)
 {
   sprite = _sprite;
 }
 
 
-void Character::setAsPlayer(bool _isPlayer)
+// Note: Call this function if the character is the player PRIOR to setting any animation
+void Character::setPlayerStatus(bool _isPlayer)
 {
   isPlayer = _isPlayer;
 }
 
 
-// Note: MUST call setAsPlayer BEFORE enableWalkAnimation...
 void Character::enableWalkAnimation()
 {
-  walkAnimation = WalkAnimation(&sprite, nullptr, isPlayer);
+  walkAnimation = WalkAnimation(&sprite, isPlayer);
 }

@@ -22,18 +22,17 @@ class Character
 
     Sprite& getSprite();
     RigidBody& getRB();
+    WalkAnimation& getWalkAnimation();
 
     void setSprite(Sprite _sprite);
-    void setAsPlayer(bool _isPlayer);
-
+    void setPlayerStatus(bool _isPlayer);
     void enableWalkAnimation();
-
-    WalkAnimation walkAnimation;  // Public so others can add to its animation sprite vector
 
   private:
     Sprite sprite;
     RigidBody rb;
     Rect boundingRect;
+    WalkAnimation walkAnimation;
     bool isPlayer;
 };
 

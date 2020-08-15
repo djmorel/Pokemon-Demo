@@ -212,6 +212,20 @@ int WorldManager::buildWorld()
 }
 
 
+// Moves world tiles and entities
+void WorldManager::moveWorld(Vector3D v)
+{
+  // Move the world's tiles
+  for (unsigned int i = 0; i < tiles.size(); i++)
+  {
+    // tiles_ptr gives a pointer to the tiles vector
+    tiles[i]->getSprite().moveBy(v);
+  }
+
+  // TODO: Move world elements found in NPC & object vectors
+}
+
+
 void WorldManager::clearWorld()
 {
   // Delete tiles
@@ -220,7 +234,12 @@ void WorldManager::clearWorld()
     delete tiles[i];  // Delete the pointers
   }
   tiles.clear();  // Clear the vector entries
+}
 
+
+std::vector<Entity*>& WorldManager::getTiles()
+{
+  return tiles;
 }
 
 
