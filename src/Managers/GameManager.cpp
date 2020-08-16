@@ -184,7 +184,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mWorldManager;
   }
-  mWorldManager = new WorldManager("src/Assets/WorldMaps/Map_World.txt");
+  mWorldManager = new WorldManager("src/Assets/WorldMaps/Map_Grasslands_Big.txt");
 
   // TODO: Load the player from the save file
 

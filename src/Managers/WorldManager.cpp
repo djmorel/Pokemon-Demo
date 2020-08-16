@@ -72,6 +72,7 @@ int WorldManager::readMap(std::string mapPath)
   // Variables for reading the map file
   char ch;                    // Holds the currently read character
   std::string charNum = "";   // String to hold numerical characters
+  std::vector<int> row;       // Vector to hold row entries
   bool completedRow = false;  // Flags if a row is complete, and ready to check mapCols
   int colCount = 0;           // Holds a temporary column count for reference
 
@@ -85,7 +86,7 @@ int WorldManager::readMap(std::string mapPath)
       try
       {
         int num = std::stoi(charNum);
-        map.push_back(num);
+        row.push_back(num);  // Add the ID to the row
       }
       catch (std::invalid_argument const &e)
       {
@@ -110,7 +111,8 @@ int WorldManager::readMap(std::string mapPath)
       try
       {
         int num = std::stoi(charNum);
-        map.push_back(num);
+        row.push_back(num);  // Add the ID to the row
+        map.push_back(row);  // Add the completed row to the map
       }
       catch (std::invalid_argument const& e)
       {
@@ -125,6 +127,9 @@ int WorldManager::readMap(std::string mapPath)
 
       // Reset charNum
       charNum = "";
+
+      // Reset the row
+      row.clear();
 
       // Record that a column and row has been completed
       colCount++;
@@ -145,14 +150,14 @@ int WorldManager::readMap(std::string mapPath)
       // Reset the temporary column count
       colCount = 0;
     }
-    else if (isdigit(ch))  // Have a numerical character to add to charNum
+    else if (isdigit(ch) || ch == '-')  // Have a numerical character to add to charNum
     {
       charNum.push_back(ch);
     }
-    else if (ch != '\n')  // Have an invalid character in the map
+    else if (ch != '\n' && ch != ' ')  // Have an invalid character in the map
     {
       // Return an error identifying a corrupted map
-      return -2;
+      return -3;
     }
   }  // Completed reading the map file
 
@@ -169,8 +174,11 @@ int WorldManager::readMap(std::string mapPath)
 }
 
 
-// Builds game world based on tiles in the map vector
-// Returns 0 on success, or -1 if map has no elements
+/**
+  Builds game world based on tiles in the map vector.
+  \param None
+  \return 0 on success, or -1 if map has no elements
+**/
 int WorldManager::buildWorld()
 {
   // Map blueprints should be already loaded in the map vector
@@ -180,30 +188,29 @@ int WorldManager::buildWorld()
     return -1;
   }
 
-  // TODO: Implement tile location detection/math (use relative position of character?)
-  // Determine which map tile belongs at the origin
-  originTileIndex = 0;  // Assume origin tile is map's first element
+  // TODO: Load from save file
+  // Load the player's map and screen position from the save file
+  int screenX = 8;
+  int screenY = 5;
+  int mapX = 12;
+  int mapY = 7;
 
-  // Option A:
-  // --> Draw the entire world from the map (some tiles may be offscreen)
-  // --> Would just need to move all tiles as player "moves"
-  // --> Longer processing time (depending on map)?
-  // Option B:
-  // --> Only draw tiles that would be shown on screen
-  // --> Requires IM to do math to adjust what sprites are displayed
-  // --> More complicated
+  // Calculate the difference between map and screen tile coordinates
+  //   Used to get the tile offset multiple
+  //   +1 to ensure complete overlap doesn't remove the base tile offset of 32 pixels (accounts for central anchor point)
+  int diff_x = screenX - mapX + 1;
+  int diff_y = screenY - mapY + 1;
 
   // Draw the tiles relative to the game window
-  for (unsigned int row = 0; row < Engine::SCREEN_HEIGHT / 64; row++)
+  for (int row = 0; row < mapRows; row++)
   {
-    for (unsigned int col = 0; col < Engine::SCREEN_WIDTH / 64; col++)
+    for (int col = 0; col < mapCols; col++)
     {
-      // TODO: Adjust if go for the offscreen tile route
-      // Get the current map index
-      int index = (mapCols * row) + col;
-
-      // Create a new instance of the tile Entity
-      tiles.push_back(new Entity(map[index], Vector3D(col * 64.0f + 64.0f / 2, row * 64.0f + 64.0f / 2, 0), 0, 0.8f));
+      if (map[row][col] != -1)
+      {
+        // Create a new instance of the tile Entity
+        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + diff_x * 64.0f / 2, row * 64.0f + diff_y * 64.0f / 2, 0), 0, 0.8f));
+      }
     }
   }  // End of tile for loop
 
@@ -237,14 +244,10 @@ void WorldManager::clearWorld()
 }
 
 
-std::vector<Entity*>& WorldManager::getTiles()
-{
-  return tiles;
-}
-
-
 void WorldManager::Update()
 {
+  // Don't need to do the following since keeping entire map & leaving offscreen tiles offscreen
+  /*
   // Vector to hold offscreen tiles
   std::vector<int> tilesToDelete;
 
@@ -272,6 +275,7 @@ void WorldManager::Update()
     delete tiles[tilesToDelete[i]];                 // Free the allocated memory
     tiles.erase(tiles.begin() + tilesToDelete[i]);  // Remove the entry
   }
+  */
 }
 
 

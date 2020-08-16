@@ -18,17 +18,14 @@ class WorldManager
     void moveWorld(Vector3D v);  // Moves the environment (InputManager determines if it needs to move player or world)
     void clearWorld();           // Clears the environment
 
-    std::vector<Entity*>& getTiles();
-
     void Update();
     void Render();
 
   private:
     // Note: Assume the map text files have rows with equal column counts
-    std::vector<int> map;  // RAM-like record of the world map (acts as a pseudo 2D vector)
-    int mapRows = 0;       // Tracks the map's row count
-    int mapCols = 0;       // Tracks the map's column count
-    int originTileIndex;   // Indexes into map to find tile belonging at the bottom left-hand corner of game window
+    std::vector< std::vector<int> > map;  // RAM-like record of the world map
+    int mapRows = 0;                      // Tracks the map's row count
+    int mapCols = 0;                      // Tracks the map's column count
     std::vector<Entity*> tiles;
 
 };
