@@ -84,6 +84,9 @@
     <ClCompile Include="src\Engine\Actors\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Managers\CharacterManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Managers\GameManager.h">
@@ -152,6 +155,9 @@
     <ClInclude Include="src\Engine\Actors\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Managers\CharacterManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -161,5 +167,9 @@
     <Text Include="src\Assets\WorldMaps\Map_Iceberg.txt" />
     <Text Include="src\Assets\WorldMaps\Map_World.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Grasslands_Big.txt" />
+    <Text Include="src\Save\Savefile.txt" />
+    <Text Include="src\CharacterInfo\Hilda.txt" />
+    <Text Include="src\CharacterInfo\FileFormat.txt" />
+    <Text Include="src\Save\FileFormat.txt" />
   </ItemGroup>
 </Project>

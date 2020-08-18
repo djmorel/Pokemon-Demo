@@ -1,0 +1,5 @@
+Player nickname
+Player gender
+CharacterInfo path
+Screen coordinates (x,y)
+Map coordinates (x,y)

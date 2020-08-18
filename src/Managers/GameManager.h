@@ -5,6 +5,7 @@
 #include "../Engine/Engine.h"
 #include "../Engine/Actors/Character.h"  // Already contains sprite
 #include "InputManager.h"
+#include "CharacterManager.h"
 #include "WorldManager.h"
 
 
@@ -27,15 +28,14 @@ class GameManager
 
   private:
     Engine* mEngine;
-    Character* mPlayer;
+    //Character* mPlayer;  // Need to adjust based on mCharacterManager handling...
+    CharacterManager* mCharacterManager;
     InputManager* mInputManager;
     WorldManager* mWorldManager;
     Sprite mStartSprite;
     Sprite mGameOverSprite;
     State mState;
-
     void setState(State state);  // Private since GameManager will handle its own state
-
 };
 
 

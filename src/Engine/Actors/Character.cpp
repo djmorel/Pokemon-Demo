@@ -4,14 +4,15 @@
 
 Character::Character()
 {
-  isPlayer = false;
+  // Initialize walkAnimation
+  walkAnimation = WalkAnimation(&sprite, isPlayer);
 }
 
 
 Character::Character(Sprite _sprite)
 {
   sprite = _sprite;
-  isPlayer = false;
+  hasSprite = true;
 
   Rect boundingRect = Rect();
   boundingRect.setSize(*sprite.getSize() * *sprite.getScale());
@@ -22,7 +23,7 @@ Character::Character(Sprite _sprite)
 Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOffset)
 {
   sprite = _sprite;
-  isPlayer = false;
+  hasSprite = true;
 
   Rect boundingRect = Rect();
   boundingRect.setSize(*sprite.getSize() * *sprite.getScale() * rectSizeOffset);  // Scale the boundingRect
@@ -73,6 +74,41 @@ WalkAnimation& Character::getWalkAnimation()
 void Character::setSprite(Sprite _sprite)
 {
   sprite = _sprite;
+  hasSprite = true;
+  //sprite.moveTo( *(_sprite.getPos()) );
+}
+
+
+int Character::setRB()
+{
+  // Check that the sprite was set
+  if (!hasSprite)
+  {
+    return -1;
+  }
+
+  Rect boundingRect = Rect();
+  boundingRect.setSize(*sprite.getSize() * *sprite.getScale());
+  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, boundingRect);  // No gravity or friction
+
+  return 0;
+}
+
+
+int Character::setRB(Vector3D rectSizeOffset, Vector3D rectPosOffset)
+{
+  // Check that the sprite was set
+  if (!hasSprite)
+  {
+    return -1;
+  }
+
+  Rect boundingRect = Rect();
+  boundingRect.setSize(*sprite.getSize() * *sprite.getScale() * rectSizeOffset);  // Scale the boundingRect
+  boundingRect.moveBy(rectPosOffset);                                             // Move the boundingRect
+  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, boundingRect);  // No gravity or friction
+
+  return 0;
 }
 
 
@@ -80,10 +116,4 @@ void Character::setSprite(Sprite _sprite)
 void Character::setPlayerStatus(bool _isPlayer)
 {
   isPlayer = _isPlayer;
-}
-
-
-void Character::enableWalkAnimation()
-{
-  walkAnimation = WalkAnimation(&sprite, isPlayer);
 }

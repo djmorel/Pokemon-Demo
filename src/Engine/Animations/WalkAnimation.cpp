@@ -10,7 +10,7 @@ WalkAnimation::WalkAnimation()
 }
 
 
-WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, bool _isPlayer)
+WalkAnimation::WalkAnimation(Sprite* _sprite_ptr, bool &_isPlayer)
 {
   sprite_ptr = _sprite_ptr;
   isPlayer = _isPlayer;
@@ -42,6 +42,13 @@ WalkAnimation::~WalkAnimation()
 void WalkAnimation::setSpritePtr(Sprite* _sprite_ptr)
 {
   sprite_ptr = _sprite_ptr;
+}
+
+
+Sprite& WalkAnimation::getDefaultSprite()
+{
+  // Return the default sprite (i.e. DOWN idle)
+  return *(downSprites[0]);
 }
 
 

@@ -19,6 +19,7 @@ class RigidBody
 
     void addForce(Vector3D f);
     Vector3D getVelocity();
+    Vector3D* getPos();
     void setVelocity(Vector3D _velocity);
 
     static bool isColliding(const RigidBody& rbA, const RigidBody& rbB);

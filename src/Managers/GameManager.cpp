@@ -1,4 +1,7 @@
 #include "GameManager.h"
+#include <iostream>
+//#include <fstream>
+//#include <stdio.h>
 
 
 // TODO
@@ -17,8 +20,10 @@ GameManager::GameManager()
   //mStartSprite.setScale(1.07f);
   mGameOverSprite = Sprite("EndScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0), 0, Vector3D(1));
 
-  // Set the player and world pointers to null for now (haven't loaded save file yet)
-  mPlayer = nullptr;
+  // Initialize the character manager
+  mCharacterManager = new CharacterManager();
+
+  // Set the world pointer to null for now (haven't loaded save file yet)
   mWorldManager = nullptr;
 
   // Set the state to START
@@ -29,8 +34,9 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {
   // Delete our dynamically allocated members
+  // Recall that "delete" calls the object's destructors
   delete mEngine;
-  delete mPlayer;
+  delete mCharacterManager;
   delete mInputManager;
   delete mWorldManager;
 }
@@ -94,7 +100,7 @@ int GameManager::Start()
       case State::GAMEPLAY:
       {
         // Error checking to ensure LoadGame() was called
-        if (mWorldManager == nullptr || mPlayer == nullptr)
+        if (mWorldManager == nullptr)
         {
           // Game wasn't properly loaded so terminate the program
           std::cout << "ERROR: World not initialized" << std::endl;
@@ -102,19 +108,19 @@ int GameManager::Start()
         }
 
         mWorldManager->Update();
-        mPlayer->Update();
+        mCharacterManager->Update();
         npc.Update();
         tree.Update();
         mInputManager->Update();
 
         mEngine->BeginRender();
         mWorldManager->Render();
-        mPlayer->Render();
+        mCharacterManager->Render();
         npc.Render();
         tree.Render();
         mEngine->EndRender();
 
-        bool collision = RigidBody::isColliding(mPlayer->getRB(), npc.getRB());
+        bool collision = RigidBody::isColliding(mCharacterManager->getPlayer()->getRB(), npc.getRB());
         if (collision)
         {
           setState(State::GAMEOVER);
@@ -127,7 +133,7 @@ int GameManager::Start()
       {
         mEngine->BeginRender();
         mWorldManager->Render();
-        mPlayer->Render();
+        mCharacterManager->Render();
         npc.Render();
         tree.Render();
         mGameOverSprite.Render();
@@ -166,9 +172,13 @@ void GameManager::setState(State state)
     // Clear the world's contents
     mWorldManager->clearWorld();
 
-    // Don't delete these pointers in case ~WorldManager() is called after GAMEOVER switches to START state
+    // Clear all of the world's characters
+    mCharacterManager->clearCharacters(false);  // Delete the player as well
+
+    // Don't call delete on these pointers in case ~WorldManager() is called after GAMEOVER switches to START state
     //   delete mWorldManager;
-    //   delete mPlayer;
+    //   delete mCharacterManager;
+    // Doing so causes their deconstructors twice, which poses problems
     // Rely on LoadGame() to handle the check for us
   }
 }
@@ -178,6 +188,39 @@ int GameManager::LoadGame()
 {
   // TODO: Implement save file system
 
+  // Load the player from the savefile
+  int success = mCharacterManager->loadPlayer();
+  if (success == -1)
+  {
+    std::cout << "ERROR: Unable to open savefile" << std::endl;
+  }
+  else if (success == -2)
+  {
+    std::cout << "ERROR: line2coord() failure" << std::endl;
+  }
+  else if (success == -3)
+  {
+    std::cout << "ERROR: Corrupt savefile" << std::endl;
+  }
+  else if (success == -4)
+  {
+    std::cout << "ERROR: loadCharacter() failure" << std::endl;
+  }
+  else if (success == 0)
+  {
+    std::cout << "Successfully loaded game!" << std::endl;
+    std::cout << "Player Name        : " << mCharacterManager->getPlayerInfo().name << std::endl;
+    std::cout << "Player Gender      : " << mCharacterManager->getPlayerInfo().gender << std::endl;
+    std::cout << "Character Info Path: " << mCharacterManager->getPlayerInfo().charInfoPath << std::endl;
+    std::cout << "Map Path           : " << mCharacterManager->getPlayerInfo().mapPath << std::endl;
+    std::cout << "Screen Coordinates : " << mCharacterManager->getPlayerInfo().screenCoord.x << ", " << mCharacterManager->getPlayerInfo().screenCoord.y << std::endl;
+    std::cout << "Map Coordinates    : " << mCharacterManager->getPlayerInfo().mapCoord.x << ", " << mCharacterManager->getPlayerInfo().mapCoord.y << std::endl;
+  }
+  else
+  {
+    std::cout << "ERROR: Don't know what happened... Reached an invalid loadPlayer() return value..." << std::endl;
+  }
+
   // Load the world
   if (mWorldManager != nullptr)
   {
@@ -186,78 +229,13 @@ int GameManager::LoadGame()
   }
   mWorldManager = new WorldManager("src/Assets/WorldMaps/Map_Grasslands_Big.txt");
 
-  // TODO: Load the player from the save file
-
-  // Load the player default sprite
-  // "Hilda_D_Stand" is assetID 18
-  Sprite playerSprite = Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  // Scale was 2.0f to make it look right
-  if (mPlayer != nullptr)
-  {
-    // Free the memory
-    delete mPlayer;
-  }
-  mPlayer = new Character(playerSprite, Vector3D(1, 0.66f, 1), Vector3D(0, -16.0f, 0));  // Parameters ensure boundingRect matches the tiles
-
-  // Set the mPlayer as the player
-  mPlayer->setPlayerStatus(true);
-
-  // Give mPlayer a walking animation
-  mPlayer->enableWalkAnimation();
-
-  Sprite* spriteAnimation;
-
-  // Load the player DOWN animation sprites
-  // Hilda_D sprites have assetID's 18, 19, 20, and 21
-  spriteAnimation = new Sprite(18, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
-  spriteAnimation = new Sprite(19, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
-  spriteAnimation = new Sprite(20, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
-  spriteAnimation = new Sprite(21, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::DOWN, spriteAnimation);
-
-  // Load the player UP animation sprites
-  // Hilda_U sprites have assetID's 30, 31, 32, and 33
-  spriteAnimation = new Sprite(30, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
-  spriteAnimation = new Sprite(31, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
-  spriteAnimation = new Sprite(32, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
-  spriteAnimation = new Sprite(33, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::UP, spriteAnimation);
-
-  // Load the player LEFT animation sprites
-  // Hilda_U sprites have assetID's 22, 23, 24, and 25
-  spriteAnimation = new Sprite(22, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
-  spriteAnimation = new Sprite(23, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
-  spriteAnimation = new Sprite(24, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
-  spriteAnimation = new Sprite(25, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::LEFT, spriteAnimation);
-
-  // Load the player RIGHT animation sprites
-  // Hilda_U sprites have assetID's 26, 27, 28, and 29
-  spriteAnimation = new Sprite(26, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
-  spriteAnimation = new Sprite(27, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
-  spriteAnimation = new Sprite(28, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
-  spriteAnimation = new Sprite(29, Vector3D((float)Engine::SCREEN_WIDTH / 2 + 32.0f, (float)Engine::SCREEN_HEIGHT / 2 - 16.0f, 0), 0, Vector3D(2.0f));
-  mPlayer->getWalkAnimation().pushSpriteVector(WalkAnimation::dir::RIGHT, spriteAnimation);
-
   // Enable player input
   if (mInputManager != nullptr)
   {
     // Free the memory
     delete mInputManager;
   }
-  mInputManager = new InputManager(mPlayer, mWorldManager);
+  mInputManager = new InputManager(mCharacterManager->getPlayer(), mWorldManager);
 
   // Successfully loaded game
   return 0;

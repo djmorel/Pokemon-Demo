@@ -117,6 +117,12 @@ Vector3D RigidBody::getVelocity()
 }
 
 
+Vector3D* RigidBody::getPos()
+{
+  return pos;
+}
+
+
 void RigidBody::setVelocity(Vector3D _velocity)
 {
   velocity = _velocity;

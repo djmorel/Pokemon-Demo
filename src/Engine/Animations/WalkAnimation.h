@@ -11,7 +11,7 @@ class WalkAnimation
 {
   public:
     WalkAnimation();
-    WalkAnimation(Sprite* _sprite_ptr, bool _isPlayer);
+    WalkAnimation(Sprite* _sprite_ptr, bool &_isPlayer);
     ~WalkAnimation();
 
     // Identifies sprite orientation
@@ -24,6 +24,7 @@ class WalkAnimation
     };
 
     void setSpritePtr(Sprite* _sprite_ptr);
+    Sprite& getDefaultSprite();
 
     void pushSpriteVector(dir _dir, Sprite* _sprite_ptr);
     void popSpriteVector(dir _dir);

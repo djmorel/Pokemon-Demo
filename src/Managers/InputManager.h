@@ -18,6 +18,8 @@ class InputManager
 
   private:
     Character* player;                     // Pointer to the player character
+    Vector3D pScreenCoord;                 // Tracks the player coordinates on the screen (x: 0-15 & y: 0-11)
+    Vector3D pMapCoord;                    // Tracks the player coordinates on the map (x & y ranges depend on map)
     WorldManager* world;                   // Pointer to the world
     int animationCount = 0;                // Counter for how many times an animation has to be called
     bool isActive = false;                 // Blocks incoming input from processing

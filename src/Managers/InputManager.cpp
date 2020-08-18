@@ -100,7 +100,7 @@ void InputManager::Update()
   {
     // Flag for changing sprite
     bool changeSprite = (animationCount == 2) || (animationCount == 6);
-    bool movePlayer = false;
+    bool movePlayer = true;
 
     // Determine which animation to process
     switch (currentDirection)
@@ -108,28 +108,40 @@ void InputManager::Update()
       case WalkAnimation::dir::UP:
       {
         player->getWalkAnimation().walkUp(movePlayer, changeSprite, newDirection);
-        world->moveWorld(Vector3D(0, -8, 0));  // World moves opposite of the character's direction
+        if (!movePlayer)
+        {
+          world->moveWorld(Vector3D(0, -8, 0));  // World moves opposite of the character's direction
+        }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::DOWN:
       {
         player->getWalkAnimation().walkDown(movePlayer, changeSprite, newDirection);
-        world->moveWorld(Vector3D(0, 8, 0));  // World moves opposite of the character's direction
+        if (!movePlayer)
+        {
+          world->moveWorld(Vector3D(0, 8, 0));  // World moves opposite of the character's direction
+        }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::LEFT:
       {
         player->getWalkAnimation().walkLeft(movePlayer, changeSprite, newDirection);
-        world->moveWorld(Vector3D(8, 0, 0));  // World moves opposite of the character's direction
+        if (!movePlayer)
+        {
+          world->moveWorld(Vector3D(8, 0, 0));  // World moves opposite of the character's direction
+        }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::RIGHT:
       {
         player->getWalkAnimation().walkRight(movePlayer, changeSprite, newDirection);
-        world->moveWorld(Vector3D(-8, 0, 0));  // World moves opposite of the character's direction
+        if (!movePlayer)
+        {
+          world->moveWorld(Vector3D(-8, 0, 0));  // World moves opposite of the character's direction
+        }
         animationCount++;
         break;
       }

@@ -50,6 +50,7 @@ WorldManager::~WorldManager()
   {
     delete tiles[i];
   }
+  tiles.clear();
 }
 
 

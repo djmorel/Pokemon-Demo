@@ -25,15 +25,17 @@ class Character
     WalkAnimation& getWalkAnimation();
 
     void setSprite(Sprite _sprite);
+    int setRB();
+    int setRB(Vector3D rectSizeOffset, Vector3D rectPosOffset);  // Note: Requires setting sprite beforehand!
     void setPlayerStatus(bool _isPlayer);
-    void enableWalkAnimation();
 
   private:
     Sprite sprite;
+    bool hasSprite = false;
     RigidBody rb;
     Rect boundingRect;
     WalkAnimation walkAnimation;
-    bool isPlayer;
+    bool isPlayer = false;
 };
 
 
