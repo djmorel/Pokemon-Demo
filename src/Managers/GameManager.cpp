@@ -48,10 +48,12 @@ int GameManager::Start()
 {
   // Optional stuff
   Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
+  //Sprite npcSprite = Sprite(37, Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(2.0f));
   //npcSprite.setScale(0.5f);
   npcSprite.setDimensions(64.0f);
   Character npc(npcSprite);
-  Entity tree = Entity("Trees", Vector3D(100, 100, 0), 0, 2.0f);
+  Entity tree = Entity(37, Vector3D(224, 224, 0), 0, 4.0f);
+  tree.setDimensions(Vector3D(192, 192, 0));
   // End of optional stuff
 
   // Add a Loading Icon for state changes

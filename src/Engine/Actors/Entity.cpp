@@ -23,26 +23,27 @@ Entity::Entity(int _id)
 Entity::Entity(std::string assetName, Vector3D _pos, float _rot, float _scale)
 {
   sprite = Sprite(assetName, _pos, _rot, _scale);
-
-  // Configure the Rect
-  Rect rc = Rect();
-  rc.setSize(Vector3D(sprite.getSize()->x * sprite.getScale()->x, sprite.getSize()->y * sprite.getScale()->y, 1));
-
-  rb = RigidBody();
-  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 0, rc);
+  configRB();
 }
 
 
 Entity::Entity(int _id, Vector3D _pos, float _rot, float _scale)
 {
   sprite = Sprite(_id, _pos, _rot, _scale);
+  configRB();
+}
 
-  // Configure the Rect
-  Rect rc = Rect();
-  rc.setSize(Vector3D(sprite.getSize()->x * sprite.getScale()->x, sprite.getSize()->y * sprite.getScale()->y, 1));
 
-  rb = RigidBody();
-  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 0, rc);
+void Entity::Update()
+{
+  rb.Update();
+}
+
+
+void Entity::Render()
+{
+  sprite.Render();
+  rb.Render(Vector3D(0.51f, 0.86f, 0.87f));  // Light-Blue rigid body
 }
 
 
@@ -64,14 +65,20 @@ Sprite& Entity::getSprite()
 }
 
 
-void Entity::Update()
+void Entity::setDimensions(Vector3D v)
 {
-  rb.Update();
+  // Set the sprite dimensions, then update the rigid body
+  sprite.setDimensions(v);
+  configRB();
 }
 
 
-void Entity::Render()
+void Entity::configRB()
 {
-  sprite.Render();
-  rb.Render(Vector3D(0.51f, 0.86f, 0.87f));  // Light-Blue rigid body
+  // Configure the Rect
+  Rect rc = Rect();
+  rc.setSize(*sprite.getSize() * *sprite.getScale());
+
+  rb = RigidBody();
+  rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, rc);
 }

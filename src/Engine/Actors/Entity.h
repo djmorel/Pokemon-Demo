@@ -16,12 +16,16 @@ class Entity
     Entity(std::string assetName, Vector3D _pos, float _rot, float _scale);
     Entity(int _id, Vector3D _pos, float _rot, float _scale);
 
+    void Update();
+    void Render();
+
     Vector2D getDimensions();
     Vector3D getPos();
     Sprite& getSprite();
 
-    void Update();
-    void Render();
+    void setDimensions(Vector3D v);
+    void configRB();
+
 
   private:
     Sprite sprite;

@@ -1,13 +1,5 @@
 #include <iostream>
 #include "Managers/GameManager.h"
-/*
-#include "Engine/Engine.h"
-#include "Engine/Graphics/Sprite.h"
-#include "Engine/Actors/Character.h"
-#include "Engine/Actors/Entity.h"
-#include "Managers/InputManager.h"
-#include "Managers/WorldManager.h"
-*/
 
 
 // Note:

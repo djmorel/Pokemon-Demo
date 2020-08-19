@@ -12,10 +12,10 @@ struct tableElement
   std::string assetName;  // Name ID for the asset
   std::string assetPath;  // Path for the asset
   Vector2D sheetIndex;    // Index of the sprite on the sheet (first quadrant coordinates)
-  int spriteRows;         // Number of sprite units per sheet row
   int spriteColumns;      // Number of sprite units per sheet column
-  int unitsHigh;          // How many sprite units make up this sprite's height
+  int spriteRows;         // Number of sprite units per sheet row
   int unitsWide;          // How many sprite units make up this sprite's width
+  int unitsHigh;          // How many sprite units make up this sprite's height
 };
 typedef struct tableElement tableElement;
 
@@ -23,20 +23,31 @@ typedef struct tableElement tableElement;
 // Struct initialized to invalid asset entry
 struct assetInfo
 {
-  std::string assetPath = "";
-  Vector2D sheetIndex   = Vector2D(-1, -1);
-  int spriteRows        = -1;
-  int spriteColumns     = -1;
-  int unitsHigh         = -1;
-  int unitsWide         = -1;
+  std::string assetPath = "";                // Path for the asset
+  Vector2D sheetIndex   = Vector2D(-1, -1);  // Sprite's index on the spritesheet - (0, 0) at bottom left of the image
+  int spriteRows        = -1;                // Number of rows (based on sprite units) on the spritesheet
+  int spriteColumns     = -1;                // Number of columns (based on sprite units) on the spritesheet
+  int unitsHigh         = -1;                // Number of sprite units in the y direction this sprite encompasses
+  int unitsWide         = -1;                // Number of sprite units in the x direction this sprite encompasses
 };
 typedef struct assetInfo assetInfo;
 
 
 namespace AssetLT
 {
-  assetInfo findAsset(std::string assetName);  // Returns the asset's path and sheet index from assetName
-  assetInfo findAsset(int _id);                // Returns the asset's path and sheet index from ID #
+  /**
+    Finds the asset's information from the AssetLookupTable
+    \param std::string assetName - Name shortcut for the asset
+    \return assetInfo object from the asset's entry
+  **/
+  assetInfo findAsset(std::string assetName);
+
+  /**
+    Finds the asset's information from the AssetLookupTable
+    \param int _id - assetID that indexes to the AssetLookupTable
+    \return assetInfo object from the asset's entry
+  **/
+  assetInfo findAsset(int _id);
 }
 
 #endif

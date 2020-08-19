@@ -204,19 +204,19 @@ void Sprite::Render()
 
     // Top left vertex
     glTexCoord2f( (0 + x) * xRatio, (0 + y) * yRatio);
-    glVertex2f(-texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+    glVertex2f(-texture.getWidth() * xRatio * spriteInfo.unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
 
     // Bottom left vertex
-    glTexCoord2f( (1 + x) * xRatio, (0 + y) * yRatio);
-    glVertex2f( texture.getWidth() * xRatio / 2, -texture.getHeight() * yRatio / 2);
+    glTexCoord2f( (spriteInfo.unitsWide + x) * xRatio, (0 + y) * yRatio);
+    glVertex2f( texture.getWidth() * xRatio * spriteInfo.unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
 
     // Bottom right vertex
-    glTexCoord2f( (1 + x) * xRatio, (1 + y) * yRatio);
-    glVertex2f( texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+    glTexCoord2f( (spriteInfo.unitsWide + x) * xRatio, (spriteInfo.unitsHigh + y) * yRatio);
+    glVertex2f( texture.getWidth() * xRatio * spriteInfo.unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
 
     // Top right vertex
-    glTexCoord2f( (0 + x) * xRatio, (1 + y) * yRatio);
-    glVertex2f(-texture.getWidth() * xRatio / 2,  texture.getHeight() * yRatio / 2);
+    glTexCoord2f( (0 + x) * xRatio, (spriteInfo.unitsHigh + y) * yRatio);
+    glVertex2f(-texture.getWidth() * xRatio * spriteInfo.unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
 
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
