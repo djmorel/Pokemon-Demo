@@ -28,7 +28,6 @@ class GameManager
 
   private:
     Engine* mEngine;
-    //Character* mPlayer;  // Need to adjust based on mCharacterManager handling...
     CharacterManager* mCharacterManager;
     InputManager* mInputManager;
     WorldManager* mWorldManager;

@@ -6,22 +6,14 @@
 #include <string>
 
 
-/**
-  A constructor that does nothing special.
-  \param None
-  \return None
-**/
+
 CharacterManager::CharacterManager()
 {
   // Do nothing
 }
 
 
-/**
-  A deconstructor that deletes all instances of CharacterInfo, and clears the characters vector.
-  \param None
-  \return None
-**/
+
 CharacterManager::~CharacterManager()
 {
   // Delete all characters
@@ -33,11 +25,7 @@ CharacterManager::~CharacterManager()
 }
 
 
-/**
-  Updates all Character objects in CharacterManager's characters vector.
-  \param None
-  \return None
-**/
+
 void CharacterManager::Update()
 {
   // Update all characters on the map
@@ -48,11 +36,7 @@ void CharacterManager::Update()
 }
 
 
-/**
-  Renders all Character objects in CharacterManager's characters vector.
-  \param None
-  \return None
-**/
+
 void CharacterManager::Render()
 {
   // Render all characters on the map
@@ -63,11 +47,7 @@ void CharacterManager::Render()
 }
 
 
-/**
-  Creates a new player savefile for the game. References CharacterManager's const character array, savefilePath.
-  \param None
-  \return 0 on success, -1 if cancel player creation, or -2 if unable to delete existing file.
-**/
+
 int CharacterManager::createPlayer()
 {
   // Open the passed map file
@@ -126,11 +106,7 @@ int CharacterManager::createPlayer()
 }
 
 
-/**
-  Loads player information from the savefile into GameManager's playerInfo struct.
-  \param None
-  \return 0 on success, -1 if unable to open savefile, -2 if line2coord() failure, -3 if corrupt savefile, or -4 if loadCharacter() failure.
-**/
+
 int CharacterManager::loadPlayer()
 {
   // Variables
@@ -218,15 +194,7 @@ int CharacterManager::loadPlayer()
 }
 
 
-/**
-  Loads either the player or a character into the characters vector. Note that the player can ONLY be loaded when the characters vector is empty.
-  \param std::string characterPath - String for the full character path.
-  \param bool isPlayer - 0 if the requested character is an NPC, or 1 if it's the player.
-  \param Vector3D _pos - The screen position for each of the WalkAnimation Sprites.
-  \param float _rot - The rotation for each of the WalkAnimation Sprites.
-  \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
-  \return 0 on success, -1 if call invalidates the player is first element assumption, -2 if unable to open CharacterInfo file, -3 if CharacterInfo file not fully read, or -4 if configAnimation() failure.
-**/
+
 int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale)
 {
   // Only proceed loadCharacter() if the player is loaded or is to be loaded as the characters vector's first element
@@ -320,15 +288,7 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
 }
 
 
-/**
-  Configures a WalkAnimation object to the passed character.
-  \param Character &character - The Character object that is getting its WalkAnimation configured.
-  \param std::string &line - The line from the CharacterInfo file that specifies the assetIDs for the WalkAnimation Sprites. Assumes the listed assetIDs come in multiple of 4 to account for the directions (DOWN, LEFT, RIGHT, UP).
-  \param Vector3D _pos - The screen position for each of the WalkAnimation Sprites.
-  \param float _rot - The rotation for each of the WalkAnimation Sprites.
-  \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
-  \return 0 on success, -1 if invalid numSprites format in CharacterInfo file, or -2 if invalid assetID format in CharacterInfo file.
-**/
+
 int CharacterManager::configAnimation(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale)
 {
   int numSprites = 0;            // Holds the number of sprites per animation's direction
@@ -383,11 +343,7 @@ int CharacterManager::configAnimation(Character &character, std::string &line, V
 }
 
 
-/**
-  Converts a string to a Vector2D (x, y) coordinate.
-  \param std::string line - String in the format of int_x,int_y.
-  \return Vector2D(-1, -1) on failure, or Vector2D based on what was read.
-**/
+
 Vector2D CharacterManager::line2coord(std::string line)
 {
   // Setup a default invalid return
@@ -436,12 +392,7 @@ Vector2D CharacterManager::line2coord(std::string line)
 }
 
 
-/**
-  Reads from a string up to a delimiter character, and converts what was read to a positive int.
-  \param std::string &line - Address of a string to pull an integer from. Note characters (including delimiter) read from the string are erased.
-  \param char delimiter - Character that indicates where to stop pulling the integer from the passed string.
-  \return int >= 0 on success, or -1 on std::stoi() failure.
-**/
+
 int CharacterManager::intPull(std::string &line, char delimiter)
 {
   std::string intString = "";
@@ -482,33 +433,21 @@ int CharacterManager::intPull(std::string &line, char delimiter)
 }
 
 
-/**
-  Retrieves CharacterManager's player, the first element of the characters vector.
-  \param None
-  \return Address of the player's Character object.
-**/
+
 Character* CharacterManager::getPlayer()
 {
   return &characters[0]->character;
 }
 
 
-/**
-  Retrieves CharacterManager's player information.
-  \param None
-  \return Address of the player's PlayerInfo object.
-**/
+
 PlayerInfo& CharacterManager::getPlayerInfo()
 {
   return playerInfo;
 }
 
 
-/**
-  Clears CharacterInfo objects in CharacterManager's characters vector.
-  \param bool savePlayer - 0 clears the entirety of the characters vector, but 1 keeps the player's CharacterInfo in the vector.
-  \return None
-**/
+
 void CharacterManager::clearCharacters(bool savePlayer)
 {
   unsigned int i;

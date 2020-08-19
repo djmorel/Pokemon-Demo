@@ -12,7 +12,7 @@ public:
   Vector2D(const Vector2D& other);
 
   // Overloading operators
-  Vector2D& operator= (const Vector2D& other);
+  Vector2D& operator=(const Vector2D& other);
   Vector2D operator+(const Vector2D& other);
   Vector2D operator-(const Vector2D& other);
   Vector2D operator*(const Vector2D& other);
