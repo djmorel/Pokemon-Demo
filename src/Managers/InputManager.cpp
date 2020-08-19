@@ -101,46 +101,64 @@ void InputManager::Update()
     // Flag for changing sprite
     bool changeSprite = (animationCount == 2) || (animationCount == 6);
     bool movePlayer = true;
+    Vector3D displacement;
+    int duration;  // Duration of the animation in milliseconds
+
+    if (newDirection)
+    {
+      // Set the displacement to 0
+      displacement = Vector3D(0);
+      duration = 80;
+    }
+    else
+    {
+      displacement = Vector3D(8);
+      duration = 40;
+    }
 
     // Determine which animation to process
     switch (currentDirection)
     {
       case WalkAnimation::dir::UP:
       {
-        player->getWalkAnimation().walkUp(movePlayer, changeSprite, newDirection);
+        displacement = displacement * Vector3D(0, 1, 0);  // Multiply the displacement by the UP identity Vector3D
+        player->getWalkAnimation().walk(movePlayer, changeSprite, newDirection, displacement, currentDirection, duration);
         if (!movePlayer)
         {
-          world->moveWorld(Vector3D(0, -8, 0));  // World moves opposite of the character's direction
+          world->moveWorld(displacement * Vector3D(-1));  // World moves opposite of the character's direction
         }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::DOWN:
       {
-        player->getWalkAnimation().walkDown(movePlayer, changeSprite, newDirection);
+        displacement = displacement * Vector3D(0, -1, 0);  // Multiply the displacement by the DOWN identity Vector3D
+        player->getWalkAnimation().walk(movePlayer, changeSprite, newDirection, displacement, currentDirection, duration);
         if (!movePlayer)
         {
-          world->moveWorld(Vector3D(0, 8, 0));  // World moves opposite of the character's direction
+          world->moveWorld(displacement * Vector3D(-1));  // World moves opposite of the character's direction
         }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::LEFT:
       {
-        player->getWalkAnimation().walkLeft(movePlayer, changeSprite, newDirection);
+        displacement = displacement * Vector3D(-1, 0, 0);  // Multiply the displacement by the LEFT identity Vector3D
+        player->getWalkAnimation().walk(movePlayer, changeSprite, newDirection, displacement, currentDirection, duration);
         if (!movePlayer)
         {
-          world->moveWorld(Vector3D(8, 0, 0));  // World moves opposite of the character's direction
+          world->moveWorld(displacement * Vector3D(-1));  // World moves opposite of the character's direction
         }
         animationCount++;
         break;
       }
       case WalkAnimation::dir::RIGHT:
       {
-        player->getWalkAnimation().walkRight(movePlayer, changeSprite, newDirection);
+        displacement = displacement * Vector3D(1, 0, 0);  // Multiply the displacement by the RIGHT identity Vector3D
+        player->getWalkAnimation().walk(movePlayer, changeSprite, newDirection, displacement, currentDirection, duration);
         if (!movePlayer)
         {
-          world->moveWorld(Vector3D(-8, 0, 0));  // World moves opposite of the character's direction
+          world->moveWorld(displacement * Vector3D(-1));  // World moves opposite of the character's direction
         }
         animationCount++;
         break;
@@ -154,14 +172,22 @@ void InputManager::Update()
       }
     }
 
-    // Reset newDirection
-    newDirection = false;
-
-    // Check if we completed enough movement animations
-    if (animationCount >= 8)
+    // Check if the animation was to just move a certain way, or to actually move
+    if (newDirection)
     {
-      isActive = false;    // Remove the processing flag
-      animationCount = 0;  // Reset the count
+      // Reset the flags and count
+      newDirection = false;
+      isActive = false;
+      animationCount = 0;
+    }
+    else
+    {
+      // Check if we completed enough movement animations
+      if (animationCount >= 8)
+      {
+        isActive = false;    // Remove the processing flag
+        animationCount = 0;  // Reset the count
+      }
     }
   }
 }

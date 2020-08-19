@@ -31,13 +31,10 @@ class WalkAnimation
 
     void updateIndex(dir _dir);
 
-    void moveSprites(Vector3D v);  // Moves character sprite
+    void moveSprites(Vector3D v);  // Moves character's WalkAnimation sprites
 
-    // Movement functions with respect
-    void walkUp(bool move, bool changeSprite, bool newDirection);
-    void walkDown(bool move, bool changeSprite, bool newDirection);
-    void walkLeft(bool move, bool changeSprite, bool newDirection);
-    void walkRight(bool move, bool changeSprite, bool newDirection);
+    // Animates the character to walk in a specified direction
+    void walk(bool move, bool changeSprite, bool newDirection, Vector3D displacement, dir direction, int duration);
 
 
   private:
