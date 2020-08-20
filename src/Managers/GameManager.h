@@ -7,6 +7,7 @@
 #include "InputManager.h"
 #include "CharacterManager.h"
 #include "WorldManager.h"
+#include "../Engine/Text/Text2D.h"
 
 
 class GameManager

@@ -3,7 +3,8 @@
 
 
 #include <iostream>
-#include "GLFW/glfw3.h"
+//#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 
 // Note: If pragma isn't supported, will get a linker error

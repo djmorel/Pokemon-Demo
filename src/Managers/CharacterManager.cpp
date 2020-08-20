@@ -469,3 +469,27 @@ void CharacterManager::clearCharacters(bool savePlayer)
   }
   characters.clear();
 }
+
+
+void CharacterManager::movePlayer(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+{
+  // Call on the player's walk animation to move it
+  characters[0]->character.getWalkAnimation().walk(move, changeSprite, newDirection, displacement, direction, duration);
+}
+
+
+void CharacterManager::moveNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+{
+  // Call on the NPCs move Sprites
+  // TODO: Consider using a pointer for WalkAnimation sprite positions? (Try passing a pointer for position and don't call on moveSprites)
+  // OR set sprites to be a vector/array of the spritesheet they're based on
+
+  for (unsigned int i = 1; i < characters.size(); i++)
+  {
+    // Move the NPC sprites
+    characters[i]->character.getSprite().moveBy(displacement);
+
+    // Move the NPC WalkAnimation sprites
+    characters[i]->character.getWalkAnimation().moveSprites(displacement);
+  }
+}

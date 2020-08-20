@@ -42,6 +42,17 @@ bool::Engine::Initialize(const char* windowTitle)
     return false;
   }
 
+  /*
+  TODO: Use in new repo if I go for the glDrawArrays() route for sprites
+  // Initialize GLEW
+  glewExperimental = true;
+  if (!glewInit())
+  {
+    std::cout << "Error initializing GLEW" << std::endl;
+    return false;
+  }
+  */
+
   // GLFW Setup
   glfwMakeContextCurrent(window);
   int width, height;

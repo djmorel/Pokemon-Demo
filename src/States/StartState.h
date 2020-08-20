@@ -2,7 +2,7 @@
 #define STARTSTATE_H
 
 
-#include "../Graphics/Sprite.h"
+#include "../Engine/Graphics/Sprite.h"
 
 
 class StartState

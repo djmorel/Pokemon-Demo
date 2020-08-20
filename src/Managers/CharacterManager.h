@@ -132,6 +132,12 @@ class CharacterManager
     void clearCharacters(bool savePlayer);  // Deletes the contents of the characters vector
 
 
+    void movePlayer(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+
+
+    void moveNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+
+
   private:
     const char savefilePath[22] = "src/Save/Savefile.txt";
     PlayerInfo playerInfo;
