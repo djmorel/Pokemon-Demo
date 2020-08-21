@@ -237,7 +237,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mInputManager;
   }
-  mInputManager = new InputManager(mCharacterManager->getPlayer(), mWorldManager);
+  mInputManager = new InputManager(mCharacterManager, mWorldManager);
 
   // Successfully loaded game
   return 0;

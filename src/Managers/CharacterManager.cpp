@@ -471,14 +471,23 @@ void CharacterManager::clearCharacters(bool savePlayer)
 }
 
 
-void CharacterManager::movePlayer(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
 {
+  // Check that the passed index is a valid number
+  if (characters.size() <= index)
+  {
+    // Index exceeds the bounds of the characters vector
+    return -1;
+  }
+
   // Call on the player's walk animation to move it
-  characters[0]->character.getWalkAnimation().walk(move, changeSprite, newDirection, displacement, direction, duration);
+  characters[index]->character.getWalkAnimation().walk(move, changeSprite, newDirection, displacement, direction, duration);
+
+  return 0;
 }
 
 
-void CharacterManager::moveNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+void CharacterManager::moveAllNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
 {
   // Call on the NPCs move Sprites
   // TODO: Consider using a pointer for WalkAnimation sprite positions? (Try passing a pointer for position and don't call on moveSprites)
@@ -492,4 +501,18 @@ void CharacterManager::moveNPCs(bool move, bool changeSprite, bool newDirection,
     // Move the NPC WalkAnimation sprites
     characters[i]->character.getWalkAnimation().moveSprites(displacement);
   }
+}
+
+
+void CharacterManager::updatePlayerScreenCoord(Vector2D v)
+{
+  // Add the movement coordinates to the player's screen coordinate record
+  playerInfo.screenCoord = playerInfo.screenCoord + v;
+}
+
+
+void CharacterManager::updatePlayerMapCoord(Vector2D v)
+{
+  // Add the movement coordinates to the player's map coordinate record
+  playerInfo.mapCoord = playerInfo.mapCoord + v;
 }

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <string>
+#include <cmath>
 
 
 WorldManager::WorldManager()
@@ -199,8 +200,8 @@ int WorldManager::buildWorld()
   // Calculate the difference between map and screen tile coordinates
   //   Used to get the tile offset multiple
   //   +1 to ensure complete overlap doesn't remove the base tile offset of 32 pixels (accounts for central anchor point)
-  int diff_x = screenX - mapX + 1;
-  int diff_y = screenY - mapY + 1;
+  int diff_x = screenX - mapX;
+  int diff_y = screenY - mapY;
 
   // Draw the tiles relative to the game window
   for (int row = 0; row < mapRows; row++)
@@ -210,13 +211,51 @@ int WorldManager::buildWorld()
       if (map[row][col] != -1)
       {
         // Create a new instance of the tile Entity
-        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + diff_x * 64.0f / 2, row * 64.0f + diff_y * 64.0f / 2, 0), 0, 0.8f));
+        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + diff_x * 64.0f + 64.0f / 2, row * 64.0f + diff_y * 64.0f  + 64.0f / 2, 0), 0, 0.8f));
       }
     }
   }  // End of tile for loop
 
   // Successfully built the world
   return 0;
+}
+
+
+bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCoord, WalkAnimation::dir direction)
+{
+  // Convert the player's screen coordinates to ints
+  int screenX = floor(playerScreenCoord.x);
+  int screenY = floor(playerScreenCoord.y);
+
+  // Conver the player's map coordinates to ints
+  int mapX = floor(playerMapCoord.x);
+  int mapY = floor(playerMapCoord.y);
+
+  // Compare the player's screen and map coordinates to see if movement would exceed the map's bounds
+  if ( (direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1) )
+  {
+    return false;
+  }
+  else if ( (direction == WalkAnimation::dir::RIGHT) && ((mapX - screenX) >= (mapCols - Engine::SCREEN_WIDTH / 64)) )
+  {
+    return false;
+  }
+  else if ( (direction == WalkAnimation::dir::UP) && ((mapY - screenY) >= (mapRows - Engine::SCREEN_HEIGHT / 64)) )
+  {
+    return false;
+  }
+  else if ((direction == WalkAnimation::dir::DOWN) && ((mapY - screenY) < 1) )
+  {
+    return false;
+  }
+  // There exist offscreen tiles, so we may be able to move the world
+
+  // TODO: Check if any of the offscreen tiles are invalid
+  // Need to find the difference between the screen and map +-1 and index into the map to find invalid tile codes (id < 0)
+
+
+  // All checks passed, so the world can safely be moved
+  return true;
 }
 
 

@@ -76,7 +76,7 @@ class CharacterManager
     /**
       Loads either the player or a character into the characters vector. Note that the player can ONLY be loaded when the characters vector is empty.
       \param std::string characterPath - String for the full CharacterInfo file path.
-      \param bool isPlayer - 0 if the requested character is an NPC, or 1 if it's the player.
+      \param bool isPlayer - False if the requested character is an NPC, or True if it's the player.
       \param Vector3D _pos - The screen position for each of the WalkAnimation Sprites.
       \param float _rot - The rotation for each of the WalkAnimation Sprites.
       \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
@@ -126,16 +126,50 @@ class CharacterManager
     
     /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
-      \param bool savePlayer - 0 clears the entirety of the characters vector, but 1 keeps the player's CharacterInfo in the vector.
+      \param bool savePlayer - False clears the entirety of the characters vector, but True keeps the player's CharacterInfo in the vector.
       \return None
     **/
     void clearCharacters(bool savePlayer);  // Deletes the contents of the characters vector
 
+    /**
+      Moves a specified character. Recall that the player is the 1st element in the CharacterManager::characters vector.
+      \param unsigned int index - Index specifying what character to move. Set to 0 to move the player.
+      \param bool move - False to keep the player in-place, or True to move the player relative to the screen.
+      \param bool changeSprite - False to keep the player's current WalkAnimation sprite, or True to change it.
+      \param bool newDirection - False if the movement is in the same direction, or True if new direction.
+      \param Vector3D displacement - Where to move the player sprite (and all WalkAnimation sprites) by.
+      \param WalkAnimation::dir direction - Specifies the WalkAnimation sprite direction.
+      \param int duration - How long to move the player.
+      \return 0 if success, or -1 if invalid index.
+    **/
+    int moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
 
-    void movePlayer(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+    /**
+      Moves all NPCs (second element and onward in the CharacterManager::characters vector).
+      \param bool move - False to keep the NPCs in-place, or True to move the NPCs relative to the screen.
+      \param bool changeSprite - False to keep the NPCs' current WalkAnimation sprite, or True to change it.
+      \param bool newDirection - False if the movement is in the same direction, or True if new direction.
+      \param Vector3D displacement - Where to move the NPC sprites (and all WalkAnimation sprites) by.
+      \param WalkAnimation::dir direction - Specifies the WalkAnimation sprite direction.
+      \param int duration - How long to move the NPCs.
+      \return None
+    **/
+    void moveAllNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
 
+    /**
+      Updates the player's screen coordinate record.
+      \param Vector2D v - Player's screen coordinate net change.
+      \return None
+    **/
+    void updatePlayerScreenCoord(Vector2D v);
 
-    void moveNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+    /**
+      Updates the player's map coordinate record.
+      \param Vector2D v - Player's map coordinate net change.
+      \return None
+    **/
+    void updatePlayerMapCoord(Vector2D v);
+
 
 
   private:
