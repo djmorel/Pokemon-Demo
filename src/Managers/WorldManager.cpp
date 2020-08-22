@@ -238,16 +238,16 @@ bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCo
   // TODO: Check if the immediate movement would make the player step on an immovable tile
   // TODO: Work with InputManager to handle this (perhaps use ints for more return values)
 
-  // Check 1: Compare the player's screen and map coordinates to see if movement would exceed the map's bounds
+  // Check 1: Compare the player's map coordinates and map row/col count to see if movement would exceed the map's bounds
   if ( (direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1) )
   {
     return false;
   }
-  else if ( (direction == WalkAnimation::dir::RIGHT) && ((mapX - screenX) >= (mapCols - Engine::SCREEN_WIDTH / 64)) )
+  else if ( (direction == WalkAnimation::dir::RIGHT) && ( (mapX + (Engine::SCREEN_WIDTH / 64 - screenX)) >= mapCols ) )
   {
     return false;
   }
-  else if ( (direction == WalkAnimation::dir::UP) && ((mapY - screenY) >= (mapRows - Engine::SCREEN_HEIGHT / 64)) )
+  else if ( (direction == WalkAnimation::dir::UP) && ( (mapY + (Engine::SCREEN_HEIGHT / 64 - screenY)) >= mapRows ) )
   {
     return false;
   }
@@ -258,61 +258,71 @@ bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCo
   // There exist offscreen tiles, so we may be able to move the world
 
   // Check 2: Determine if any of the offscreen tiles contain invalid tile codes (id < 0)
-
   // Calculate the max and min index range for the tiles offscreen the map
-  int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX) + 1;
-  int max_Y = mapY + (Engine::SCREEN_HEIGHT / 64 - screenY) + 1;
+  int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX);
+  int max_Y = mapY + (Engine::SCREEN_HEIGHT / 64 - screenY);
   int min_X = mapX - screenX - 1;
   int min_Y = mapY - screenY - 1;
-
-  // Check that the calculated index don't exceed the map's row and column count
-  if (min_X >= 0 && min_Y >= 0 && max_X < mapCols && max_Y < mapRows)
+  // Check that the calculated index for the requested index doesn't exceed the map's bounds
+  // If so, set the index to the corresponding edge
+  if (min_X < 0)
   {
-    // Calculated indices are within bounds of the map
-
-    // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
-    if (direction == WalkAnimation::dir::LEFT)
+    min_X = 0;
+  }
+  if (max_X >= mapCols)
+  {
+    max_X = mapCols - 1;
+  }
+  if (min_Y < 0)
+  {
+    min_Y = 0;
+  }
+  if (max_Y >= mapRows)
+  {
+    max_Y = mapRows - 1;
+  }
+  // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
+  if (direction == WalkAnimation::dir::LEFT && min_X >= 0)
+  {
+    // Look at min_X (left offscreen tiles)
+    for (int i = min_Y + 1; i < max_Y; i++)
     {
-      // Look at min_X (left offscreen tiles)
-      for (unsigned int i = min_Y + 1; i < max_Y - 1; i++)
+      if (map[i][min_X] < 0)
       {
-        if (map[i][min_X] < 0)
-        {
-          return false;
-        }
+        return false;
       }
     }
-    else if (direction == WalkAnimation::dir::RIGHT)
+  }
+  else if (direction == WalkAnimation::dir::RIGHT)  // && max_X < mapCols)
+  {
+    // Look at min_Y
+    for (int i = min_Y + 1; i < max_Y; i++)
     {
-      // Look at min_Y
-      for (unsigned int i = min_Y + 1; i < max_Y - 1; i++)
+      if (map[i][max_X] < 0)
       {
-        if (map[i][max_X] < 0)
-        {
-          return false;
-        }
+        return false;
       }
     }
-    else if (direction == WalkAnimation::dir::UP)
+  }
+  else if (direction == WalkAnimation::dir::UP)  // && max_Y < mapRows)
+  {
+    // Look at min_Y
+    for (int i = min_X + 1; i < max_X; i++)
     {
-      // Look at min_Y
-      for (unsigned int i = min_X + 1; i < max_X - 1; i++)
+      if (map[max_Y][i] < 0)
       {
-        if (map[min_Y][i] < 0)
-        {
-          return false;
-        }
+        return false;
       }
     }
-    else if (direction == WalkAnimation::dir::DOWN)
+  }
+  else if (direction == WalkAnimation::dir::DOWN)  // && min_Y >= 0)
+  {
+    // Look at min_Y
+    for (int i = min_X + 1; i < max_X; i++)
     {
-      // Look at min_Y
-      for (unsigned int i = 0; i < mapCols; i++)
+      if (map[min_Y][i] < 0)
       {
-        if (map[max_Y][i] < 0)
-        {
-          return false;
-        }
+        return false;
       }
     }
   }

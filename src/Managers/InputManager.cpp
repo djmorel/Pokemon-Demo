@@ -146,25 +146,30 @@ void InputManager::Update()
       displacement = Vector3D(0);
       duration = 80;
     }
-    else
+    else if (movePlayer)
     {
-      // Make sure the player stays in the bounds of the screen
+      // If the player is to move, make sure the player stays in the bounds of the screen
       if ( ((currentDirection == WalkAnimation::dir::UP   ) && (pScreenCoord->y >= Engine::SCREEN_HEIGHT / 64.0f - 1)) || 
            ((currentDirection == WalkAnimation::dir::DOWN ) && (pScreenCoord->y <= 0                                )) ||
            ((currentDirection == WalkAnimation::dir::LEFT ) && (pScreenCoord->x <= 0                                )) ||
            ((currentDirection == WalkAnimation::dir::RIGHT) && (pScreenCoord->x >= Engine::SCREEN_WIDTH / 64.0f  - 1)) )
       {
-        // Player is at the boarder of the screen, so precent movement!
+        // Player is at the edge of the screen, so prevent movement!
         displacement = Vector3D(0);
 
         // TODO: Play a bumping sound effect
         std::cout << "Hey! You're not allowed to jump off the map!" << std::endl;
       }
-      else
+      else  // Player isn't at the edge of the screen
       {
-        // Attempted movement doesn't send the player off the edge of the map, so grant the walk movement
         displacement = Vector3D(8);
       }
+      duration = 40;
+    }
+    else
+    {
+      // Attempted movement doesn't send the player off the edge of the map, so grant the walk movement
+      displacement = Vector3D(8);
       duration = 40;
     }
 
@@ -271,9 +276,6 @@ void InputManager::Update()
           // Update the player's screen coordinates if the player moved relative to the screen
           cm->updatePlayerScreenCoord(Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota));
         }
-
-        std::cout << "Player's screen coordinates are: " << pScreenCoord->x << ", " << pScreenCoord->y << std::endl;
-        std::cout << "Player's map coordinates are   : " << pMapCoord->x << ", " << pMapCoord->y << std::endl;
       }
     }
   }
