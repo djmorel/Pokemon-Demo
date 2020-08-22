@@ -200,12 +200,14 @@
   <ItemGroup>
     <Text Include="src\Assets\WorldMaps\Map_Beach.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Grasslands_Big.txt" />
+    <Text Include="src\Assets\WorldMaps\Map_GrassTrails_Irregular.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Iceberg.txt" />
     <Text Include="src\Assets\WorldMaps\Map_World.txt" />
     <Text Include="src\CharacterInfo\FileFormat.txt" />
     <Text Include="src\CharacterInfo\Hilda.txt" />
     <Text Include="src\Save\FileFormat.txt" />
     <Text Include="src\Save\Savefile.txt" />
+    <Text Include="src\Save\Savefile_OLD.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

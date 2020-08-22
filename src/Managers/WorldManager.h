@@ -4,18 +4,20 @@
 
 #include "../Engine/Actors/Entity.h"
 #include "../Engine/Animations/WalkAnimation.h"
+#include "../Managers/CharacterManager.h"
+#include "../Engine/Math/Vector2D.h"
 #include <vector>
 
 
 class WorldManager
 {
   public:
-    WorldManager();
-    WorldManager(std::string mapPath);
+    //WorldManager();
+    WorldManager(std::string mapPath, PlayerInfo* _playerInfo);
     ~WorldManager();
 
     int readMap(std::string mapPath);
-    int buildWorld();                            // Sets the environment to that of the save file
+    int buildWorld();  // Sets the environment to that of the save file
 
     // Checks if there is enough offscreen tiles to move the world (info for InputManager)
     bool canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCoord, WalkAnimation::dir direction);
@@ -27,6 +29,7 @@ class WorldManager
     void Render();
 
   private:
+    PlayerInfo* playerInfo;
     // Note: Assume the map text files have rows with equal column counts
     std::vector< std::vector<int> > map;  // RAM-like record of the world map
     int mapRows = 0;                      // Tracks the map's row count

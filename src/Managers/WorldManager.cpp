@@ -7,6 +7,7 @@
 #include <cmath>
 
 
+/*
 WorldManager::WorldManager()
 {
   // Read the map blueprints into the map vector
@@ -24,10 +25,14 @@ WorldManager::WorldManager()
     }
   }
 }
+*/
 
 
-WorldManager::WorldManager(std::string mapPath)
+WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
 {
+  // Set the PlayerInfo pointer so that buildWorld() can access the player coordinates later
+  playerInfo = _playerInfo;
+
   // Read the map blueprints into the map vector
   if (readMap(mapPath) < 0)
   {
@@ -190,28 +195,26 @@ int WorldManager::buildWorld()
     return -1;
   }
 
-  // TODO: Load from save file
-  // Load the player's map and screen position from the save file
-  int screenX = 8;
-  int screenY = 5;
-  int mapX = 12;
-  int mapY = 7;
+  // Load the player's map and screen position from the PlayerInfo pointer (retrieved from GameManager's access to CharacterManager)
+  int screenX = (int)floor(playerInfo->screenCoord.x);
+  int screenY = (int)floor(playerInfo->screenCoord.y);
+  int mapX    = (int)floor(playerInfo->mapCoord.x);
+  int mapY    = (int)floor(playerInfo->mapCoord.y);
 
   // Calculate the difference between map and screen tile coordinates
-  //   Used to get the tile offset multiple
-  //   +1 to ensure complete overlap doesn't remove the base tile offset of 32 pixels (accounts for central anchor point)
-  int diff_x = screenX - mapX;
-  int diff_y = screenY - mapY;
+  // Used to get the tile offset multiple
+  int offset_x = (screenX - mapX) * 64 + 32;  //diff_x = screenX - mapX;
+  int offset_y = (screenY - mapY) * 64 + 32;  //diff_y = screenY - mapY;
 
   // Draw the tiles relative to the game window
   for (int row = 0; row < mapRows; row++)
   {
     for (int col = 0; col < mapCols; col++)
     {
-      if (map[row][col] != -1)
+      if (map[row][col] >= 0)
       {
         // Create a new instance of the tile Entity
-        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + diff_x * 64.0f + 64.0f / 2, row * 64.0f + diff_y * 64.0f  + 64.0f / 2, 0), 0, 0.8f));
+        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0), 0, 0.8f));
       }
     }
   }  // End of tile for loop
@@ -221,17 +224,21 @@ int WorldManager::buildWorld()
 }
 
 
+// TODO: Consider using subfunctions for each of the checks
 bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCoord, WalkAnimation::dir direction)
 {
   // Convert the player's screen coordinates to ints
-  int screenX = floor(playerScreenCoord.x);
-  int screenY = floor(playerScreenCoord.y);
+  int screenX = (int)floor(playerScreenCoord.x);
+  int screenY = (int)floor(playerScreenCoord.y);
 
   // Conver the player's map coordinates to ints
-  int mapX = floor(playerMapCoord.x);
-  int mapY = floor(playerMapCoord.y);
+  int mapX = (int)floor(playerMapCoord.x);
+  int mapY = (int)floor(playerMapCoord.y);
 
-  // Compare the player's screen and map coordinates to see if movement would exceed the map's bounds
+  // TODO: Check if the immediate movement would make the player step on an immovable tile
+  // TODO: Work with InputManager to handle this (perhaps use ints for more return values)
+
+  // Check 1: Compare the player's screen and map coordinates to see if movement would exceed the map's bounds
   if ( (direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1) )
   {
     return false;
@@ -250,11 +257,67 @@ bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCo
   }
   // There exist offscreen tiles, so we may be able to move the world
 
-  // TODO: Check if any of the offscreen tiles are invalid
-  // Need to find the difference between the screen and map +-1 and index into the map to find invalid tile codes (id < 0)
+  // Check 2: Determine if any of the offscreen tiles contain invalid tile codes (id < 0)
 
+  // Calculate the max and min index range for the tiles offscreen the map
+  int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX) + 1;
+  int max_Y = mapY + (Engine::SCREEN_HEIGHT / 64 - screenY) + 1;
+  int min_X = mapX - screenX - 1;
+  int min_Y = mapY - screenY - 1;
 
-  // All checks passed, so the world can safely be moved
+  // Check that the calculated index don't exceed the map's row and column count
+  if (min_X >= 0 && min_Y >= 0 && max_X < mapCols && max_Y < mapRows)
+  {
+    // Calculated indices are within bounds of the map
+
+    // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
+    if (direction == WalkAnimation::dir::LEFT)
+    {
+      // Look at min_X (left offscreen tiles)
+      for (unsigned int i = min_Y + 1; i < max_Y - 1; i++)
+      {
+        if (map[i][min_X] < 0)
+        {
+          return false;
+        }
+      }
+    }
+    else if (direction == WalkAnimation::dir::RIGHT)
+    {
+      // Look at min_Y
+      for (unsigned int i = min_Y + 1; i < max_Y - 1; i++)
+      {
+        if (map[i][max_X] < 0)
+        {
+          return false;
+        }
+      }
+    }
+    else if (direction == WalkAnimation::dir::UP)
+    {
+      // Look at min_Y
+      for (unsigned int i = min_X + 1; i < max_X - 1; i++)
+      {
+        if (map[min_Y][i] < 0)
+        {
+          return false;
+        }
+      }
+    }
+    else if (direction == WalkAnimation::dir::DOWN)
+    {
+      // Look at min_Y
+      for (unsigned int i = 0; i < mapCols; i++)
+      {
+        if (map[max_Y][i] < 0)
+        {
+          return false;
+        }
+      }
+    }
+  }
+
+  // All checks passed, so the world can safely be moved in the requested direction
   return true;
 }
 

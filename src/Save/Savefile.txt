@@ -1,6 +1,6 @@
 Hilda
 F
 src/CharacterInfo/Hilda.txt
-src/Assets/WorldMaps/Map_Grasslands_Big.txt
-8,5
-12,7
+src/Assets/WorldMaps/Map_GrassTrails_Irregular.txt
+7,1
+9,1

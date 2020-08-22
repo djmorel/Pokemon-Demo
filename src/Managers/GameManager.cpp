@@ -229,7 +229,7 @@ int GameManager::LoadGame()
     // Free the memory
     delete mWorldManager;
   }
-  mWorldManager = new WorldManager("src/Assets/WorldMaps/Map_Grasslands_Big.txt");
+  mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo().mapPath, &mCharacterManager->getPlayerInfo());
 
   // Enable player input
   if (mInputManager != nullptr)

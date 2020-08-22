@@ -1,0 +1,6 @@
+Hilda
+F
+src/CharacterInfo/Hilda.txt
+src/Assets/WorldMaps/Map_Grasslands_Big.txt
+8,5
+12,7

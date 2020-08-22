@@ -183,5 +183,7 @@
     <Text Include="src\CharacterInfo\Hilda.txt" />
     <Text Include="src\CharacterInfo\FileFormat.txt" />
     <Text Include="src\Save\FileFormat.txt" />
+    <Text Include="src\Assets\WorldMaps\Map_GrassTrails_Irregular.txt" />
+    <Text Include="src\Save\Savefile_OLD.txt" />
   </ItemGroup>
 </Project>
