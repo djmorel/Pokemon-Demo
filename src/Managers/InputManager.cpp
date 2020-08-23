@@ -109,7 +109,7 @@ void InputManager::Update()
     int duration;  // Duration of the animation in milliseconds
 
     // Calculate if the player or the world should move
-    if ( world->canMoveWorld(*pScreenCoord, *pMapCoord, currentDirection) )
+    if ( world->canMoveWorld(currentDirection, *pScreenCoord, *pMapCoord) )
     {
       // Check if the player is in the correct part of the screen to move the world
       if (pScreenCoord->x <= 7 && currentDirection == WalkAnimation::dir::LEFT)
@@ -158,7 +158,7 @@ void InputManager::Update()
         displacement = Vector3D(0);
 
         // TODO: Play a bumping sound effect
-        std::cout << "Hey! You're not allowed to jump off the map!" << std::endl;
+        //std::cout << "Hey! You're not allowed to jump off the map!" << std::endl;
       }
       else  // Player isn't at the edge of the screen
       {

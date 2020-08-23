@@ -12,29 +12,103 @@
 class WorldManager
 {
   public:
-    //WorldManager();
+    /**
+      A constructor that configures a World from a map and player information. Note: Default constructor should NOT be used!
+      \param std::string mapPath - Path of the WorldMap file to read and build.
+      \param PlayerInfo* _playerInfo - Pointer to the player information structure.
+      \return None
+    **/
     WorldManager(std::string mapPath, PlayerInfo* _playerInfo);
+
+    /**
+      A deconstructor that frees all tiles associated with the current world, and clears the tile & map vectors.
+      \param None
+      \return None
+    **/
     ~WorldManager();
 
+    /**
+      Was intended to clean offscreen tiles, but currently does nothing.
+      \param None
+      \return None
+    **/
+    void Update();
+
+    /**
+      Renders all tiles on the map.
+      \param None
+      \return None
+    **/
+    void Render();
+
+    /**
+      Reads a WorldMap file, and records the information in the map vector for later RAM-like access.
+      \param std::string mapPath - Path of the WorldMap file to read.
+      \return 0 on success, -1 if unable to open the WorldMap file, -2 if unable to close the WorldMap file, or -3 if WorldMap file is corrupt/invalid.
+    **/
     int readMap(std::string mapPath);
+
+    /**
+      Builds a world based on information recorded in the map vector.
+      \param None
+      \return 0 on success, or -1 if the map vector has no elements.
+    **/
     int buildWorld();  // Sets the environment to that of the save file
 
-    // Checks if there is enough offscreen tiles to move the world (info for InputManager)
-    bool canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCoord, WalkAnimation::dir direction);
+    /**
+      Calls subfunctions to check if the world can move relative to the player.
+      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param Vector2D playerScreenCoord - x and y coordinates of the player's current position on the screen.
+      \param Vector2D playerMapCoord - x and y coordinates of the player's current position on the map.
+      \return True if the World can move relative to the player, or False if it can't.
+    **/
+    bool canMoveWorld(WalkAnimation::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord);
 
-    void moveWorld(Vector3D v);                  // Moves the environment (InputManager determines if it needs to move player or world)
-    void clearWorld();                           // Clears the environment
+    /**
+      Checks if there are enough offscreen tiles to move the world relative to the player.
+      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param int screenX - x coordinate of the player's current position on the screen.
+      \param int screenY - y coordinate of the player's current position on the screen.
+      \param int mapX - x coordinate of the player's current position on the map.
+      \param int mapY - y coordinate of the player's current position on the map.
+      \return True if the World has offscreen tiles in the passed direction, or False if not.
+    **/
+    bool hasOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY);
 
-    void Update();
-    void Render();
+    /**
+      Checks if all immediate offscreen tiles in the requested direction have a valid tile ID (ID >= 0) to appear on the map.
+      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param int screenX - x coordinate of the player's current position on the screen.
+      \param int screenY - y coordinate of the player's current position on the screen.
+      \param int mapX - x coordinate of the player's current position on the map.
+      \param int mapY - y coordinate of the player's current position on the map.
+      \return True if the passed direction's immediate offscreen tiles are valid, or False if not.
+    **/
+    bool validOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY);
+
+    /**
+      Moves all world elements by the passed argument.
+      \param Vector3D v - Number of pixels to move by.
+      \return None
+    **/
+    void moveWorld(Vector3D v);
+
+    /**
+      Deletes all world elements by clearing the map and tiles vectors.
+      \param None
+      \return None
+    **/
+    void clearWorld();
+
 
   private:
     PlayerInfo* playerInfo;
-    // Note: Assume the map text files have rows with equal column counts
-    std::vector< std::vector<int> > map;  // RAM-like record of the world map
+
+    // Note: WorldMap files MUST have ALL rows contain the same column count
+    std::vector< std::vector<int> > map;  // RAM-like record of the WorldMap
     int mapRows = 0;                      // Tracks the map's row count
     int mapCols = 0;                      // Tracks the map's column count
-    std::vector<Entity*> tiles;
+    std::vector<Entity*> tiles;           // Holds references to each tile
 
 };
 

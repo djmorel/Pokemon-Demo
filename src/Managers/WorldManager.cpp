@@ -7,26 +7,6 @@
 #include <cmath>
 
 
-/*
-WorldManager::WorldManager()
-{
-  // Read the map blueprints into the map vector
-  // Default map is Map_World.txt
-  if (readMap("Assets/World_Maps/Map_World.txt") < 0)
-  {
-    std::cout << "ERROR: Unable to read map blueprints..." << std::endl;
-  }
-  else
-  {
-    // Create the tiles from the map vector
-    if (buildWorld() < 0)
-    {
-      std::cout << "ERROR: map has no elements" << std::endl;
-    }
-  }
-}
-*/
-
 
 WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
 {
@@ -49,6 +29,7 @@ WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
 }
 
 
+
 WorldManager::~WorldManager()
 {
   // Free all tiles
@@ -57,304 +38,11 @@ WorldManager::~WorldManager()
     delete tiles[i];
   }
   tiles.clear();
+
+  // Clear the map
+  map.clear();
 }
 
-
-// Reads a map file into the WorldManager's local map
-// Returns 0 on success, -1 if unable to open the file, -2 if unable to close the file, or -3 if map file is corrupted/invalid
-int WorldManager::readMap(std::string mapPath)
-{
-  // Open the passed map file
-  std::ifstream fd;
-  fd.open(mapPath);
-
-  // Error check the file descriptor
-  if (!fd.is_open())
-  {
-    // Unable to open the file
-    std::cout << "Failed to open file: " << mapPath <<std::endl;
-    return -1;
-  }
-
-  // Variables for reading the map file
-  char ch;                    // Holds the currently read character
-  std::string charNum = "";   // String to hold numerical characters
-  std::vector<int> row;       // Vector to hold row entries
-  bool completedRow = false;  // Flags if a row is complete, and ready to check mapCols
-  int colCount = 0;           // Holds a temporary column count for reference
-
-  // Read the map file
-  while ( fd.get(ch) )
-  {
-    // Check what character we have
-    if (ch == ',')  // Finished reading a number
-    {
-      // Convert charNum to a string
-      try
-      {
-        int num = std::stoi(charNum);
-        row.push_back(num);  // Add the ID to the row
-      }
-      catch (std::invalid_argument const &e)
-      {
-        // Unable to convert to an int, so corrupted map
-        return -3;
-      }
-      catch (std::out_of_range const& e)
-      {
-        // Unable to convert to an int, so corrupted map
-        return -3;
-      }
-
-      // Reset charNum
-      charNum = "";
-
-      // Increment the temporary column count
-      colCount++;
-    }
-    else if (ch == ';')  // Finished reading a number and a row
-    {
-      // Convert charNum to a string
-      try
-      {
-        int num = std::stoi(charNum);
-        row.push_back(num);  // Add the ID to the row
-        map.push_back(row);  // Add the completed row to the map
-      }
-      catch (std::invalid_argument const& e)
-      {
-        // Unable to convert to an int, so corrupted map
-        return -3;
-      }
-      catch (std::out_of_range const& e)
-      {
-        // Unable to convert to an int, so corrupted map
-        return -3;
-      }
-
-      // Reset charNum
-      charNum = "";
-
-      // Reset the row
-      row.clear();
-
-      // Record that a column and row has been completed
-      colCount++;
-      mapRows++;
-
-      // Check that the column count matches previous ones
-      if (completedRow && (colCount != mapCols))
-      {
-        // The column count isn't consistent, so the map is invalid/corrupted
-        return -3;
-      }
-      else
-      {
-        completedRow = true;
-        mapCols = colCount;
-      }
-
-      // Reset the temporary column count
-      colCount = 0;
-    }
-    else if (isdigit(ch) || ch == '-')  // Have a numerical character to add to charNum
-    {
-      charNum.push_back(ch);
-    }
-    else if (ch != '\n' && ch != ' ')  // Have an invalid character in the map
-    {
-      // Return an error identifying a corrupted map
-      return -3;
-    }
-  }  // Completed reading the map file
-
-  // Close the file
-  fd.close();
-  if (fd.is_open())
-  {
-    // File not closed
-    return -2;
-  }
-
-  // Successfully completed reading the map, and closed the file
-  return 0;
-}
-
-
-/**
-  Builds game world based on tiles in the map vector.
-  \param None
-  \return 0 on success, or -1 if map has no elements
-**/
-int WorldManager::buildWorld()
-{
-  // Map blueprints should be already loaded in the map vector
-  if (map.size() <= 0)
-  {
-    // WorldManager::map wasn't initialized by readMap()
-    return -1;
-  }
-
-  // Load the player's map and screen position from the PlayerInfo pointer (retrieved from GameManager's access to CharacterManager)
-  int screenX = (int)floor(playerInfo->screenCoord.x);
-  int screenY = (int)floor(playerInfo->screenCoord.y);
-  int mapX    = (int)floor(playerInfo->mapCoord.x);
-  int mapY    = (int)floor(playerInfo->mapCoord.y);
-
-  // Calculate the difference between map and screen tile coordinates
-  // Used to get the tile offset multiple
-  int offset_x = (screenX - mapX) * 64 + 32;  //diff_x = screenX - mapX;
-  int offset_y = (screenY - mapY) * 64 + 32;  //diff_y = screenY - mapY;
-
-  // Draw the tiles relative to the game window
-  for (int row = 0; row < mapRows; row++)
-  {
-    for (int col = 0; col < mapCols; col++)
-    {
-      if (map[row][col] >= 0)
-      {
-        // Create a new instance of the tile Entity
-        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0), 0, 0.8f));
-      }
-    }
-  }  // End of tile for loop
-
-  // Successfully built the world
-  return 0;
-}
-
-
-// TODO: Consider using subfunctions for each of the checks
-bool WorldManager::canMoveWorld(Vector2D playerScreenCoord, Vector2D playerMapCoord, WalkAnimation::dir direction)
-{
-  // Convert the player's screen coordinates to ints
-  int screenX = (int)floor(playerScreenCoord.x);
-  int screenY = (int)floor(playerScreenCoord.y);
-
-  // Conver the player's map coordinates to ints
-  int mapX = (int)floor(playerMapCoord.x);
-  int mapY = (int)floor(playerMapCoord.y);
-
-  // TODO: Check if the immediate movement would make the player step on an immovable tile
-  // TODO: Work with InputManager to handle this (perhaps use ints for more return values)
-
-  // Check 1: Compare the player's map coordinates and map row/col count to see if movement would exceed the map's bounds
-  if ( (direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1) )
-  {
-    return false;
-  }
-  else if ( (direction == WalkAnimation::dir::RIGHT) && ( (mapX + (Engine::SCREEN_WIDTH / 64 - screenX)) >= mapCols ) )
-  {
-    return false;
-  }
-  else if ( (direction == WalkAnimation::dir::UP) && ( (mapY + (Engine::SCREEN_HEIGHT / 64 - screenY)) >= mapRows ) )
-  {
-    return false;
-  }
-  else if ((direction == WalkAnimation::dir::DOWN) && ((mapY - screenY) < 1) )
-  {
-    return false;
-  }
-  // There exist offscreen tiles, so we may be able to move the world
-
-  // Check 2: Determine if any of the offscreen tiles contain invalid tile codes (id < 0)
-  // Calculate the max and min index range for the tiles offscreen the map
-  int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX);
-  int max_Y = mapY + (Engine::SCREEN_HEIGHT / 64 - screenY);
-  int min_X = mapX - screenX - 1;
-  int min_Y = mapY - screenY - 1;
-  // Check that the calculated index for the requested index doesn't exceed the map's bounds
-  // If so, set the index to the corresponding edge
-  if (min_X < 0)
-  {
-    min_X = 0;
-  }
-  if (max_X >= mapCols)
-  {
-    max_X = mapCols - 1;
-  }
-  if (min_Y < 0)
-  {
-    min_Y = 0;
-  }
-  if (max_Y >= mapRows)
-  {
-    max_Y = mapRows - 1;
-  }
-  // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
-  if (direction == WalkAnimation::dir::LEFT && min_X >= 0)
-  {
-    // Look at min_X (left offscreen tiles)
-    for (int i = min_Y + 1; i < max_Y; i++)
-    {
-      if (map[i][min_X] < 0)
-      {
-        return false;
-      }
-    }
-  }
-  else if (direction == WalkAnimation::dir::RIGHT)  // && max_X < mapCols)
-  {
-    // Look at min_Y
-    for (int i = min_Y + 1; i < max_Y; i++)
-    {
-      if (map[i][max_X] < 0)
-      {
-        return false;
-      }
-    }
-  }
-  else if (direction == WalkAnimation::dir::UP)  // && max_Y < mapRows)
-  {
-    // Look at min_Y
-    for (int i = min_X + 1; i < max_X; i++)
-    {
-      if (map[max_Y][i] < 0)
-      {
-        return false;
-      }
-    }
-  }
-  else if (direction == WalkAnimation::dir::DOWN)  // && min_Y >= 0)
-  {
-    // Look at min_Y
-    for (int i = min_X + 1; i < max_X; i++)
-    {
-      if (map[min_Y][i] < 0)
-      {
-        return false;
-      }
-    }
-  }
-
-  // All checks passed, so the world can safely be moved in the requested direction
-  return true;
-}
-
-
-// Moves world tiles and entities
-void WorldManager::moveWorld(Vector3D v)
-{
-  // Move the world's tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
-  {
-    // tiles_ptr gives a pointer to the tiles vector
-    tiles[i]->getSprite().moveBy(v);
-  }
-
-  // TODO: Move world elements found in NPC & object vectors
-}
-
-
-void WorldManager::clearWorld()
-{
-  // Delete tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
-  {
-    delete tiles[i];  // Delete the pointers
-  }
-  tiles.clear();  // Clear the vector entries
-}
 
 
 void WorldManager::Update()
@@ -392,10 +80,337 @@ void WorldManager::Update()
 }
 
 
+
 void WorldManager::Render()
 {
   for (unsigned int i = 0; i < tiles.size(); i++)
   {
     tiles[i]->Render();
   }
+}
+
+
+
+int WorldManager::readMap(std::string mapPath)
+{
+  // Open the passed map file
+  std::ifstream fd;
+  fd.open(mapPath);
+
+  // Error check the file descriptor
+  if (!fd.is_open())
+  {
+    // Unable to open the file
+    std::cout << "Failed to open file: " << mapPath <<std::endl;
+    return -1;
+  }
+
+  // Variables for reading the map file
+  char ch;                    // Holds the currently read character
+  std::string charNum = "";   // String to hold numerical characters
+  std::vector<int> row;       // Vector to hold row entries
+  bool completedRow = false;  // Flags if a row is complete, and ready to check mapCols
+  int colCount = 0;           // Holds a temporary column count for reference
+
+  // Read the map file
+  while ( fd.get(ch) )
+  {
+    // Check what character we have
+    if (ch == ',')  // Finished reading a number
+    {
+      // Convert charNum to a string
+      try
+      {
+        int num = std::stoi(charNum);
+        row.push_back(num);  // Add the ID to the row
+      }
+      catch (std::invalid_argument const &e)
+      {
+        // Unable to convert to an int, so corrupt/invalid map
+        return -3;
+      }
+      catch (std::out_of_range const& e)
+      {
+        // Unable to convert to an int, so corrupt/invalid map
+        return -3;
+      }
+
+      // Reset charNum
+      charNum = "";
+
+      // Increment the temporary column count
+      colCount++;
+    }
+    else if (ch == ';')  // Finished reading a number and a row
+    {
+      // Convert charNum to a string
+      try
+      {
+        int num = std::stoi(charNum);
+        row.push_back(num);  // Add the ID to the row
+        map.push_back(row);  // Add the completed row to the map
+      }
+      catch (std::invalid_argument const& e)
+      {
+        // Unable to convert to an int, so corrupt/invalid map
+        return -3;
+      }
+      catch (std::out_of_range const& e)
+      {
+        // Unable to convert to an int, so corrupt/invalid map
+        return -3;
+      }
+
+      // Reset charNum
+      charNum = "";
+
+      // Reset the row
+      row.clear();
+
+      // Record that a column and row has been completed
+      colCount++;
+      mapRows++;
+
+      // Check that the column count matches previous ones
+      if (completedRow && (colCount != mapCols))
+      {
+        // The column count isn't consistent, so the map is invalid/corrupted
+        return -3;
+      }
+      else
+      {
+        completedRow = true;
+        mapCols = colCount;
+      }
+
+      // Reset the temporary column count
+      colCount = 0;
+    }
+    else if (isdigit(ch) || ch == '-')  // Have a numerical character to add to charNum
+    {
+      charNum.push_back(ch);
+    }
+    else if (ch != '\n' && ch != ' ')  // Have an invalid character in the map
+    {
+      // Return an error identifying a corrupt/invalid map
+      return -3;
+    }
+  }  // Completed reading the map file
+
+  // Close the file
+  fd.close();
+  if (fd.is_open())
+  {
+    // File not closed
+    return -2;
+  }
+
+  // Successfully completed reading the map, and closed the file
+  return 0;
+}
+
+
+
+int WorldManager::buildWorld()
+{
+  // Map blueprints should be already loaded in the map vector
+  if (map.size() <= 0)
+  {
+    // WorldManager::map wasn't initialized by readMap()
+    return -1;
+  }
+
+  // Load the player's map and screen position from the PlayerInfo pointer (retrieved from GameManager's access to CharacterManager)
+  int screenX = (int)floor(playerInfo->screenCoord.x);
+  int screenY = (int)floor(playerInfo->screenCoord.y);
+  int mapX    = (int)floor(playerInfo->mapCoord.x);
+  int mapY    = (int)floor(playerInfo->mapCoord.y);
+
+  // Calculate the difference between map and screen tile coordinates
+  // Used to get the tile offset multiple
+  int offset_x = (screenX - mapX) * 64 + 32;
+  int offset_y = (screenY - mapY) * 64 + 32;
+
+  // Draw the tiles relative to the game window
+  for (int row = 0; row < mapRows; row++)
+  {
+    for (int col = 0; col < mapCols; col++)
+    {
+      if (map[row][col] >= 0)
+      {
+        // Create a new instance of the tile Entity
+        tiles.push_back(new Entity(map[row][col], Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0), 0, 0.8f));
+      }
+    }
+  }  // End of tile for loop
+
+  // Successfully built the world
+  return 0;
+}
+
+
+
+bool WorldManager::canMoveWorld(WalkAnimation::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord)
+{
+  // Convert the player's screen coordinates to ints
+  int screenX = (int)floor(playerScreenCoord.x);
+  int screenY = (int)floor(playerScreenCoord.y);
+
+  // Conver the player's map coordinates to ints
+  int mapX = (int)floor(playerMapCoord.x);
+  int mapY = (int)floor(playerMapCoord.y);
+
+  // TODO: Check if the immediate movement would make the player step on an immovable tile
+  // TODO: Work with InputManager to handle this (perhaps use ints for more return values)
+
+  // Check 1: Check if there are any offscreen tiles in the requested direction
+  if (!hasOffscreenTiles(direction, screenX, screenY, mapX, mapY))
+  {
+    // There aren't any offscreen tiles in the requested direction, so can't move the world
+    return false;
+  }
+
+  // Check 2: Determine if any of the offscreen tiles contain invalid tile codes (id < 0)
+  if (!validOffscreenTiles(direction, screenX, screenY, mapX, mapY))
+  {
+    // There is at least one invalid offscreen tile in the requested direction, so can't move the world
+    return false;
+  }
+
+  // All checks passed, so the world can safely be moved in the requested direction
+  return true;
+}
+
+
+
+bool WorldManager::hasOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY)
+{
+  // Compare the player's map coordinates and map row/col count to see if movement would exceed the map's bounds
+  if ((direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1))
+  {
+    return false;
+  }
+  else if ((direction == WalkAnimation::dir::RIGHT) && ((mapX + (Engine::SCREEN_WIDTH / 64 - screenX)) >= mapCols))
+  {
+    return false;
+  }
+  else if ((direction == WalkAnimation::dir::UP) && ((mapY + (Engine::SCREEN_HEIGHT / 64 - screenY)) >= mapRows))
+  {
+    return false;
+  }
+  else if ((direction == WalkAnimation::dir::DOWN) && ((mapY - screenY) < 1))
+  {
+    return false;
+  }
+
+  // There exist offscreen tiles in the requested direction
+  return true;
+}
+
+
+
+bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY)
+{
+  // Calculate the max and min index range for the tiles offscreen the map
+  int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX);
+  int max_Y = mapY + (Engine::SCREEN_HEIGHT / 64 - screenY);
+  int min_X = mapX - screenX - 1;
+  int min_Y = mapY - screenY - 1;
+
+  // Check that the calculated index for the requested index doesn't exceed the map's bounds
+  // If so, set the index to the corresponding edge
+  if (min_X < 0)
+  {
+    min_X = 0;
+  }
+  if (max_X >= mapCols)
+  {
+    max_X = mapCols - 1;
+  }
+  if (min_Y < 0)
+  {
+    min_Y = 0;
+  }
+  if (max_Y >= mapRows)
+  {
+    max_Y = mapRows - 1;
+  }
+
+  // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
+  if (direction == WalkAnimation::dir::LEFT && min_X >= 0)
+  {
+    // Look at min_X (left offscreen tiles)
+    for (int i = min_Y + 1; i < max_Y; i++)
+    {
+      if (map[i][min_X] < 0)
+      {
+        return false;
+      }
+    }
+  }
+  else if (direction == WalkAnimation::dir::RIGHT)
+  {
+    // Look at min_Y
+    for (int i = min_Y + 1; i < max_Y; i++)
+    {
+      if (map[i][max_X] < 0)
+      {
+        return false;
+      }
+    }
+  }
+  else if (direction == WalkAnimation::dir::UP)
+  {
+    // Look at min_Y
+    for (int i = min_X + 1; i < max_X; i++)
+    {
+      if (map[max_Y][i] < 0)
+      {
+        return false;
+      }
+    }
+  }
+  else if (direction == WalkAnimation::dir::DOWN)
+  {
+    // Look at min_Y
+    for (int i = min_X + 1; i < max_X; i++)
+    {
+      if (map[min_Y][i] < 0)
+      {
+        return false;
+      }
+    }
+  }
+
+  // There aren't any invalid offscreen tiles in the requested direction
+  return true;
+}
+
+
+
+void WorldManager::moveWorld(Vector3D v)
+{
+  // Move the world's tiles
+  for (unsigned int i = 0; i < tiles.size(); i++)
+  {
+    // tiles_ptr gives a pointer to the tiles vector
+    tiles[i]->getSprite().moveBy(v);
+  }
+
+  // TODO: Move world elements found in NPC & object vectors
+}
+
+
+
+void WorldManager::clearWorld()
+{
+  // Delete tiles
+  for (unsigned int i = 0; i < tiles.size(); i++)
+  {
+    delete tiles[i];  // Delete the pointers
+  }
+  tiles.clear();  // Clear the vector entries
+
+  // Clear the map
+  map.clear();
 }
