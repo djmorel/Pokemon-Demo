@@ -21,11 +21,11 @@ void InputManager::Update()
   // Only process changes when the isActive flag is raised
   if (isActive)
   {
-    // Flag for changing sprite
-    bool changeSprite = (animationCount == 2) || (animationCount == 6);
-    bool movePlayer = shouldMovePlayer();
-    Vector3D displacement;
-    int duration;  // Duration of the animation in milliseconds
+    // Variables
+    bool movePlayer = shouldMovePlayer();                                                // Move player (True) or world (False)
+    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);  // Flag for changing sprite
+    Vector3D displacement;                                                               // How much to move by
+    int duration;                                                                        // Duration of the animation in milliseconds
 
     // Set displacement and duration
     if (newDirection)
@@ -216,10 +216,16 @@ int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &
   }
   
   // Move the player or the world
-  cm->moveCharacter(0, movePlayer, changeSprite, newDirection, displacement, currentDirection, duration);
-  if (!movePlayer)
+  if (movePlayer)
   {
-    world->moveWorld(displacement * Vector3D(-1));   // World moves opposite of the character's direction
+    // Move the player relative to the screen
+    cm->moveCharacter(0, (changeSprite || newDirection), displacement, currentDirection, duration);
+  }
+  else
+  {
+    // Move the world relative to the player (world moves opposite of the character's intended direction)
+    cm->moveCharacter(0, (changeSprite || newDirection), Vector3D(0), currentDirection, duration);
+    world->moveWorld(displacement * Vector3D(-1));
   }
   
   // Update the animationCount

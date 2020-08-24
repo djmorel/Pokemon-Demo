@@ -484,7 +484,7 @@ void CharacterManager::clearCharacters(bool savePlayer)
 }
 
 
-int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, Sprite::dir direction, int duration)
+int CharacterManager::moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, int duration)
 {
   // Check that the passed index is a valid number
   if (characters.size() <= index)
@@ -494,7 +494,7 @@ int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSp
   }
 
   // Call on the player's walk animation to move it
-  characters[index]->character.getSprite().walk(move, changeSprite, newDirection, displacement, direction, duration);
+  characters[index]->character.getSprite().walk(changeSprite, displacement, direction, duration);
 
   return 0;
 }

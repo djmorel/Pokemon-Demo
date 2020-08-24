@@ -136,15 +136,13 @@ class CharacterManager
     /**
       Moves a specified character. Recall that the player is the 1st element in the CharacterManager::characters vector.
       \param unsigned int index - Index specifying what character to move. Set to 0 to move the player.
-      \param bool move - False to keep the player in-place, or True to move the player relative to the screen.
-      \param bool changeSprite - False to keep the player's current WalkAnimation sprite, or True to change it.
-      \param bool newDirection - False if the movement is in the same direction, or True if new direction.
-      \param Vector3D displacement - Where to move the player sprite (and all WalkAnimation sprites) by.
-      \param WalkAnimation::dir direction - Specifies the WalkAnimation sprite direction.
-      \param int duration - How long to move the player.
+      \param bool changeSprite - False to keep the player's current Sprite frame, or True to change it.
+      \param Vector3D displacement - Position to move the character's Sprite by.
+      \param Sprite::dir direction - Specifies which direction to move the Sprite.
+      \param int duration - How long the movement shoult take (in milliseconds).
       \return 0 if success, or -1 if invalid index.
     **/
-    int moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, Sprite::dir direction, int duration);
+    int moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, int duration);
 
     /**
       Moves all NPCs (second element and onward in the CharacterManager::characters vector).

@@ -1,7 +1,9 @@
 #include "Sprite.h"
 #include "../Engine.h"
+#include "../Math/Math.h"
 #include <thread>
 #include <chrono>
+
 
 
 Sprite::Sprite()
@@ -30,6 +32,7 @@ Sprite::Sprite()
   size = Vector3D(0);
   speed = 0;
 }
+
 
 
 Sprite::Sprite(std::string assetName)
@@ -70,6 +73,7 @@ Sprite::Sprite(std::string assetName)
 }
 
 
+
 Sprite::Sprite(int assetID)
 {
   // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
@@ -106,6 +110,7 @@ Sprite::Sprite(int assetID)
   scale = Vector3D(1);
   speed = 0;
 }
+
 
 
 Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale)
@@ -146,6 +151,7 @@ Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale
 }
 
 
+
 Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
 {
   // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
@@ -184,14 +190,14 @@ Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
 }
 
 
-// TODO: Do something?!?!
+
 void Sprite::Update()
 {
-  // Do nothing until we get I/O going
+  // Do nothing (keep as a placeholder for future functionality)
 }
 
 
-// TODO: Adjust logic for different size sprites (uses unitsHigh and unitsWide that aren't 1)
+
 void Sprite::Render()
 {
   // Render our texture via OpenGL code
@@ -247,73 +253,82 @@ void Sprite::Render()
 }
 
 
-void Sprite::setSpeedTo(float x)
+void Sprite::setSpeedTo(float _speed)
 {
-  speed = x;
+  // Make sure speed is set an absolute value
+  speed = Math::abs(_speed);
 }
 
 
-void Sprite::moveTo(Vector3D v)
+void Sprite::moveTo(Vector3D _pos)
 {
-  pos = v;
+  pos = _pos;
 }
 
 
-// TODO: Use getDT()?
+
 void Sprite::moveBy(Vector3D v)
 {
   pos = pos + v;
-  //pos = pos + (v * Engine::getDT());
+
+  // Use getDT() if looking to move according to the processor's time
+  // pos = pos + (v * Engine::getDT());
 }
 
 
-// TODO: Use getDT()?
+
 void Sprite::moveLeft()
 {
-  pos = pos - Vector3D(64, 0, 0);
-  //pos = pos - Vector3D(speed, 0, 0);
-  //pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
+  pos = pos - Vector3D(speed, 0, 0);
+
+  // Use getDT() if looking to move according to the processor's time
+  // pos = pos - Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
-// TODO: Use getDT()?
+
 void Sprite::moveRight()
 {
-  pos = pos + Vector3D(64, 0, 0);
-  //pos = pos + Vector3D(speed, 0, 0);
-  //pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
+  pos = pos + Vector3D(speed, 0, 0);
+
+  // Use getDT() if looking to move according to the processor's time
+  // pos = pos + Vector3D((speed * Engine::getDT()), 0, 0);
 }
 
 
-// TODO: Use getDT()?
+
 void Sprite::moveUp()
 {
-  pos = pos + Vector3D(0, 64, 0);
-  //pos = pos + Vector3D(0, speed, 0);
-  //pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
+  pos = pos + Vector3D(0, speed, 0);
+
+  // Use getDT() if looking to move according to the processor's time
+  // pos = pos + Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
-// TODO: Use getDT()?
+
 void Sprite::moveDown()
 {
-  pos = pos - Vector3D(0, 64, 0);
-  //pos = pos - Vector3D(0, speed, 0);
-  //pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
+  pos = pos - Vector3D(0, speed, 0);
+
+  // Use getDT() if looking to move according to the processor's time
+  // pos = pos - Vector3D(0, (speed * Engine::getDT()), 0);
 }
 
 
-void Sprite::rotateTo(float x)
+
+void Sprite::rotateTo(float _rot)
 {
-  rot = x;
+  rot = _rot;
 }
+
 
 
 void Sprite::rotateBy(float x)
 {
-  // Rotate by x degrees
   rot += x;
 }
+
 
 
 void Sprite::setScale(float x)
@@ -322,10 +337,12 @@ void Sprite::setScale(float x)
 }
 
 
-void Sprite::setScale(Vector3D v)
+
+void Sprite::setScale(Vector3D _scale)
 {
-  scale = v;
+  scale = _scale;
 }
+
 
 
 void Sprite::setDimensions(float x)
@@ -334,10 +351,26 @@ void Sprite::setDimensions(float x)
 }
 
 
+
 void Sprite::setDimensions(Vector3D v)
 {
   scale = v / size;
 }
+
+
+
+void Sprite::setFramesPerDirection(int _framesPerDirection)
+{
+  framesPerDirection = _framesPerDirection;
+}
+
+
+
+void Sprite::setFrameIndex(int _frameIndex)
+{
+  frameIndex = _frameIndex;
+}
+
 
 
 Vector3D* Sprite::getPos()
@@ -346,10 +379,19 @@ Vector3D* Sprite::getPos()
 }
 
 
+
 float* Sprite::getRot()
 {
   return &rot;
 }
+
+
+
+Vector3D* Sprite::getSize()
+{
+  return &size;
+}
+
 
 
 Vector3D* Sprite::getScale()
@@ -358,10 +400,19 @@ Vector3D* Sprite::getScale()
 }
 
 
-Vector3D* Sprite::getSize()
+
+int* Sprite::getFramesPerDirection()
 {
-  return &size;
+  return &framesPerDirection;
 }
+
+
+
+int* Sprite::getFrameIndex()
+{
+  return &frameIndex;
+}
+
 
 
 int Sprite::pushSpriteInfo(std::string assetName)
@@ -384,6 +435,7 @@ int Sprite::pushSpriteInfo(std::string assetName)
 }
 
 
+
 int Sprite::pushSpriteInfo(int assetID)
 {
   // Retrieve spriteInfo from the AssetLookupTable
@@ -404,6 +456,7 @@ int Sprite::pushSpriteInfo(int assetID)
 }
 
 
+
 void Sprite::popSpriteInfo()
 {
   // Only pop if spriteInfo actually contains something
@@ -421,31 +474,8 @@ void Sprite::popSpriteInfo()
 }
 
 
-void Sprite::setFramesPerDirection(int _framesPerDirection)
-{
-  framesPerDirection = _framesPerDirection;
-}
 
-
-void Sprite::setFrameIndex(int _frameIndex)
-{
-  frameIndex = _frameIndex;
-}
-
-
-int* Sprite::getFramesPerDirection()
-{
-  return &framesPerDirection;
-}
-
-
-int* Sprite::getFrameIndex()
-{
-  return &frameIndex;
-}
-
-
-int Sprite::updateFrameIndex(dir direction)
+int Sprite::updateFrameIndex(Sprite::dir direction)
 {
   // Check that framesPerDirection and the size of the spriteInfo vector match
   if (spriteInfo.size() != framesPerDirection * 4)
@@ -497,10 +527,10 @@ int Sprite::updateFrameIndex(dir direction)
 
 
 
-void Sprite::walk(bool move, bool changeFrame, bool newDirection, Vector3D displacement, dir direction, int duration)
+void Sprite::walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, int duration)
 {
   // Check if the sprite's frame Index should change
-  if (changeFrame || newDirection)
+  if (changeFrame)
   {
     // Adjust the sprite's frameIndex
     if (updateFrameIndex(direction) < 0)
@@ -510,11 +540,8 @@ void Sprite::walk(bool move, bool changeFrame, bool newDirection, Vector3D displ
     }
   }
 
-  // Check if the sprite should move
-  if (move)
-  {
-    moveBy(displacement);
-  }
+  // Move the Sprite according to its displacement
+  moveBy(displacement);
 
   // Add delay to the walk
   std::this_thread::sleep_for(std::chrono::milliseconds(duration));
