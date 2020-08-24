@@ -5,7 +5,7 @@
 Character::Character()
 {
   // Initialize walkAnimation
-  walkAnimation = WalkAnimation(&sprite, isPlayer);
+  //walkAnimation = WalkAnimation(&sprite, isPlayer);
 }
 
 
@@ -34,7 +34,7 @@ Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOf
 
 Character::~Character()
 {
-  walkAnimation.~WalkAnimation();
+  //walkAnimation.~WalkAnimation();
 }
 
 
@@ -64,11 +64,12 @@ RigidBody& Character::getRB()
   return rb;
 }
 
-
+/*
 WalkAnimation& Character::getWalkAnimation()
 {
   return walkAnimation;
 }
+*/
 
 
 void Character::setSprite(Sprite _sprite)

@@ -250,7 +250,7 @@ int WorldManager::buildWorld()
 
 
 
-bool WorldManager::canMoveWorld(WalkAnimation::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord)
+bool WorldManager::canMoveWorld(Sprite::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord)
 {
   // Convert the player's screen coordinates to ints
   int screenX = (int)floor(playerScreenCoord.x);
@@ -283,22 +283,22 @@ bool WorldManager::canMoveWorld(WalkAnimation::dir direction, Vector2D playerScr
 
 
 
-bool WorldManager::hasOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY)
+bool WorldManager::hasOffscreenTiles(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY)
 {
   // Compare the player's map coordinates and map row/col count to see if movement would exceed the map's bounds
-  if ((direction == WalkAnimation::dir::LEFT) && ((mapX - screenX) < 1))
+  if ((direction == Sprite::dir::LEFT) && ((mapX - screenX) < 1))
   {
     return false;
   }
-  else if ((direction == WalkAnimation::dir::RIGHT) && ((mapX + (Engine::SCREEN_WIDTH / 64 - screenX)) >= mapCols))
+  else if ((direction == Sprite::dir::RIGHT) && ((mapX + (Engine::SCREEN_WIDTH / 64 - screenX)) >= mapCols))
   {
     return false;
   }
-  else if ((direction == WalkAnimation::dir::UP) && ((mapY + (Engine::SCREEN_HEIGHT / 64 - screenY)) >= mapRows))
+  else if ((direction == Sprite::dir::UP) && ((mapY + (Engine::SCREEN_HEIGHT / 64 - screenY)) >= mapRows))
   {
     return false;
   }
-  else if ((direction == WalkAnimation::dir::DOWN) && ((mapY - screenY) < 1))
+  else if ((direction == Sprite::dir::DOWN) && ((mapY - screenY) < 1))
   {
     return false;
   }
@@ -309,7 +309,7 @@ bool WorldManager::hasOffscreenTiles(WalkAnimation::dir direction, int screenX, 
 
 
 
-bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY)
+bool WorldManager::validOffscreenTiles(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY)
 {
   // Calculate the max and min index range for the tiles offscreen the map
   int max_X = mapX + (Engine::SCREEN_WIDTH / 64 - screenX);
@@ -337,7 +337,7 @@ bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX
   }
 
   // Iterate through the appropriate immediate offscreen tiles to see if any of them contain invalid tile codes
-  if (direction == WalkAnimation::dir::LEFT && min_X >= 0)
+  if (direction == Sprite::dir::LEFT && min_X >= 0)
   {
     // Look at min_X (left offscreen tiles)
     for (int i = min_Y + 1; i < max_Y; i++)
@@ -348,7 +348,7 @@ bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX
       }
     }
   }
-  else if (direction == WalkAnimation::dir::RIGHT)
+  else if (direction == Sprite::dir::RIGHT)
   {
     // Look at min_Y
     for (int i = min_Y + 1; i < max_Y; i++)
@@ -359,7 +359,7 @@ bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX
       }
     }
   }
-  else if (direction == WalkAnimation::dir::UP)
+  else if (direction == Sprite::dir::UP)
   {
     // Look at min_Y
     for (int i = min_X + 1; i < max_X; i++)
@@ -370,7 +370,7 @@ bool WorldManager::validOffscreenTiles(WalkAnimation::dir direction, int screenX
       }
     }
   }
-  else if (direction == WalkAnimation::dir::DOWN)
+  else if (direction == Sprite::dir::DOWN)
   {
     // Look at min_Y
     for (int i = min_X + 1; i < max_X; i++)

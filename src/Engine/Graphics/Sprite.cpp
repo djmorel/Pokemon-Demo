@@ -1,15 +1,28 @@
 #include "Sprite.h"
 #include "../Engine.h"
+#include <thread>
+#include <chrono>
 
 
 Sprite::Sprite()
 {
-  spriteInfo.assetPath = "";
-  spriteInfo.sheetIndex = Vector2D(-1, -1);
-  spriteInfo.spriteRows = -1;
-  spriteInfo.spriteColumns = -1;
-  spriteInfo.unitsHigh = -1;
-  spriteInfo.unitsWide = -1;
+  // Create a placeholder assetInfo
+  assetInfo _spriteInfo;
+  _spriteInfo.assetPath = "";
+  _spriteInfo.sheetIndex = Vector2D(-1, -1);
+  _spriteInfo.spriteRows = -1;
+  _spriteInfo.spriteColumns = -1;
+  _spriteInfo.unitsHigh = -1;
+  _spriteInfo.unitsWide = -1;
+
+  // Add the placeholder to the Sprite's spriteInfo vector
+  spriteInfo.push_back(_spriteInfo);
+
+  // Config the spriteInfo tracker variables to mark the placeholder
+  framesPerDirection = -1;
+  frameIndex = 0;
+
+  // Set the remaining Sprite members as default placeholders
   texture = Texture();
   pos = Vector3D(0);
   rot = 0;
@@ -21,33 +34,34 @@ Sprite::Sprite()
 
 Sprite::Sprite(std::string assetName)
 {
-  // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(assetName);
-
-  // Check if valid asset name passed
-  if (spriteInfo.assetPath == "")
+  // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
+  if (pushSpriteInfo(assetName) < 0)
   {
-    // Invalid passed assetName
     std::cout << "ERROR Invalid asset name: " << assetName << std::endl;
     return;
   }
 
-  texture = Texture(spriteInfo.assetPath);
+  // Config the spriteInfo tracker variables
+  framesPerDirection = 1;
+  frameIndex = 0;
+
+  // Set the remaining Sprite members according to the retrieved assetInfo
+  texture = Texture(spriteInfo[frameIndex].assetPath);
   pos = Vector3D(0);
   rot = 0;
 
   // Set the size based on the texture dimensions
-  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  if (spriteInfo[frameIndex].spriteRows == 1 && spriteInfo[frameIndex].spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
   else
   {
     // Caclulate the sprite unit height and width
-    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
-    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
-    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
-    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo[frameIndex].spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo[frameIndex].spriteColumns;
+    float spriteHeight = spriteInfo[frameIndex].unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo[frameIndex].unitsWide * unitWidth;
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
@@ -58,33 +72,34 @@ Sprite::Sprite(std::string assetName)
 
 Sprite::Sprite(int assetID)
 {
-  // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(assetID);
-
-  // Check if valid asset name passed
-  if (spriteInfo.assetPath == "")
+  // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
+  if (pushSpriteInfo(assetID) < 0)
   {
-    // Invalid passed assetName
     std::cout << "ERROR Invalid asset ID: " << assetID << std::endl;
     return;
   }
 
-  texture = Texture(spriteInfo.assetPath);
+  // Config the spriteInfo tracker variables
+  framesPerDirection = 1;
+  frameIndex = 0;
+
+  // Set the remaining Sprite members according to the retrieved assetInfo
+  texture = Texture(spriteInfo[frameIndex].assetPath);
   pos = Vector3D(0);
   rot = 0;
 
   // Set the size based on the texture dimensions
-  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  if (spriteInfo[frameIndex].spriteRows == 1 && spriteInfo[frameIndex].spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
   else
   {
     // Caclulate the sprite unit height and width
-    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
-    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
-    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
-    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo[frameIndex].spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo[frameIndex].spriteColumns;
+    float spriteHeight = spriteInfo[frameIndex].unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo[frameIndex].unitsWide * unitWidth;
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
@@ -95,33 +110,34 @@ Sprite::Sprite(int assetID)
 
 Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale)
 {
-  // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(assetName);
-
-  // Check if valid asset name passed
-  if (spriteInfo.assetPath == "")
+  // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
+  if (pushSpriteInfo(assetName) < 0)
   {
-    // Invalid passed assetName
     std::cout << "ERROR Invalid asset name: " << assetName << std::endl;
     return;
   }
 
-  texture = Texture(spriteInfo.assetPath);
+  // Config the spriteInfo tracker variables
+  framesPerDirection = 1;
+  frameIndex = 0;
+
+  // Set the remaining Sprite members according to the retrieved assetInfo and input arguments
+  texture = Texture(spriteInfo[frameIndex].assetPath);
   pos = _pos;
   rot = _rot;
 
   // Set the size based on the texture dimensions
-  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  if (spriteInfo[frameIndex].spriteRows == 1 && spriteInfo[frameIndex].spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
   else
   {
     // Caclulate the sprite unit height and width
-    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
-    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
-    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
-    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo[frameIndex].spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo[frameIndex].spriteColumns;
+    float spriteHeight = spriteInfo[frameIndex].unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo[frameIndex].unitsWide * unitWidth;
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
@@ -132,33 +148,34 @@ Sprite::Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale
 
 Sprite::Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale)
 {
-  // Retrieve spriteInfo from the AssetLookupTable
-  spriteInfo = AssetLT::findAsset(assetID);
-
-  // Check if valid asset name passed
-  if (spriteInfo.assetPath == "")
+  // Check if the assetInfo was successfully added to the Sprite spriteInfo vector
+  if (pushSpriteInfo(assetID) < 0)
   {
-    // Invalid passed assetName
     std::cout << "ERROR Invalid asset ID: " << assetID << std::endl;
     return;
   }
 
-  texture = Texture(spriteInfo.assetPath);
+  // Config the spriteInfo tracker variables
+  framesPerDirection = 1;
+  frameIndex = 0;
+
+  // Set the remaining Sprite members according to the retrieved assetInfo and input arguments
+  texture = Texture(spriteInfo[frameIndex].assetPath);
   pos = _pos;
   rot = _rot;
 
   // Set the size based on the texture dimensions
-  if (spriteInfo.spriteRows == 1 && spriteInfo.spriteColumns == 1)
+  if (spriteInfo[frameIndex].spriteRows == 1 && spriteInfo[frameIndex].spriteColumns == 1)
   {
     size = Vector3D((float)texture.getWidth(), (float)texture.getHeight(), 1);
   }
   else
   {
     // Caclulate the sprite unit height and width
-    float unitHeight = (float)texture.getHeight() / (float)spriteInfo.spriteRows;
-    float unitWidth = (float)texture.getWidth() / (float)spriteInfo.spriteColumns;
-    float spriteHeight = spriteInfo.unitsHigh * unitHeight;
-    float spriteWidth = spriteInfo.unitsWide * unitWidth;
+    float unitHeight = (float)texture.getHeight() / (float)spriteInfo[frameIndex].spriteRows;
+    float unitWidth = (float)texture.getWidth() / (float)spriteInfo[frameIndex].spriteColumns;
+    float spriteHeight = spriteInfo[frameIndex].unitsHigh * unitHeight;
+    float spriteWidth = spriteInfo[frameIndex].unitsWide * unitWidth;
 
     size = Vector3D(spriteWidth, spriteHeight, 1);
   }
@@ -193,10 +210,10 @@ void Sprite::Render()
   glBegin(GL_QUADS);      // Begin rendering with a mode (2D sprites means use quads)
   {
     // Pull information about the spritesheet
-    float x = (float)spriteInfo.sheetIndex.x;
-    float y = (float)spriteInfo.sheetIndex.y;
-    float xRatio = 1.0f / (float)spriteInfo.spriteColumns;
-    float yRatio = 1.0f / (float)spriteInfo.spriteRows;
+    float x = (float)spriteInfo[frameIndex].sheetIndex.x;
+    float y = (float)spriteInfo[frameIndex].sheetIndex.y;
+    float xRatio = 1.0f / (float)spriteInfo[frameIndex].spriteColumns;
+    float yRatio = 1.0f / (float)spriteInfo[frameIndex].spriteRows;
 
     // Setup texture coordinates with our real scene coordinates (where our matrix moved to) (first quadrant coordinates)
     // Use the following order to ensure the entire sprite gets rendered properly (must use one-hot coordinate positions)
@@ -204,19 +221,19 @@ void Sprite::Render()
 
     // Top left vertex
     glTexCoord2f( (0 + x) * xRatio, (0 + y) * yRatio);
-    glVertex2f(-texture.getWidth() * xRatio * spriteInfo.unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
+    glVertex2f(-texture.getWidth() * xRatio * spriteInfo[frameIndex].unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo[frameIndex].unitsHigh / 2);
 
     // Bottom left vertex
-    glTexCoord2f( (spriteInfo.unitsWide + x) * xRatio, (0 + y) * yRatio);
-    glVertex2f( texture.getWidth() * xRatio * spriteInfo.unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
+    glTexCoord2f( (spriteInfo[frameIndex].unitsWide + x) * xRatio, (0 + y) * yRatio);
+    glVertex2f( texture.getWidth() * xRatio * spriteInfo[frameIndex].unitsWide / 2, -texture.getHeight() * yRatio * spriteInfo[frameIndex].unitsHigh / 2);
 
     // Bottom right vertex
-    glTexCoord2f( (spriteInfo.unitsWide + x) * xRatio, (spriteInfo.unitsHigh + y) * yRatio);
-    glVertex2f( texture.getWidth() * xRatio * spriteInfo.unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
+    glTexCoord2f( (spriteInfo[frameIndex].unitsWide + x) * xRatio, (spriteInfo[frameIndex].unitsHigh + y) * yRatio);
+    glVertex2f( texture.getWidth() * xRatio * spriteInfo[frameIndex].unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo[frameIndex].unitsHigh / 2);
 
     // Top right vertex
-    glTexCoord2f( (0 + x) * xRatio, (spriteInfo.unitsHigh + y) * yRatio);
-    glVertex2f(-texture.getWidth() * xRatio * spriteInfo.unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo.unitsHigh / 2);
+    glTexCoord2f( (0 + x) * xRatio, (spriteInfo[frameIndex].unitsHigh + y) * yRatio);
+    glVertex2f(-texture.getWidth() * xRatio * spriteInfo[frameIndex].unitsWide / 2,  texture.getHeight() * yRatio * spriteInfo[frameIndex].unitsHigh / 2);
 
     // Note:
     // glTexCoord2f() -> Percentage (0 to 1) of image to start drawing from (Horizontal, Vertical)
@@ -344,4 +361,161 @@ Vector3D* Sprite::getScale()
 Vector3D* Sprite::getSize()
 {
   return &size;
+}
+
+
+int Sprite::pushSpriteInfo(std::string assetName)
+{
+  // Retrieve spriteInfo from the AssetLookupTable
+  assetInfo _spriteInfo = AssetLT::findAsset(assetName);
+
+  // Check if valid asset name passed
+  if (_spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName, so return an error
+    return -1;
+  }
+
+  // Add the assetInfo object to Sprite's spriteInfo vector
+  spriteInfo.push_back(_spriteInfo);
+
+  // Return success
+  return 0;
+}
+
+
+int Sprite::pushSpriteInfo(int assetID)
+{
+  // Retrieve spriteInfo from the AssetLookupTable
+  assetInfo _spriteInfo = AssetLT::findAsset(assetID);
+
+  // Check if valid asset name passed
+  if (_spriteInfo.assetPath == "")
+  {
+    // Invalid passed assetName, so return an error
+    return -1;
+  }
+
+  // Add the assetInfo object to Sprite's spriteInfo vector
+  spriteInfo.push_back(_spriteInfo);
+
+  // Return success
+  return 0;
+}
+
+
+void Sprite::popSpriteInfo()
+{
+  // Only pop if spriteInfo actually contains something
+  if (spriteInfo.size() > 0)
+  {
+    spriteInfo.pop_back();
+  }
+
+  // If no more elements, record invalid values for the spriteInfo tracker variables
+  if (spriteInfo.size() == 0)
+  {
+    framesPerDirection = -1;
+    frameIndex = -1;
+  }
+}
+
+
+void Sprite::setFramesPerDirection(int _framesPerDirection)
+{
+  framesPerDirection = _framesPerDirection;
+}
+
+
+void Sprite::setFrameIndex(int _frameIndex)
+{
+  frameIndex = _frameIndex;
+}
+
+
+int* Sprite::getFramesPerDirection()
+{
+  return &framesPerDirection;
+}
+
+
+int* Sprite::getFrameIndex()
+{
+  return &frameIndex;
+}
+
+
+int Sprite::updateFrameIndex(dir direction)
+{
+  // Check that framesPerDirection and the size of the spriteInfo vector match
+  if (spriteInfo.size() != framesPerDirection * 4)
+  {
+    return -1;
+  }
+
+  // Assign the direction offset based on the direction
+  int dirOffset;
+  if (direction == dir::DOWN)
+  {
+    dirOffset = 0;
+  }
+  else if (direction == dir::LEFT)
+  {
+    dirOffset = 1;
+  }
+  else if (direction == dir::RIGHT)
+  {
+    dirOffset = 2;
+  }
+  else if (direction == dir::UP)
+  {
+    dirOffset = 3;
+  }
+  else
+  {
+    // Invalid direction, so report an error
+    return -2;
+  }
+
+  // Calculate the start and end frame ranges
+  int startFrame = framesPerDirection * dirOffset;
+  int endFrame = startFrame + framesPerDirection - 1;
+
+  // Assign the frameIndex based on its current value
+  if ( (frameIndex >= startFrame) && (frameIndex < endFrame) )
+  {
+    frameIndex++;
+  }
+  else
+  {
+    frameIndex = startFrame;
+  }
+
+  // Return success
+  return 0;
+}
+
+
+
+void Sprite::walk(bool move, bool changeFrame, bool newDirection, Vector3D displacement, dir direction, int duration)
+{
+  // Check if the sprite's frame Index should change
+  if (changeFrame || newDirection)
+  {
+    // Adjust the sprite's frameIndex
+    if (updateFrameIndex(direction) < 0)
+    {
+      // Unable to update the frame index, so report an error
+      std::cout << "ERROR: Invalid direction or Sprite's framesPerDirection not configured properly!" << std::endl;
+    }
+  }
+
+  // Check if the sprite should move
+  if (move)
+  {
+    moveBy(displacement);
+  }
+
+  // Add delay to the walk
+  std::this_thread::sleep_for(std::chrono::milliseconds(duration));
 }

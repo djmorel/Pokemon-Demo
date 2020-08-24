@@ -239,7 +239,7 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
     else if (lineNum == 2)  // Load information about the walk animation
     {
       // Configure the walkAnimation (it's assumes that ALL Character objects have a WalkAnimation)
-      if ( configAnimation(characterInfo->character, line, _pos, _rot, _scale) < 0 )
+      if ( configSprite(characterInfo->character, line, _pos, _rot, _scale) < 0 )
       {
         // Failed to create the animation (likely intPull's fault), so return an error
         delete characterInfo;
@@ -249,7 +249,7 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
       else
       {
         // Set up the character's sprite
-        characterInfo->character.setSprite(characterInfo->character.getWalkAnimation().getDefaultSprite());
+        //characterInfo->character.setSprite(characterInfo->character.getWalkAnimation().getDefaultSprite());
 
         // Set up the character's rigid body
         if (isPlayer)
@@ -289,16 +289,16 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
 
 
 
-int CharacterManager::configAnimation(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale)
+int CharacterManager::configSprite(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale)
 {
   int numSprites = 0;            // Holds the number of sprites per animation's direction
   int id = -1;                   // Holds an assetID
   std::vector<int> spriteCodes;  // Tracks the assetIDs for the animation sprites
-  Sprite* spriteAnimation;       // Pointer to a new Sprite
-  WalkAnimation::dir directions[] = { WalkAnimation::dir::DOWN,
-                                      WalkAnimation::dir::LEFT,
-                                      WalkAnimation::dir::RIGHT,
-                                      WalkAnimation::dir::UP };
+  Sprite _sprite;                 // Pointer to a new Sprite
+  Sprite::dir directions[] = { Sprite::dir::DOWN,
+                               Sprite::dir::LEFT,
+                               Sprite::dir::RIGHT,
+                               Sprite::dir::UP };
 
   // Determine how many sprites are assigned to a direction's animation
   numSprites = intPull(line, ':');
@@ -330,15 +330,28 @@ int CharacterManager::configAnimation(Character &character, std::string &line, V
     }
   }
 
+  // Add the sprite to the character
+  _sprite = Sprite(spriteCodes[0], _pos, _rot, _scale);
+
   // Use the assetIDs in spriteCodes to create spriteAnimations
-  for (unsigned int i = 0; i < spriteCodes.size(); i++)
+  for (unsigned int i = 1; i < spriteCodes.size(); i++)
   {
-    // Create the sprite animations
-    spriteAnimation = new Sprite(spriteCodes[i], _pos, _rot, _scale);
-    character.getWalkAnimation().pushSpriteVector(directions[i / numSprites], spriteAnimation);
+    // Add the sprite frames to the sprite object
+    if (_sprite.pushSpriteInfo(spriteCodes[i]) < 0)
+    {
+      std::cout << "ERROR: Invalid assetID " << spriteCodes[i] << " when adding sprite frames" << std::endl;
+      return -2;
+    }
   }
 
-  // Successfully added the animation to the passed character
+  // Set the Sprite's spriteInfo tracker variables
+  _sprite.setFramesPerDirection(numSprites);
+  _sprite.setFrameIndex(0);
+
+  // Set the configured sprite to the character
+  character.setSprite(_sprite);
+
+  // Successfully configured the character's sprite
   return 0;
 }
 
@@ -471,7 +484,7 @@ void CharacterManager::clearCharacters(bool savePlayer)
 }
 
 
-int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, Sprite::dir direction, int duration)
 {
   // Check that the passed index is a valid number
   if (characters.size() <= index)
@@ -481,25 +494,19 @@ int CharacterManager::moveCharacter(unsigned int index, bool move, bool changeSp
   }
 
   // Call on the player's walk animation to move it
-  characters[index]->character.getWalkAnimation().walk(move, changeSprite, newDirection, displacement, direction, duration);
+  characters[index]->character.getSprite().walk(move, changeSprite, newDirection, displacement, direction, duration);
 
   return 0;
 }
 
 
-void CharacterManager::moveAllNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration)
+void CharacterManager::moveAllNPCs(Vector3D displacement)
 {
-  // Call on the NPCs move Sprites
-  // TODO: Consider using a pointer for WalkAnimation sprite positions? (Try passing a pointer for position and don't call on moveSprites)
-  // OR set sprites to be a vector/array of the spritesheet they're based on
-
+  // Move all NPCs by a certain displacement
   for (unsigned int i = 1; i < characters.size(); i++)
   {
     // Move the NPC sprites
     characters[i]->character.getSprite().moveBy(displacement);
-
-    // Move the NPC WalkAnimation sprites
-    characters[i]->character.getWalkAnimation().moveSprites(displacement);
   }
 }
 

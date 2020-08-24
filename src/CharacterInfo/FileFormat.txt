@@ -1,4 +1,3 @@
 Character Name
 Spritesheet File
-WalkAnimation Info (# sprites per direction: AssetIDs(in order of down, left, right, & up - separated by comma))
-***Other Animations... - If no animation, set as 0 for the line
+spriteInfo (framesPerDirection: AssetIDs (in order of down, left, right, & up - separated by comma) )

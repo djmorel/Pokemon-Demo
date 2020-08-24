@@ -23,6 +23,15 @@ class Sprite
     Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale);
     Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale);
 
+    // Identifies sprite orientation
+    enum class dir
+    {
+      UP,
+      DOWN,
+      LEFT,
+      RIGHT
+    };
+
     void Update();
     void Render();
 
@@ -45,15 +54,32 @@ class Sprite
     Vector3D* getScale();
     Vector3D* getSize();
 
+    int pushSpriteInfo(std::string assetName);
+    int pushSpriteInfo(int assetID);
+    void popSpriteInfo();
+
+    void setFramesPerDirection(int _framesPerDirection);
+    void setFrameIndex(int _frameIndex);
+    int* getFramesPerDirection();
+    int* getFrameIndex();
+
+    int updateFrameIndex(dir direction);
+    // Animates the sprite to walk in a specified direction
+    void walk(bool move, bool changeFrame, bool newDirection, Vector3D displacement, dir direction, int duration);
+
 
   private:
-    assetInfo spriteInfo;
+    std::vector<assetInfo> spriteInfo;  // Holds spriteInfo for different frames (direction order is DOWN, LEFT, RIGHT, UP)
     Texture texture;
     float speed;
     Vector3D pos;
     float rot;
     Vector3D size;  // Size of the texture
     Vector3D scale;
+
+    // For animations
+    int framesPerDirection;  // Holds number of frames per direction (DOWN, LEFT, RIGHT, UP) for the sprite 
+    int frameIndex;          // Tracks current Sprite frame
 };
 
 

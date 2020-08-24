@@ -3,7 +3,7 @@
 
 
 #include "../Engine/Actors/Entity.h"
-#include "../Engine/Animations/WalkAnimation.h"
+//#include "../Engine/Animations/WalkAnimation.h"
 #include "../Managers/CharacterManager.h"
 #include "../Engine/Math/Vector2D.h"
 #include <vector>
@@ -62,7 +62,7 @@ class WorldManager
       \param Vector2D playerMapCoord - x and y coordinates of the player's current position on the map.
       \return True if the World can move relative to the player, or False if it can't.
     **/
-    bool canMoveWorld(WalkAnimation::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord);
+    bool canMoveWorld(Sprite::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord);
 
     /**
       Checks if there are enough offscreen tiles to move the world relative to the player.
@@ -73,7 +73,7 @@ class WorldManager
       \param int mapY - y coordinate of the player's current position on the map.
       \return True if the World has offscreen tiles in the passed direction, or False if not.
     **/
-    bool hasOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY);
+    bool hasOffscreenTiles(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY);
 
     /**
       Checks if all immediate offscreen tiles in the requested direction have a valid tile ID (ID >= 0) to appear on the map.
@@ -84,7 +84,7 @@ class WorldManager
       \param int mapY - y coordinate of the player's current position on the map.
       \return True if the passed direction's immediate offscreen tiles are valid, or False if not.
     **/
-    bool validOffscreenTiles(WalkAnimation::dir direction, int screenX, int screenY, int mapX, int mapY);
+    bool validOffscreenTiles(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY);
 
     /**
       Moves all world elements by the passed argument.

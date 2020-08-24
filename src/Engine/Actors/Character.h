@@ -5,7 +5,6 @@
 #include "../Graphics/Sprite.h"
 #include "../Physics/RigidBody.h"
 #include "../Math/Rect.h"
-#include "../Animations/WalkAnimation.h"
 
 
 // Characters in the overworld (i.e. NPCs and Pokemon) that have animations & movement
@@ -20,9 +19,8 @@ class Character
     void Update();
     void Render();
 
-    Sprite& getSprite();
+    Sprite& getSprite();  // Need for displacements
     RigidBody& getRB();
-    WalkAnimation& getWalkAnimation();
 
     void setSprite(Sprite _sprite);
     int setRB();
@@ -34,7 +32,6 @@ class Character
     bool hasSprite = false;
     RigidBody rb;
     Rect boundingRect;
-    WalkAnimation walkAnimation;
     bool isPlayer = false;
 };
 

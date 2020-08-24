@@ -93,8 +93,10 @@ class CharacterManager
       \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
       \return 0 on success, -1 if invalid numSprites format in CharacterInfo file, or -2 if invalid assetID format in CharacterInfo file.
     **/
-    int configAnimation(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale);
-    
+    //int configAnimation(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale);
+
+    int configSprite(Character& character, std::string& line, Vector3D _pos, float _rot, Vector3D _scale);
+
     /**
       Converts a string to a Vector2D (x, y) coordinate.
       \param std::string line - String in the format of int_x,int_y.
@@ -142,19 +144,14 @@ class CharacterManager
       \param int duration - How long to move the player.
       \return 0 if success, or -1 if invalid index.
     **/
-    int moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+    int moveCharacter(unsigned int index, bool move, bool changeSprite, bool newDirection, Vector3D displacement, Sprite::dir direction, int duration);
 
     /**
       Moves all NPCs (second element and onward in the CharacterManager::characters vector).
-      \param bool move - False to keep the NPCs in-place, or True to move the NPCs relative to the screen.
-      \param bool changeSprite - False to keep the NPCs' current WalkAnimation sprite, or True to change it.
-      \param bool newDirection - False if the movement is in the same direction, or True if new direction.
-      \param Vector3D displacement - Where to move the NPC sprites (and all WalkAnimation sprites) by.
-      \param WalkAnimation::dir direction - Specifies the WalkAnimation sprite direction.
-      \param int duration - How long to move the NPCs.
+      \param Vector3D displacement - Where to move the NPC sprites by.
       \return None
     **/
-    void moveAllNPCs(bool move, bool changeSprite, bool newDirection, Vector3D displacement, WalkAnimation::dir direction, int duration);
+    void moveAllNPCs(Vector3D displacement);
 
     /**
       Updates the player's screen coordinate record.
