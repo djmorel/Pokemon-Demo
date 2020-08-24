@@ -14,6 +14,7 @@ InputManager::InputManager(CharacterManager* _cm, WorldManager* _world)
 }
 
 
+
 void InputManager::Update()
 {
   handleInput();
@@ -21,9 +22,9 @@ void InputManager::Update()
   // Only process changes when the isActive flag is raised
   if (isActive)
   {
-    // Variables
+    // Local Variables
     int movePlayer = world->shouldMovePlayer(currentDirection, *pScreenCoord, *pMapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
-    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);     // Flag for changing sprite
+    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);     // Flag for changing Sprite frame
     Vector3D displacement;                                                                  // How much to move by
     int duration;                                                                           // Duration of the animation in milliseconds
 
@@ -102,6 +103,7 @@ void InputManager::Update()
 }
 
 
+
 void InputManager::handleInput()
 {
   // Enable mouse button support
@@ -142,6 +144,7 @@ void InputManager::handleInput()
     updateDirections(Sprite::dir::RIGHT);
   }
 }
+
 
 
 void InputManager::updateDirections(Sprite::dir direction)
