@@ -462,7 +462,7 @@ PlayerInfo& CharacterManager::getPlayerInfo()
 
 void CharacterManager::clearCharacters(bool savePlayer)
 {
-  unsigned int end;
+  int end;
 
   // Check if we clear the player character or not
   if (savePlayer)
@@ -476,7 +476,7 @@ void CharacterManager::clearCharacters(bool savePlayer)
 
   // Delete the appropriate CharacterInfo instances
   // Go backwards in case we want to save the player character
-  for (unsigned int i = characters.size() - 1; i >= end; i--)
+  for (int i = characters.size() - 1; i >= end; i--)
   {
     delete characters[i];
     characters.pop_back();
