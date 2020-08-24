@@ -19,7 +19,6 @@ class InputManager
 
     void handleInput();
     void updateDirections(Sprite::dir direction);
-    bool shouldMovePlayer();
     int processMovement(bool movePlayer, bool changeSprite, Vector3D &displacement, int duration);
 
   private:

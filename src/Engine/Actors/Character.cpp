@@ -4,8 +4,7 @@
 
 Character::Character()
 {
-  // Initialize walkAnimation
-  //walkAnimation = WalkAnimation(&sprite, isPlayer);
+  // Does nothing (just acts as a placeholder)
 }
 
 
@@ -34,7 +33,7 @@ Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOf
 
 Character::~Character()
 {
-  //walkAnimation.~WalkAnimation();
+  // Do nothing since didn't allocate anything on the heap
 }
 
 
@@ -64,19 +63,11 @@ RigidBody& Character::getRB()
   return rb;
 }
 
-/*
-WalkAnimation& Character::getWalkAnimation()
-{
-  return walkAnimation;
-}
-*/
-
 
 void Character::setSprite(Sprite _sprite)
 {
   sprite = _sprite;
   hasSprite = true;
-  //sprite.moveTo( *(_sprite.getPos()) );
 }
 
 
@@ -113,7 +104,6 @@ int Character::setRB(Vector3D rectSizeOffset, Vector3D rectPosOffset)
 }
 
 
-// Note: Call this function if the character is the player PRIOR to setting any animation
 void Character::setPlayerStatus(bool _isPlayer)
 {
   isPlayer = _isPlayer;

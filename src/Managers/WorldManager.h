@@ -3,10 +3,26 @@
 
 
 #include "../Engine/Actors/Entity.h"
-//#include "../Engine/Animations/WalkAnimation.h"
 #include "../Managers/CharacterManager.h"
 #include "../Engine/Math/Vector2D.h"
 #include <vector>
+
+
+// Tile type constants
+#define DEFAULT   0  // Default tile that player steps on
+#define IMMOVABLE 1  // Tile the player can't step on
+#define ENCOUNTER 2  // Tile that grants a wild Pokemon encounter
+#define BATTLE    3  // Tile that grants a Pokemon battle
+#define LOADMAP   4  // Tile that may load a new map if the right direction is entered on the tile
+
+
+// Structure containing tile information
+struct TileInfo
+{
+  int id;    // assetID for the tile
+  int type;  // Type of the tile
+};
+typedef struct TileInfo TileInfo;
 
 
 class WorldManager
@@ -57,16 +73,18 @@ class WorldManager
 
     /**
       Calls subfunctions to check if the world can move relative to the player.
-      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
-      \param Vector2D playerScreenCoord - x and y coordinates of the player's current position on the screen.
-      \param Vector2D playerMapCoord - x and y coordinates of the player's current position on the map.
+      \param Sprite::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param int screenX - x coordinate of the player's current position on the screen.
+      \param int screenY - y coordinate of the player's current position on the screen.
+      \param int mapX - x coordinate of the player's current position on the map.
+      \param int mapY - y coordinate of the player's current position on the map.
       \return True if the World can move relative to the player, or False if it can't.
     **/
-    bool canMoveWorld(Sprite::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord);
+    bool canMoveWorld(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY);
 
     /**
       Checks if there are enough offscreen tiles to move the world relative to the player.
-      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param Sprite::dir direction - Direction of requested player movement (opposite of actual world movement).
       \param int screenX - x coordinate of the player's current position on the screen.
       \param int screenY - y coordinate of the player's current position on the screen.
       \param int mapX - x coordinate of the player's current position on the map.
@@ -77,7 +95,7 @@ class WorldManager
 
     /**
       Checks if all immediate offscreen tiles in the requested direction have a valid tile ID (ID >= 0) to appear on the map.
-      \param WalkAnimation::dir direction - Direction of requested player movement (opposite of actual world movement).
+      \param Sprite::dir direction - Direction of requested player movement (opposite of actual world movement).
       \param int screenX - x coordinate of the player's current position on the screen.
       \param int screenY - y coordinate of the player's current position on the screen.
       \param int mapX - x coordinate of the player's current position on the map.
@@ -87,11 +105,29 @@ class WorldManager
     bool validOffscreenTiles(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY);
 
     /**
+      Checks what type of tile the player would step on if the specified direction is granted.
+      \param Sprite::dir direction - Direction of requested player movement.
+      \param int mapX - x coordinate of the player's current position on the map.
+      \param int mapY - y coordinate of the player's current position on the map.
+      \return int >= 0 specifying the next tile's type (as per the tile type constants), or -1 if the next tile exceeds the map's bounds.
+    **/
+    int nextTile(Sprite::dir direction, int mapX, int mapY);
+
+    /**
       Moves all world elements by the passed argument.
       \param Vector3D v - Number of pixels to move by.
       \return None
     **/
     void moveWorld(Vector3D v);
+
+    /**
+      Determines if the player Sprite should move relative to the screen.
+      \param Sprite::dir direction - Direction of requested player movement.
+      \param Vector2D playerScreenCoord - Player's current x and y screen coordinates.
+      \param Vector2D playerMapCoord - Player's current x and y map coordinates.
+      \return 0 if the world should move, 1 if the player should move, or -1 if the player shouldn't move because the next tile is immovable.
+    **/
+    int shouldMovePlayer(Sprite::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord);
 
     /**
       Deletes all world elements by clearing the map and tiles vectors.
@@ -105,10 +141,11 @@ class WorldManager
     PlayerInfo* playerInfo;
 
     // Note: WorldMap files MUST have ALL rows contain the same column count
-    std::vector< std::vector<int> > map;  // RAM-like record of the WorldMap
-    int mapRows = 0;                      // Tracks the map's row count
-    int mapCols = 0;                      // Tracks the map's column count
-    std::vector<Entity*> tiles;           // Holds references to each tile
+    std::vector< std::vector<TileInfo> > map;  // RAM-like record of the WorldMap
+    int mapRows = 0;                           // Tracks the map's row count
+    int mapCols = 0;                           // Tracks the map's column count
+    std::vector<Entity*> tiles;                // Holds references to each tile
+    std::vector<Entity*> layeredItems;         // Holds references to items layered on top of the tiles
 
 };
 

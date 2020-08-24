@@ -22,10 +22,10 @@ void InputManager::Update()
   if (isActive)
   {
     // Variables
-    bool movePlayer = shouldMovePlayer();                                                // Move player (True) or world (False)
-    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);  // Flag for changing sprite
-    Vector3D displacement;                                                               // How much to move by
-    int duration;                                                                        // Duration of the animation in milliseconds
+    int movePlayer = world->shouldMovePlayer(currentDirection, *pScreenCoord, *pMapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
+    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);     // Flag for changing sprite
+    Vector3D displacement;                                                                  // How much to move by
+    int duration;                                                                           // Duration of the animation in milliseconds
 
     // Set displacement and duration
     if (newDirection)
@@ -34,13 +34,22 @@ void InputManager::Update()
       displacement = Vector3D(0);
       duration = 80;
     }
-    else if (movePlayer)
+    else if (movePlayer < 0)
+    {
+      // Next movement would hit an IMMOVABLE tile (or movePlayer's value is at an unknown state...)
+      displacement = Vector3D(0);
+      duration = 40;
+
+      // TODO: Play a bumping sound effect
+      std::cout << "Hey, you can't move onto that tile!" << std::endl;
+    }
+    else if (movePlayer == 1)
     {
       // If the player is to move, make sure the player stays in the bounds of the screen
       if ( ((currentDirection == Sprite::dir::UP   ) && (pScreenCoord->y >= Engine::SCREEN_HEIGHT / 64.0f - 1)) || 
            ((currentDirection == Sprite::dir::DOWN ) && (pScreenCoord->y <= 0                                )) ||
            ((currentDirection == Sprite::dir::LEFT ) && (pScreenCoord->x <= 0                                )) ||
-           ((currentDirection == Sprite::dir::RIGHT) && (pScreenCoord->x >= Engine::SCREEN_WIDTH / 64.0f  - 1)) )
+           ((currentDirection == Sprite::dir::RIGHT) && (pScreenCoord->x >= Engine::SCREEN_WIDTH / 64.0f  - 1))    )
       {
         // Player is at the edge of the screen, so prevent movement!
         displacement = Vector3D(0);
@@ -56,7 +65,7 @@ void InputManager::Update()
     }
     else
     {
-      // Attempted movement doesn't send the player off the edge of the map, so grant the walk movement
+      // Attempted movement doesn't send the player to an unwanted tile, so grant the walk movement
       displacement = Vector3D(8);
       duration = 40;
     }
@@ -151,41 +160,6 @@ void InputManager::updateDirections(Sprite::dir direction)
   previousDirection = currentDirection;
 }
 
-
-bool InputManager::shouldMovePlayer()
-{
-  // Calculate if the player or the world should move
-  if (world->canMoveWorld(currentDirection, *pScreenCoord, *pMapCoord))
-  {
-    // Check if the player is in the correct part of the screen to move the world
-    if (pScreenCoord->x <= 7 && currentDirection == Sprite::dir::LEFT)
-    {
-      return false;
-    }
-    else if (pScreenCoord->x >= 8 && currentDirection == Sprite::dir::RIGHT)
-    {
-      return false;
-    }
-    else if (pScreenCoord->y <= 5 && currentDirection == Sprite::dir::DOWN)
-    {
-      return false;
-    }
-    else if (pScreenCoord->y >= 6 && currentDirection == Sprite::dir::UP)
-    {
-      return false;
-    }
-    else
-    {
-      // We aren't in the correct regions to move the world, so move the player instead
-      return true;
-    }
-  }
-  else
-  {
-    // Can't move the map (no valid offscreen tiles), so we must move the player
-    return true;
-  }
-}
 
 
 int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &displacement, int duration)
