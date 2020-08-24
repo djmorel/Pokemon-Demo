@@ -4,3 +4,9 @@ The goal of this project is create a C++ application to test game development. A
 
 ## Project Inspiration
 This project was inspired by Progrematic's [YouTube tutorials](https://www.youtube.com/watch?v=4R5vSIZxr0M) on designing a Flappy Bird game, which I consulted to design the game engine. His GitHib repo for the Flappy Bird game can be found [here](https://github.com/progrematic/LetsMakeAGame). Currently, the game engine uses GLFW to help with Window management, and SOIL for image handling.
+
+## Project Demos
+Demos for the project can be found on YouTube.
+
+## Disclaimer
+While I wrote code for this project, the currently used art isn't mine. All rights for the art goes to their respective owners.
