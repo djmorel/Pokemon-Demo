@@ -32,7 +32,7 @@ class CharacterManager
 {
   public:
     /**
-      A constructor that does nothing special.
+      A constructor that initializes the savefilePath to a default value.
       \param None
       \return None
     **/
@@ -60,7 +60,7 @@ class CharacterManager
     void Render();
     
     /**
-      Creates a new player savefile for the game and rewrites over old savefile if it exists. References CharacterManager's const character array, savefilePath.
+      Creates a new player savefile for the game and rewrites over old savefile if it exists. References CharacterManager's savefilePath.
       \param None
       \return 0 on success, -1 if cancel player creation, or -2 if unable to delete existing file.
     **/
@@ -76,25 +76,23 @@ class CharacterManager
     /**
       Loads either the player or a character into the characters vector. Note that the player can ONLY be loaded when the characters vector is empty.
       \param std::string characterPath - String for the full CharacterInfo file path.
-      \param bool isPlayer - False if the requested character is an NPC, or True if it's the player.
-      \param Vector3D _pos - The screen position for each of the WalkAnimation Sprites.
-      \param float _rot - The rotation for each of the WalkAnimation Sprites.
-      \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
+      \param bool isPlayer - True if the requested character is the player, or False if an NPC.
+      \param Vector3D _pos - The screen position for the Character's Sprite.
+      \param float _rot - The rotation for each of the Character's Sprite.
+      \param Vector3D _scale - The scale for each of the Character's Sprite.
       \return 0 on success, -1 if call invalidates the player is first element assumption, -2 if unable to open CharacterInfo file, -3 if CharacterInfo file not fully read, or -4 if configAnimation() failure.
     **/
     int loadCharacter(std::string characterPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale);
     
     /**
-      Configures a WalkAnimation object to the passed character.
-      \param Character &character - The Character object that is getting its WalkAnimation configured.
+      Configures a Sprite for the passed character.
+      \param Character &character - The Character object that is getting its Sprite configured.
       \param std::string &line - The line from the CharacterInfo file that specifies the assetIDs for the WalkAnimation Sprites. Assumes the listed assetIDs come in multiple of 4 to account for the directions (DOWN, LEFT, RIGHT, UP).
-      \param Vector3D _pos - The screen position for each of the WalkAnimation Sprites.
-      \param float _rot - The rotation for each of the WalkAnimation Sprites.
-      \param Vector3D _scale - The scale for each of the WalkAnimation Sprites.
+      \param Vector3D _pos - The screen position for the Character's Sprite.
+      \param float _rot - The rotation for the Character's Sprite.
+      \param Vector3D _scale - The scale for the Character's Sprite.
       \return 0 on success, -1 if invalid numSprites format in CharacterInfo file, or -2 if invalid assetID format in CharacterInfo file.
     **/
-    //int configAnimation(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale);
-
     int configSprite(Character& character, std::string& line, Vector3D _pos, float _rot, Vector3D _scale);
 
     /**
@@ -128,17 +126,17 @@ class CharacterManager
     
     /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
-      \param bool savePlayer - False clears the entirety of the characters vector, but True keeps the player's CharacterInfo in the vector.
+      \param bool savePlayer - False clears the entire characters vector, but True keeps the player's CharacterInfo in the vector.
       \return None
     **/
-    void clearCharacters(bool savePlayer);  // Deletes the contents of the characters vector
+    void clearCharacters(bool savePlayer);
 
     /**
       Moves a specified character. Recall that the player is the 1st element in the CharacterManager::characters vector.
       \param unsigned int index - Index specifying what character to move. Set to 0 to move the player.
-      \param bool changeSprite - False to keep the player's current Sprite frame, or True to change it.
+      \param bool changeSprite - True to change the character's current Sprite frame, or False to keep it.
       \param Vector3D displacement - Position to move the character's Sprite by.
-      \param Sprite::dir direction - Specifies which direction to move the Sprite.
+      \param Sprite::dir direction - Specifies the direction to move the Sprite.
       \param int duration - How long the movement shoult take (in milliseconds).
       \return 0 if success, or -1 if invalid index.
     **/
@@ -166,10 +164,9 @@ class CharacterManager
     void updatePlayerMapCoord(Vector2D v);
 
 
-
   private:
-    const char savefilePath[22] = "src/Save/Savefile.txt";
-    PlayerInfo playerInfo;
+    std::string savefilePath;                // Location of the game's savefile
+    PlayerInfo playerInfo;                   // Structure containing player information
     std::vector<CharacterInfo*> characters;  // Vector of all characters on the current map
 };
 

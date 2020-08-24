@@ -9,7 +9,8 @@
 
 CharacterManager::CharacterManager()
 {
-  // Do nothing
+  // Set the savefile path to the default location
+  savefilePath = "src/Save/Savefile.txt";
 }
 
 
@@ -82,7 +83,7 @@ int CharacterManager::createPlayer()
     fd.close();
 
     // Delete the file
-    if (remove(savefilePath) != 0)
+    if (remove(savefilePath.c_str()) != 0)
     {
       // Unable to delete the exisiting savefile
       return -2;
@@ -236,21 +237,18 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
     {
       characterInfo->spritePath = line;
     }
-    else if (lineNum == 2)  // Load information about the walk animation
+    else if (lineNum == 2)  // Load information about the Sprite frames
     {
-      // Configure the walkAnimation (it's assumes that ALL Character objects have a WalkAnimation)
+      // Configure the Sprite and all of its directional frames
       if ( configSprite(characterInfo->character, line, _pos, _rot, _scale) < 0 )
       {
-        // Failed to create the animation (likely intPull's fault), so return an error
+        // Failed to create the Sprite (likely intPull's fault), so return an error
         delete characterInfo;
         fd.close();
         return -4;
       }
       else
       {
-        // Set up the character's sprite
-        //characterInfo->character.setSprite(characterInfo->character.getWalkAnimation().getDefaultSprite());
-
         // Set up the character's rigid body
         if (isPlayer)
         {
@@ -319,7 +317,7 @@ int CharacterManager::configSprite(Character &character, std::string &line, Vect
     // Add the valid assetID to spriteCodes
     if (id < 0)
     {
-      // Error in gathering ID, so corrupt/invalid CharacterInfo file
+      // assetID MUST be positive, so error in gathering ID (corrupt/invalid CharacterInfo file)
       std::cout << "ERROR: Corrupt CharacterInfo file" << std::endl;
       return -2;
     }
@@ -339,6 +337,7 @@ int CharacterManager::configSprite(Character &character, std::string &line, Vect
     // Add the sprite frames to the sprite object
     if (_sprite.pushSpriteInfo(spriteCodes[i]) < 0)
     {
+      // Push failed since invalid assetID
       std::cout << "ERROR: Invalid assetID " << spriteCodes[i] << " when adding sprite frames" << std::endl;
       return -2;
     }
@@ -463,25 +462,27 @@ PlayerInfo& CharacterManager::getPlayerInfo()
 
 void CharacterManager::clearCharacters(bool savePlayer)
 {
-  unsigned int i;
+  unsigned int end;
 
   // Check if we clear the player character or not
   if (savePlayer)
   {
-    i = 1;
+    end = 1;
   }
   else
   {
-    i = 0;
+    end = 0;
   }
 
-  // Delete tha appropriate CharacterInfo instances
-  for (i; i < characters.size(); i++)
+  // Delete the appropriate CharacterInfo instances
+  // Go backwards in case we want to save the player character
+  for (unsigned int i = characters.size() - 1; i >= end; i--)
   {
     delete characters[i];
+    characters.pop_back();
   }
-  characters.clear();
 }
+
 
 
 int CharacterManager::moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, int duration)
@@ -500,6 +501,7 @@ int CharacterManager::moveCharacter(unsigned int index, bool changeSprite, Vecto
 }
 
 
+
 void CharacterManager::moveAllNPCs(Vector3D displacement)
 {
   // Move all NPCs by a certain displacement
@@ -511,11 +513,13 @@ void CharacterManager::moveAllNPCs(Vector3D displacement)
 }
 
 
+
 void CharacterManager::updatePlayerScreenCoord(Vector2D v)
 {
   // Add the movement coordinates to the player's screen coordinate record
   playerInfo.screenCoord = playerInfo.screenCoord + v;
 }
+
 
 
 void CharacterManager::updatePlayerMapCoord(Vector2D v)
