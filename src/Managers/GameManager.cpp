@@ -116,8 +116,9 @@ int GameManager::Start()
         mInputManager->Update();
 
         mEngine->BeginRender();
-        mWorldManager->Render();
+        mWorldManager->RenderTiles();
         mCharacterManager->Render();
+        mWorldManager->RenderLayeredItems();
         npc.Render();
         tree.Render();
         mEngine->EndRender();
@@ -134,8 +135,9 @@ int GameManager::Start()
       case State::GAMEOVER:
       {
         mEngine->BeginRender();
-        mWorldManager->Render();
+        mWorldManager->RenderTiles();
         mCharacterManager->Render();
+        mWorldManager->RenderLayeredItems();
         npc.Render();
         tree.Render();
         mGameOverSprite.Render();

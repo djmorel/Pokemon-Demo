@@ -32,15 +32,8 @@ WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
 
 WorldManager::~WorldManager()
 {
-  // Free all tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
-  {
-    delete tiles[i];
-  }
-  tiles.clear();
-
-  // Clear the map
-  map.clear();
+  // Delete all world elements
+  clearWorld();
 }
 
 
@@ -81,11 +74,23 @@ void WorldManager::Update()
 
 
 
-void WorldManager::Render()
+void WorldManager::RenderTiles()
 {
+  // Render all of the tiles
   for (unsigned int i = 0; i < tiles.size(); i++)
   {
     tiles[i]->Render();
+  }
+}
+
+
+
+void WorldManager::RenderLayeredItems()
+{
+  // Render all of the layered items
+  for (unsigned int i = 0; i < layeredItems.size(); i++)
+  {
+    layeredItems[i]->Render();
   }
 }
 
@@ -106,14 +111,15 @@ int WorldManager::readMap(std::string mapPath)
   }
 
   // Variables for reading the map file
-  char ch;                    // Holds the currently read character
-  TileInfo _tile;             // Holds info on the currently read tile
-  std::string _id = "";       // String to hold the tile's ID
-  std::string _type = "";     // String to hold the tile's type
-  std::vector<TileInfo> row;  // Vector to hold row entries
-  bool readID = true;         // Flags if reading tile ID (True) or tile type (false)
-  bool completedRow = false;  // Flags if a row is complete, and ready to check mapCols
-  int colCount = 0;           // Holds a temporary column count for reference
+  char ch;                          // Holds the currently read character
+  TileInfo _tile;                   // Holds info on the currently read tile
+  std::string _id = "";             // String to hold the tile's ID
+  std::string _type = "";           // String to hold the tile's type
+  std::string _layeredItemID = "";  // String to hold layeredItem's assetID (if any)
+  std::vector<TileInfo> row;        // Vector to hold row entries
+  int readID = 0;                   // Flags if reading tile ID (0), tile type (1), or layered item (2)
+  bool completedRow = false;        // Flags if a row is complete, and ready to check mapCols
+  int colCount = 0;                 // Holds a temporary column count for reference
 
   // Read the map file
   while ( fd.get(ch) )
@@ -121,28 +127,24 @@ int WorldManager::readMap(std::string mapPath)
     // Check what character we have
     if (ch == ',')  // Finished reading a number
     {
-      // Convert charNum to a string
-      try
+      _tile = str2TileInfo(_id, _type, _layeredItemID);
+
+      if ( _tile.id < -1 )
       {
-        _tile.id = std::stoi(_id);      // Convert the tile ID string to an integer
-        _tile.type = std::stoi(_type);  // Convert the tile type string to an integer
-        row.push_back(_tile);           // Add the tile info to the row
-      }
-      catch (std::invalid_argument const &e)
-      {
-        // Unable to convert to an int, so corrupt/invalid map
+        // stoi conversion failed, so return an error
         return -3;
       }
-      catch (std::out_of_range const& e)
+      else
       {
-        // Unable to convert to an int, so corrupt/invalid map
-        return -3;
+        // Add the tile info to the row
+        row.push_back(_tile);
       }
 
       // Reset reading variables and flags
       _id = "";
       _type = "";
-      readID = true;
+      _layeredItemID = "";
+      readID = 0;
 
       // Increment the temporary column count
       colCount++;
@@ -150,33 +152,31 @@ int WorldManager::readMap(std::string mapPath)
     else if (ch == ':')
     {
       // About to read the tile type
-      readID = false;
+      readID++;
     }
     else if (ch == ';')  // Finished reading a number and a row
     {
-      // Convert charNum to a string
-      try
+      _tile = str2TileInfo(_id, _type, _layeredItemID);
+
+      if ( _tile.id < -1 )
       {
-        _tile.id = std::stoi(_id);      // Convert the tile ID string to an integer
-        _tile.type = std::stoi(_type);  // Convert the tile type string to an integer
-        row.push_back(_tile);           // Add the tile info to the row
-        map.push_back(row);             // Add the completed row to the map
-      }
-      catch (std::invalid_argument const& e)
-      {
-        // Unable to convert to an int, so corrupt/invalid map
+        // stoi conversion failed, so return an error
         return -3;
       }
-      catch (std::out_of_range const& e)
+      else
       {
-        // Unable to convert to an int, so corrupt/invalid map
-        return -3;
+        // Add the tileInfo object to the row
+        row.push_back(_tile);
       }
+
+      // Add the tile info to the row, and the completed row to the map
+      row.push_back(_tile);
+      map.push_back(row);
 
       // Reset reading variables and flags
       _id = "";
       _type = "";
-      readID = true;
+      readID = 0;
 
       // Reset the row
       row.clear();
@@ -202,13 +202,17 @@ int WorldManager::readMap(std::string mapPath)
     }
     else if (isdigit(ch) || ch == '-')  // Have a numerical character to add to a reading variable
     {
-      if (readID)
+      if (readID == 0)
       {
         _id.push_back(ch);
       }
-      else
+      else if (readID == 1)
       {
         _type.push_back(ch);
+      }
+      else if (readID == 2)
+      {
+        _layeredItemID.push_back(ch);
       }
     }
     else if (ch != '\n' && ch != ' ')  // Have an invalid character in the map
@@ -259,8 +263,22 @@ int WorldManager::buildWorld()
     {
       if (map[row][col].id >= 0)
       {
+        // Calculate the position to place the tile
+        Vector3D _pos = Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0);
+
         // Create a new instance of the tile Entity
-        tiles.push_back(new Entity(map[row][col].id, Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0), 0, 0.8f));
+        tiles.push_back(new Entity(map[row][col].id, _pos, 0, 0.8f));
+
+        // Check if the tile has a layered item on top of it
+        if (map[row][col].layeredItemID >= 0)
+        {
+          // TODO: Read the asset, and pull its appropriate scale
+
+          layeredItems.push_back(new Entity(map[row][col].layeredItemID, _pos, 0, 1));
+          layeredItems[0]->setDimensions(Vector3D(192, 192, 0));
+          std::cout << "Hey, we just added a layeredItem!" << map[row][col].layeredItemID << std::endl;
+          std::cout << "The dimensions of the layeredItem are " << layeredItems[0]->getDimensions().x << " by " << layeredItems[0]->getDimensions().y << std::endl;
+        }
       }
     }
   }  // End of tile for loop
@@ -270,22 +288,62 @@ int WorldManager::buildWorld()
 }
 
 
-bool WorldManager::canMoveWorld(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY)
-//bool WorldManager::canMoveWorld(Sprite::dir direction, Vector2D playerScreenCoord, Vector2D playerMapCoord)
+TileInfo WorldManager::str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID)
 {
-  /*
-  // Convert the player's screen coordinates to ints
-  int screenX = (int)floor(playerScreenCoord.x);
-  int screenY = (int)floor(playerScreenCoord.y);
+  // Create a default, invalid TileInfo object
+  TileInfo ret_val;
+  ret_val.id = -42;
+  ret_val.type = -1;
+  ret_val.layeredItemID = -1;
 
-  // Conver the player's map coordinates to ints
-  int mapX = (int)floor(playerMapCoord.x);
-  int mapY = (int)floor(playerMapCoord.y);
-  */
+  // Try to convert the input strings to ints
+  try
+  {
+    // Convert the tile ID string to an integer
+    ret_val.id = std::stoi(_id);
+    
+    // Check if the tile is of the default type
+    if (_type == "")
+    {
+       ret_val.type = 0;
+    }
+    else
+    {
+      // Convert the tile type string to an integer
+      ret_val.type = std::stoi(_type);
+    }
+    
+    // Check if there is a layered item to record
+    if (_layeredItemID == "")
+    {
+      ret_val.layeredItemID = -1;
+    }
+    else
+    {
+      // Convert the layered item ID string to an integer
+      ret_val.layeredItemID = std::stoi(_layeredItemID);
+    }
+  }
+  catch (std::invalid_argument const& e)
+  {
+    // Unable to convert to an int, so corrupt/invalid map
+    // Make sure the tile ID is set as -1 to mark a failed conversion
+    ret_val.id = -42;
+  }
+  catch (std::out_of_range const& e)
+  {
+    // Unable to convert to an int, so corrupt/invalid map
+    // Make sure the tile ID is set as -1 to mark a failed conversion
+    ret_val.id = -42;
+  }
 
-  // TODO: Check if the immediate movement would make the player step on an immovable tile
-  // TODO: Work with InputManager to handle this (perhaps use ints for more return values)
+  // Return the current ret_val (failed or success version)
+  return ret_val;
+}
 
+
+bool WorldManager::canMoveWorld(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY)
+{
   // Check 1: Check if there are any offscreen tiles in the requested direction
   if (!hasOffscreenTiles(direction, screenX, screenY, mapX, mapY))
   {
@@ -459,7 +517,11 @@ void WorldManager::moveWorld(Vector3D v)
     tiles[i]->getSprite().moveBy(v);
   }
 
-  // TODO: Move world elements found in NPC & object vectors
+  // Move the world's layeredItems
+  for (unsigned int i = 0; i < layeredItems.size(); i++)
+  {
+    layeredItems[i]->getSprite().moveBy(v);
+  }
 }
 
 
@@ -511,12 +573,19 @@ int WorldManager::shouldMovePlayer(Sprite::dir direction, Vector2D playerScreenC
 
 void WorldManager::clearWorld()
 {
-  // Delete tiles
+  // Delete the tiles
   for (unsigned int i = 0; i < tiles.size(); i++)
   {
     delete tiles[i];  // Delete the pointers
   }
   tiles.clear();  // Clear the vector entries
+
+  // Delete the layeredItems
+  for (unsigned int i = 0; i < layeredItems.size(); i++)
+  {
+    delete layeredItems[i];
+  }
+  layeredItems.clear();
 
   // Clear the map
   map.clear();

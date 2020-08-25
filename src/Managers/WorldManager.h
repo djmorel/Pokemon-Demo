@@ -19,8 +19,9 @@
 // Structure containing tile information
 struct TileInfo
 {
-  int id;    // assetID for the tile
-  int type;  // Type of the tile
+  int id;             // assetID for the tile
+  int type;           // Type of the tile
+  int layeredItemID;  // assetID for the layered item on this tile (-1 means no layered item)
 };
 typedef struct TileInfo TileInfo;
 
@@ -55,7 +56,14 @@ class WorldManager
       \param None
       \return None
     **/
-    void Render();
+    void RenderTiles();
+
+    /**
+      Renders all layered items on the map.
+      \param None
+      \return None
+    **/
+    void RenderLayeredItems();
 
     /**
       Reads a WorldMap file, and records the information in the map vector for later RAM-like access.
@@ -70,6 +78,10 @@ class WorldManager
       \return 0 on success, or -1 if the map vector has no elements.
     **/
     int buildWorld();  // Sets the environment to that of the save file
+
+
+    TileInfo str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID);
+
 
     /**
       Calls subfunctions to check if the world can move relative to the player.
