@@ -48,17 +48,12 @@ int GameManager::Start()
 {
   // Optional stuff
   Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
-  //Sprite npcSprite = Sprite(37, Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(2.0f));
-  //npcSprite.setScale(0.5f);
   npcSprite.setDimensions(64.0f);
   Character npc(npcSprite);
-  Entity tree = Entity(37, Vector3D(224, 224, 0), 0, 4.0f);
-  tree.setDimensions(Vector3D(192, 192, 0));
   // End of optional stuff
 
   // Add a Loading Icon for state changes
   Sprite loadingIcon = Sprite("Loading", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 5), 0), 0, Vector3D(0.3f));
-  //loadingIcon.setScale(0.3f);
 
   // Game loop
   while (true)
@@ -112,7 +107,6 @@ int GameManager::Start()
         mWorldManager->Update();
         mCharacterManager->Update();
         npc.Update();
-        tree.Update();
         mInputManager->Update();
 
         mEngine->BeginRender();
@@ -120,7 +114,6 @@ int GameManager::Start()
         mCharacterManager->Render();
         mWorldManager->RenderLayeredItems();
         npc.Render();
-        tree.Render();
         mEngine->EndRender();
 
         bool collision = RigidBody::isColliding(mCharacterManager->getPlayer()->getRB(), npc.getRB());
@@ -139,7 +132,6 @@ int GameManager::Start()
         mCharacterManager->Render();
         mWorldManager->RenderLayeredItems();
         npc.Render();
-        tree.Render();
         mGameOverSprite.Render();
         mEngine->EndRender();
 
@@ -167,10 +159,9 @@ int GameManager::Start()
 // Provides set up and clean up between states
 void GameManager::setState(State state)
 {
-  // TODO: Clean up
-
   mState = state;
 
+  // State clean up
   if (mState == State::START)
   {
     // Clear the world's contents

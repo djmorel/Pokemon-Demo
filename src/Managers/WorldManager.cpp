@@ -87,8 +87,8 @@ void WorldManager::RenderTiles()
 
 void WorldManager::RenderLayeredItems()
 {
-  // Render all of the layered items
-  for (unsigned int i = 0; i < layeredItems.size(); i++)
+  // Render all of the layered items (reverse order for proper perspective)
+  for (int i = layeredItems.size() - 1; i >= 0; i--)
   {
     layeredItems[i]->Render();
   }
@@ -270,14 +270,15 @@ int WorldManager::buildWorld()
         tiles.push_back(new Entity(map[row][col].id, _pos, 0, 0.8f));
 
         // Check if the tile has a layered item on top of it
-        if (map[row][col].layeredItemID >= 0)
+        int _layeredItemID = map[row][col].layeredItemID;
+        if (_layeredItemID >= 0)
         {
-          // TODO: Read the asset, and pull its appropriate scale
+          // Create an Entity for the layered item, and pull its default dimensions from the AssetLookupTable
+          Entity* _layeredItem = new Entity(_layeredItemID, _pos, 0, 1);
+          _layeredItem->setDimensions(AssetLT::getDefaultDimensions(_layeredItemID));
 
-          layeredItems.push_back(new Entity(map[row][col].layeredItemID, _pos, 0, 1));
-          layeredItems[0]->setDimensions(Vector3D(192, 192, 0));
-          std::cout << "Hey, we just added a layeredItem!" << map[row][col].layeredItemID << std::endl;
-          std::cout << "The dimensions of the layeredItem are " << layeredItems[0]->getDimensions().x << " by " << layeredItems[0]->getDimensions().y << std::endl;
+          // Add the layered item to the layeredItems vector
+          layeredItems.push_back(_layeredItem);
         }
       }
     }

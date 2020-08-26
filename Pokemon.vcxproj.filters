@@ -179,5 +179,6 @@
     <Text Include="src\Save\FileFormat.txt" />
     <Text Include="src\Assets\WorldMaps\Map_GrassTrails_Irregular.txt" />
     <Text Include="src\Save\Savefile_OLD.txt" />
+    <Text Include="src\Assets\WorldMaps\Map_Grasslands2Beach.txt" />
   </ItemGroup>
 </Project>
