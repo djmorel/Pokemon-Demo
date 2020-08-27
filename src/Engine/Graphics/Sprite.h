@@ -263,10 +263,10 @@ class Sprite
       \param bool changeFrame - True if the Sprite should update its frame, and False if not.
       \param Vector3D displacement - Position to move the Sprite by.
       \param Sprite::dir direction - Direction of the "walk" relative to the Sprite on the screen.
-      \param int duration - How long the "walk" should take (milliseconds).
+      \param float duration - How long the "walk" should take (milliseconds).
       \return 0 on success, -1 if framesPerDirection doesn't match spriteInfo's size, or -2 if invalid direction.
     **/
-    void walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, int duration);
+    void walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, float duration);
 
 
   private:

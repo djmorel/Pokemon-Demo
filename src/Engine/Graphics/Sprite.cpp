@@ -527,7 +527,7 @@ int Sprite::updateFrameIndex(Sprite::dir direction)
 
 
 
-void Sprite::walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, int duration)
+void Sprite::walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, float duration)
 {
   // Check if the sprite's frame Index should change
   if (changeFrame)
@@ -544,5 +544,10 @@ void Sprite::walk(bool changeFrame, Vector3D displacement, Sprite::dir direction
   moveBy(displacement);
 
   // Add delay to the walk
-  std::this_thread::sleep_for(std::chrono::milliseconds(duration));
+  while ( ((float)glfwGetTime() - Engine::getLastTime()) < duration / 1000)
+  {
+    // Stall in the while loop until the timer reaches the target duration
+    // This stalling method ensures that worlds with lots of Sprite rendering don't add extra delay to the walk stall
+    // Note: glfwGetTime records time in seconds since the GLFW window was created
+  }
 }

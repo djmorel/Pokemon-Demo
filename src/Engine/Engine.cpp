@@ -131,3 +131,9 @@ float Engine::getDT()
 {
   return dt;
 }
+
+
+float Engine::getLastTime()
+{
+  return lastTime;
+}

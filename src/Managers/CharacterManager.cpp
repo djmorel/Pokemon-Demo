@@ -389,7 +389,7 @@ Vector2D CharacterManager::line2coord(std::string line)
   // Try converting the tokens into ints
   try
   {
-    ret_val = Vector2D(std::stoi(x), std::stoi(y));
+    ret_val = Vector2D((float)std::stoi(x), (float)std::stoi(y));
   }
   catch (std::invalid_argument const& e)
   {
@@ -485,7 +485,7 @@ void CharacterManager::clearCharacters(bool savePlayer)
 
 
 
-int CharacterManager::moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, int duration)
+int CharacterManager::moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, float duration)
 {
   // Check that the passed index is a valid number
   if (characters.size() <= index)

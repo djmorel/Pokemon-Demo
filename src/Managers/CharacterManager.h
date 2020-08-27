@@ -137,10 +137,10 @@ class CharacterManager
       \param bool changeSprite - True to change the character's current Sprite frame, or False to keep it.
       \param Vector3D displacement - Position to move the character's Sprite by.
       \param Sprite::dir direction - Specifies the direction to move the Sprite.
-      \param int duration - How long the movement shoult take (in milliseconds).
+      \param float duration - How long the movement shoult take (in milliseconds).
       \return 0 if success, or -1 if invalid index.
     **/
-    int moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, int duration);
+    int moveCharacter(unsigned int index, bool changeSprite, Vector3D displacement, Sprite::dir direction, float duration);
 
     /**
       Moves all NPCs (second element and onward in the CharacterManager::characters vector).

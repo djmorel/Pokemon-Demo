@@ -646,27 +646,30 @@ int WorldManager::shouldMovePlayer(Sprite::dir direction, Vector2D playerScreenC
 
 void WorldManager::clearWorld()
 {
-  // Clear the world elements
-  for (int row = 0; row < mapRows; row++)
+  // Only clear the world elements if the map isn't empty
+  if (!map.empty())
   {
-    for (int col = 0; col < mapCols; col++)
+    for (int row = 0; row < mapRows; row++)
     {
-      int _tileID = map[row][col].id;
-      int _layeredItemID = map[row][col].layeredItemID;
-
-      if (_tileID >= 0)
+      for (int col = 0; col < mapCols; col++)
       {
-        delete elements[row][col].tile;
-
-        // Check if the tile has a layered item on top of it
-        if (_layeredItemID >= 0)
+        int _tileID = map[row][col].id;
+        int _layeredItemID = map[row][col].layeredItemID;
+  
+        if (_tileID >= 0)
         {
-          delete elements[row][col].layeredItem;
+          delete elements[row][col].tile;
+  
+          // Check if the tile has a layered item on top of it
+          if (_layeredItemID >= 0)
+          {
+            delete elements[row][col].layeredItem;
+          }
         }
       }
     }
+    elements.clear();
   }
-  elements.clear();
 
   // Clear the map
   map.clear();

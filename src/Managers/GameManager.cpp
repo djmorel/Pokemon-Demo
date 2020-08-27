@@ -17,7 +17,6 @@ GameManager::GameManager()
 
   // Initialize the start and end screens
   mStartSprite = Sprite("StartScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0), 0, Vector3D(1.07f));
-  //mStartSprite.setScale(1.07f);
   mGameOverSprite = Sprite("EndScreen", Vector3D((float)Engine::SCREEN_WIDTH / 2, (float)Engine::SCREEN_HEIGHT / 2, 0), 0, Vector3D(1));
 
   // Initialize the character manager
@@ -47,9 +46,8 @@ GameManager::~GameManager()
 int GameManager::Start()
 {
   // Optional stuff
-  // Was / 1.3
-  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 2), 0), 0, Vector3D(0.5f));
-  npcSprite.setDimensions(64.0f);
+  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
+  npcSprite.setDimensions(128.0f);
   Character npc(npcSprite);
   // End of optional stuff
 
@@ -165,9 +163,6 @@ void GameManager::setState(State state)
   // State clean up
   if (mState == State::START)
   {
-    // Clear the world's contents
-    mWorldManager->clearWorld();
-
     // Clear all of the world's characters
     mCharacterManager->clearCharacters(false);  // Delete the player as well
 
@@ -219,20 +214,11 @@ int GameManager::LoadGame()
   }
 
   // Load the world
-  if (mWorldManager != nullptr)
-  {
-    // Free the memory
-    delete mWorldManager;
-  }
-  //mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo()->mapPath, &mCharacterManager->getPlayerInfo());
+  delete mWorldManager;  // Call delete if a previous world existed
   mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo());
 
   // Enable player input
-  if (mInputManager != nullptr)
-  {
-    // Free the memory
-    delete mInputManager;
-  }
+  delete mInputManager;  // Call delete if a previous InputManager was already configured
   mInputManager = new InputManager(mCharacterManager, mWorldManager);
 
   // Successfully loaded game

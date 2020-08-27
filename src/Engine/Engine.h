@@ -18,6 +18,7 @@ class Engine
     static const int SCREEN_WIDTH = 1024;
     static const int SCREEN_HEIGHT = 768;
     static float getDT();
+    static float getLastTime();
 
     Engine();
     ~Engine();

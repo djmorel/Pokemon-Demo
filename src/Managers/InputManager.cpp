@@ -26,7 +26,7 @@ void InputManager::Update()
     int movePlayer = world->shouldMovePlayer(currentDirection, *pScreenCoord, *pMapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
     bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);     // Flag for changing Sprite frame
     Vector3D displacement;                                                                  // How much to move by
-    int duration;                                                                           // Duration of the animation in milliseconds
+    float duration;                                                                         // Duration of the animation in milliseconds
 
     // Set displacement and duration
     if (newDirection)
@@ -39,7 +39,7 @@ void InputManager::Update()
     {
       // Next movement would hit an IMMOVABLE tile (or movePlayer's value is at an unknown state...)
       displacement = Vector3D(0);
-      duration = 40;
+      duration = 50;
 
       // TODO: Play a bumping sound effect
       std::cout << "Hey, you can't move onto that tile!" << std::endl;
@@ -66,11 +66,11 @@ void InputManager::Update()
       // Check if the player should run
       if (run)
       {
-        duration = 10;
+        duration = 20;
       }
       else
       {
-        duration = 40;
+        duration = 50;
       }
     }
     else
@@ -81,11 +81,11 @@ void InputManager::Update()
       // Check if the player should run
       if (run)
       {
-        duration = 10;
+        duration = 20;
       }
       else
       {
-        duration = 40;
+        duration = 50;
       }
     }
 
@@ -193,7 +193,7 @@ void InputManager::updateDirections(Sprite::dir direction)
 
 
 
-int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &displacement, int duration)
+int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &displacement, float duration)
 {
   // Multiply the displacement by the directional identity Vector3D
   if (currentDirection == Sprite::dir::DOWN)
@@ -229,8 +229,9 @@ int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &
   else
   {
     // Move the world relative to the player (world moves opposite of the character's intended direction)
-    cm->moveCharacter(0, (changeSprite || newDirection), Vector3D(0), currentDirection, duration);
+    // Note: ALWAYS move the world BEFORE calling the character walk to ensure proper duration stalls
     world->moveWorld(displacement * Vector3D(-1));
+    cm->moveCharacter(0, (changeSprite || newDirection), Vector3D(0), currentDirection, duration);
   }
   
   // Update the animationCount
