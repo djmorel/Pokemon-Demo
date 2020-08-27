@@ -47,7 +47,8 @@ GameManager::~GameManager()
 int GameManager::Start()
 {
   // Optional stuff
-  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
+  // Was / 1.3
+  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 2), 0), 0, Vector3D(0.5f));
   npcSprite.setDimensions(64.0f);
   Character npc(npcSprite);
   // End of optional stuff
@@ -182,6 +183,7 @@ void GameManager::setState(State state)
 int GameManager::LoadGame()
 {
   // TODO: Implement save file system
+  std::cout << "Preparing to load game..." << std::endl;
 
   // Load the player from the savefile
   int success = mCharacterManager->loadPlayer();
@@ -204,12 +206,12 @@ int GameManager::LoadGame()
   else if (success == 0)
   {
     std::cout << "Successfully loaded game!" << std::endl;
-    std::cout << "Player Name        : " << mCharacterManager->getPlayerInfo().name << std::endl;
-    std::cout << "Player Gender      : " << mCharacterManager->getPlayerInfo().gender << std::endl;
-    std::cout << "Character Info Path: " << mCharacterManager->getPlayerInfo().charInfoPath << std::endl;
-    std::cout << "Map Path           : " << mCharacterManager->getPlayerInfo().mapPath << std::endl;
-    std::cout << "Screen Coordinates : " << mCharacterManager->getPlayerInfo().screenCoord.x << ", " << mCharacterManager->getPlayerInfo().screenCoord.y << std::endl;
-    std::cout << "Map Coordinates    : " << mCharacterManager->getPlayerInfo().mapCoord.x << ", " << mCharacterManager->getPlayerInfo().mapCoord.y << std::endl;
+    std::cout << "Player Name        : " << mCharacterManager->getPlayerInfo()->name << std::endl;
+    std::cout << "Player Gender      : " << mCharacterManager->getPlayerInfo()->gender << std::endl;
+    std::cout << "Character Info Path: " << mCharacterManager->getPlayerInfo()->charInfoPath << std::endl;
+    std::cout << "Map Path           : " << mCharacterManager->getPlayerInfo()->mapPath << std::endl;
+    std::cout << "Screen Coordinates : " << mCharacterManager->getPlayerInfo()->screenCoord.x << ", " << mCharacterManager->getPlayerInfo()->screenCoord.y << std::endl;
+    std::cout << "Map Coordinates    : " << mCharacterManager->getPlayerInfo()->mapCoord.x << ", " << mCharacterManager->getPlayerInfo()->mapCoord.y << std::endl;
   }
   else
   {
@@ -222,7 +224,8 @@ int GameManager::LoadGame()
     // Free the memory
     delete mWorldManager;
   }
-  mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo().mapPath, &mCharacterManager->getPlayerInfo());
+  //mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo()->mapPath, &mCharacterManager->getPlayerInfo());
+  mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo());
 
   // Enable player input
   if (mInputManager != nullptr)

@@ -60,6 +60,7 @@ class InputManager
     int animationCount = 0;         // Counter for how many times an animation has to be called
     int walkCountQuota = 8;         // Amount of times the walk animation has to be called
     bool isActive = false;          // Blocks incoming input from processing
+    bool run = false;               // Makes the player "run" by halving the animation duration
     Sprite::dir currentDirection;   // Specifies the current animation direction
     Sprite::dir previousDirection;  // Specifies the previous animation direction
     bool newDirection;              // Flag for moving in a new direction

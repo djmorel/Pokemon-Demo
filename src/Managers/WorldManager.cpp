@@ -8,13 +8,14 @@
 
 
 
-WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
+//WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
+WorldManager::WorldManager(PlayerInfo* _playerInfo)
 {
   // Set the PlayerInfo pointer so that buildWorld() can access the player coordinates later
   playerInfo = _playerInfo;
 
   // Read the map blueprints into the map vector
-  if (readMap(mapPath) < 0)
+  if (readMap(_playerInfo->mapPath) < 0)
   {
     std::cout << "ERROR: Unable to read map blueprints..." << std::endl;
   }
@@ -76,10 +77,40 @@ void WorldManager::Update()
 
 void WorldManager::RenderTiles()
 {
-  // Render all of the tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
+  // Determine the row and col values by accounting for 1 tile offscreen (if possible)
+  int min_X = (int)floor(playerInfo->mapCoord.x - playerInfo->screenCoord.x - 1);
+  int max_X = (int)floor(playerInfo->mapCoord.x + (Engine::SCREEN_WIDTH / 64 - playerInfo->screenCoord.x));
+  int min_Y = (int)floor(playerInfo->mapCoord.y - playerInfo->screenCoord.y - 1);
+  int max_Y = (int)floor(playerInfo->mapCoord.y + (Engine::SCREEN_HEIGHT / 64 - playerInfo->screenCoord.y));
+
+  // Make sure the above min and max variables mark valid map indices
+  if (min_X < 0)
   {
-    tiles[i]->Render();
+    min_X = 0;
+  }
+  if (max_X >= mapCols)
+  {
+    max_X = mapCols - 1;
+  }
+  if (min_Y < 0)
+  {
+    min_Y = 0;
+  }
+  if (max_Y >= mapRows)
+  {
+    max_Y = mapRows - 1;
+  }
+
+  // Render all of the onscreen and select offscreen (offscreen by 1 tile) tiles
+  for (int row = min_Y; row <= max_Y; row++)
+  {
+    for (int col = min_X; col <= max_X; col++)
+    {
+      if (map[row][col].id >= 0)
+      {
+        elements[row][col].tile->Render();
+      }
+    }
   }
 }
 
@@ -87,10 +118,40 @@ void WorldManager::RenderTiles()
 
 void WorldManager::RenderLayeredItems()
 {
-  // Render all of the layered items (reverse order for proper perspective)
-  for (int i = layeredItems.size() - 1; i >= 0; i--)
+  // Determine the row and col values by accounting for 3 tiles offscreen (if possible)
+  int min_X = (int)floor(playerInfo->mapCoord.x - playerInfo->screenCoord.x - 3);
+  int max_X = (int)floor(playerInfo->mapCoord.x + (Engine::SCREEN_WIDTH / 64 - playerInfo->screenCoord.x) + 2);
+  int min_Y = (int)floor(playerInfo->mapCoord.y - playerInfo->screenCoord.y - 3);
+  int max_Y = (int)floor(playerInfo->mapCoord.y + (Engine::SCREEN_HEIGHT / 64 - playerInfo->screenCoord.y) + 2);
+
+  // Make sure the above min and max variables mark valid map indices
+  if (min_X < 0)
   {
-    layeredItems[i]->Render();
+    min_X = 0;
+  }
+  if (max_X >= mapCols)
+  {
+    max_X = mapCols - 1;
+  }
+  if (min_Y < 0)
+  {
+    min_Y = 0;
+  }
+  if (max_Y >= mapRows)
+  {
+    max_Y = mapRows - 1;
+  }
+
+  // Render all of the onscreen and select offscreen (offscreen by 3 tiles) layered items
+  for (int row = max_Y; row >= min_Y; row--)  // Render "top" layered items first for proper perspective
+  {
+    for (int col = min_X; col <= max_X; col++)
+    {
+      if (map[row][col].layeredItemID > 0)
+      {
+        elements[row][col].layeredItem->Render();
+      }
+    }
   }
 }
 
@@ -256,29 +317,35 @@ int WorldManager::buildWorld()
   int offset_x = (screenX - mapX) * 64 + 32;
   int offset_y = (screenY - mapY) * 64 + 32;
 
+  // Resize the elements vector based on the map's rows and columns
+  elements.resize(mapRows);
+  for (int i = 0; i < mapRows; i++)
+  {
+    elements[i].resize(mapCols);
+  }
+
   // Draw the tiles relative to the game window
   for (int row = 0; row < mapRows; row++)
   {
     for (int col = 0; col < mapCols; col++)
     {
-      if (map[row][col].id >= 0)
+      int _tileID = map[row][col].id;
+      int _layeredItemID = map[row][col].layeredItemID;
+
+      if (_tileID >= 0)
       {
         // Calculate the position to place the tile
         Vector3D _pos = Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0);
 
         // Create a new instance of the tile Entity
-        tiles.push_back(new Entity(map[row][col].id, _pos, 0, 0.8f));
+        elements[row][col].tile = new Entity(_tileID, _pos, 0, 0.8f);
 
         // Check if the tile has a layered item on top of it
-        int _layeredItemID = map[row][col].layeredItemID;
         if (_layeredItemID >= 0)
         {
           // Create an Entity for the layered item, and pull its default dimensions from the AssetLookupTable
-          Entity* _layeredItem = new Entity(_layeredItemID, _pos, 0, 1);
-          _layeredItem->setDimensions(AssetLT::getDefaultDimensions(_layeredItemID));
-
-          // Add the layered item to the layeredItems vector
-          layeredItems.push_back(_layeredItem);
+          elements[row][col].layeredItem = new Entity(_layeredItemID, _pos, 0, 1);
+          elements[row][col].layeredItem->setDimensions(AssetLT::getDefaultDimensions(_layeredItemID));
         }
       }
     }
@@ -511,17 +578,22 @@ int WorldManager::nextTile(Sprite::dir direction, int mapX, int mapY)
 
 void WorldManager::moveWorld(Vector3D v)
 {
-  // Move the world's tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
+  for (int row = 0; row < mapRows; row++)
   {
-    // tiles_ptr gives a pointer to the tiles vector
-    tiles[i]->getSprite().moveBy(v);
-  }
+    for (int col = 0; col < mapCols; col++)
+    {
+      if (map[row][col].id >= 0)
+      {
+        // Move the world's tiles
+        elements[row][col].tile->getSprite().moveBy(v);
 
-  // Move the world's layeredItems
-  for (unsigned int i = 0; i < layeredItems.size(); i++)
-  {
-    layeredItems[i]->getSprite().moveBy(v);
+        if (map[row][col].layeredItemID >= 0)
+        {
+          // Move the world's layered items
+          elements[row][col].layeredItem->getSprite().moveBy(v);
+        }
+      }
+    }
   }
 }
 
@@ -574,19 +646,27 @@ int WorldManager::shouldMovePlayer(Sprite::dir direction, Vector2D playerScreenC
 
 void WorldManager::clearWorld()
 {
-  // Delete the tiles
-  for (unsigned int i = 0; i < tiles.size(); i++)
+  // Clear the world elements
+  for (int row = 0; row < mapRows; row++)
   {
-    delete tiles[i];  // Delete the pointers
-  }
-  tiles.clear();  // Clear the vector entries
+    for (int col = 0; col < mapCols; col++)
+    {
+      int _tileID = map[row][col].id;
+      int _layeredItemID = map[row][col].layeredItemID;
 
-  // Delete the layeredItems
-  for (unsigned int i = 0; i < layeredItems.size(); i++)
-  {
-    delete layeredItems[i];
+      if (_tileID >= 0)
+      {
+        delete elements[row][col].tile;
+
+        // Check if the tile has a layered item on top of it
+        if (_layeredItemID >= 0)
+        {
+          delete elements[row][col].layeredItem;
+        }
+      }
+    }
   }
-  layeredItems.clear();
+  elements.clear();
 
   // Clear the map
   map.clear();

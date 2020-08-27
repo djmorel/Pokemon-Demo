@@ -120,9 +120,9 @@ class CharacterManager
     /**
       Retrieves CharacterManager's player information.
       \param None
-      \return Address of the player's PlayerInfo object.
+      \return The player's PlayerInfo pointer.
     **/
-    PlayerInfo& getPlayerInfo();
+    PlayerInfo* getPlayerInfo();  // TODO!!!
     
     /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
@@ -166,7 +166,7 @@ class CharacterManager
 
   private:
     std::string savefilePath;                // Location of the game's savefile
-    PlayerInfo playerInfo;                   // Structure containing player information
+    PlayerInfo playerInfo;                  // Structure containing player information
     std::vector<CharacterInfo*> characters;  // Vector of all characters on the current map
 };
 

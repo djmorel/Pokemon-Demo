@@ -453,9 +453,9 @@ Character* CharacterManager::getPlayer()
 
 
 
-PlayerInfo& CharacterManager::getPlayerInfo()
+PlayerInfo* CharacterManager::getPlayerInfo()
 {
-  return playerInfo;
+  return &playerInfo;
 }
 
 

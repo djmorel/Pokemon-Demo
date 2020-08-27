@@ -9,8 +9,8 @@ InputManager::InputManager(CharacterManager* _cm, WorldManager* _world)
   previousDirection = currentDirection;
   newDirection = false;
 
-  pScreenCoord = &_cm->getPlayerInfo().screenCoord;
-  pMapCoord = &_cm->getPlayerInfo().mapCoord;
+  pScreenCoord = &_cm->getPlayerInfo()->screenCoord;
+  pMapCoord = &_cm->getPlayerInfo()->mapCoord;
 }
 
 
@@ -62,13 +62,31 @@ void InputManager::Update()
       {
         displacement = Vector3D(8);
       }
-      duration = 40;
+
+      // Check if the player should run
+      if (run)
+      {
+        duration = 10;
+      }
+      else
+      {
+        duration = 40;
+      }
     }
     else
     {
       // Attempted movement doesn't send the player to an unwanted tile, so grant the walk movement
       displacement = Vector3D(8);
-      duration = 40;
+
+      // Check if the player should run
+      if (run)
+      {
+        duration = 10;
+      }
+      else
+      {
+        duration = 40;
+      }
     }
 
     // Animate the world!
@@ -80,6 +98,7 @@ void InputManager::Update()
       // Reset the flags and count
       newDirection = false;
       isActive = false;
+      run = false;
       animationCount = 0;
     }
     else
@@ -89,6 +108,7 @@ void InputManager::Update()
       {
         isActive = false;    // Remove the processing flag
         animationCount = 0;  // Reset the count
+        run = false;         // Reset the run flag
 
         // Update player coordinates
         cm->updatePlayerMapCoord(Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota));
@@ -107,6 +127,7 @@ void InputManager::Update()
 void InputManager::handleInput()
 {
   // Enable mouse button support
+  /*
   if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_LEFT))
   {
     // Left click means rotate counter clockwise
@@ -116,6 +137,13 @@ void InputManager::handleInput()
   {
     // Right click means rotate clockwise once
     cm->getPlayer()->getSprite().rotateBy(-10);
+  }
+  */
+
+  // Enable running
+  if (!isActive && (Keyboard::key(GLFW_KEY_SPACE)))
+  {
+    run = true;
   }
 
   // Enable keyboard support (WASD movement)

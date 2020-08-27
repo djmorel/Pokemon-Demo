@@ -26,6 +26,15 @@ struct TileInfo
 typedef struct TileInfo TileInfo;
 
 
+// Structure for containing tile contents
+struct WorldElements
+{
+  Entity* tile;         // Pointer to the tile Entity
+  Entity* layeredItem;  // Pointer to the layered item Entity
+};
+typedef struct WorldElements WorldElements;
+
+
 class WorldManager
 {
   public:
@@ -35,7 +44,8 @@ class WorldManager
       \param PlayerInfo* _playerInfo - Pointer to the player information structure.
       \return None
     **/
-    WorldManager(std::string mapPath, PlayerInfo* _playerInfo);
+    //WorldManager(std::string mapPath, PlayerInfo* _playerInfo);
+    WorldManager(PlayerInfo* _playerInfo);
 
     /**
       A deconstructor that frees all tiles associated with the current world, and clears the tile & map vectors.
@@ -79,7 +89,13 @@ class WorldManager
     **/
     int buildWorld();  // Sets the environment to that of the save file
 
-
+    /**
+      Converts 3 strings into ints, and puts them into a TileInfo object.
+      \param std::string _id - String representation of the tile ID.
+      \param std::string _type - String representation of the tile type.
+      \param std::string _layeredItemID - String representation of the layered item ID.
+      \return TileInfo object containing the string to int conversions. If TileInfo.id is -42, the stoi conversion failed and the object is invalid.
+    **/
     TileInfo str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID);
 
 
@@ -153,12 +169,10 @@ class WorldManager
     PlayerInfo* playerInfo;
 
     // Note: WorldMap files MUST have ALL rows contain the same column count
-    std::vector< std::vector<TileInfo> > map;  // RAM-like record of the WorldMap
-    int mapRows = 0;                           // Tracks the map's row count
-    int mapCols = 0;                           // Tracks the map's column count
-    std::vector<Entity*> tiles;                // Holds references to each tile
-    std::vector<Entity*> layeredItems;         // Holds references to items layered on top of the tiles
-
+    std::vector< std::vector<TileInfo> > map;            // RAM-like record of the WorldMap
+    int mapRows = 0;                                     // Tracks the map's row count
+    int mapCols = 0;                                     // Tracks the map's column count
+    std::vector< std::vector<WorldElements> > elements;  // Holds references to each tile and layered item
 };
 
 
