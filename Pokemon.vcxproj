@@ -149,6 +149,7 @@
     <ClCompile Include="src\Engine\Graphics\Sprite.cpp" />
     <ClCompile Include="src\Engine\Graphics\Texture.cpp" />
     <ClCompile Include="src\Engine\Text\Text2D.cpp" />
+    <ClCompile Include="src\InfoFiles\InfoFiles.cpp" />
     <ClCompile Include="src\Managers\CharacterManager.cpp" />
     <ClCompile Include="src\States\PlayState.cpp" />
     <ClCompile Include="src\States\StartState.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="src\Engine\Graphics\Sprite.h" />
     <ClInclude Include="src\Engine\Graphics\Texture.h" />
     <ClInclude Include="src\Engine\Text\Text2D.h" />
+    <ClInclude Include="src\InfoFiles\InfoFiles.h" />
     <ClInclude Include="src\Managers\CharacterManager.h" />
     <ClInclude Include="src\States\PlayState.h" />
     <ClInclude Include="src\States\StartState.h" />
@@ -202,11 +204,28 @@
     <Text Include="src\Assets\WorldMaps\Map_GrassTrails_Irregular.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Iceberg.txt" />
     <Text Include="src\Assets\WorldMaps\Map_World.txt" />
-    <Text Include="src\CharacterInfo\FileFormat.txt" />
-    <Text Include="src\CharacterInfo\Hilda.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Drake.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\FileFormat.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Hilda.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Zinnia.txt" />
+    <Text Include="src\InfoFiles\MapInfo\FileFormat.txt" />
+    <Text Include="src\InfoFiles\MapInfo\Grasslands2Beach.txt" />
     <Text Include="src\Save\FileFormat.txt" />
     <Text Include="src\Save\Savefile.txt" />
     <Text Include="src\Save\Savefile_OLD.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\Assets\Art\DefaultObject.png" />
+    <Image Include="src\Assets\Art\Trainer_Drake_Spritesheet.png" />
+    <Image Include="src\Assets\Art\Emerald_StartScreen.png" />
+    <Image Include="src\Assets\Art\GameOverScreen.png" />
+    <Image Include="src\Assets\Art\Loading.png" />
+    <Image Include="src\Assets\Art\MinecraftBlocks_Spritesheet.png" />
+    <Image Include="src\Assets\Art\Trainer_Hilda_Spritesheet.png" />
+    <Image Include="src\Assets\Art\Trainer_Miku.png" />
+    <Image Include="src\Assets\Art\Tree_Spritesheet.png" />
+    <Image Include="src\Assets\Art\Tyranitar.png" />
+    <Image Include="src\Assets\Art\Trainer_Zinnia_Spritesheet.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

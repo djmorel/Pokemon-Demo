@@ -1,0 +1,6 @@
+WorldMap Path
+Player Start Screen Coordinates
+Player Start Map Coordinates
+NPC_1 CharacterInfo file path: NPC_1 map coordinates
+NPC_2 CharacterInfo file path: NPC_2 map coordinates
+...

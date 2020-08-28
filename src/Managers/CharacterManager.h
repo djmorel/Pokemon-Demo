@@ -4,19 +4,8 @@
 
 #include "../Engine/Actors/Character.h"
 #include "../Engine/Math/Vector2D.h"
+#include "../InfoFiles/InfoFiles.h"
 #include <vector>
-
-
-struct PlayerInfo
-{
-  std::string name;          // Player nickname
-  bool gender;               // 0 for female & 1 for male
-  std::string charInfoPath;  // Path to CharacterInfo
-  std::string mapPath;       // Path of last visited map
-  Vector2D screenCoord;      // (x, y) coordinates on screen
-  Vector2D mapCoord;         // (x, y) coordinates on map
-};
-typedef struct PlayerInfo PlayerInfo;
 
 
 struct CharacterInfo
@@ -32,11 +21,11 @@ class CharacterManager
 {
   public:
     /**
-      A constructor that initializes the savefilePath to a default value.
+      A constructor that initializes the playerInfo pointer from GameManager.
       \param None
       \return None
     **/
-    CharacterManager();
+    CharacterManager(PlayerInfo* _playerInfo);
     
     /**
       A deconstructor that deletes all instances of CharacterInfo, and clears the characters vector.
@@ -60,20 +49,6 @@ class CharacterManager
     void Render();
     
     /**
-      Creates a new player savefile for the game and rewrites over old savefile if it exists. References CharacterManager's savefilePath.
-      \param None
-      \return 0 on success, -1 if cancel player creation, or -2 if unable to delete existing file.
-    **/
-    int createPlayer();
-    
-    /**
-      Loads player information from the savefile into GameManager's playerInfo struct.
-      \param None
-      \return 0 on success, -1 if unable to open savefile, -2 if line2coord() failure, -3 if corrupt savefile, or -4 if loadCharacter() failure.
-    **/
-    int loadPlayer();
-    
-    /**
       Loads either the player or a character into the characters vector. Note that the player can ONLY be loaded when the characters vector is empty.
       \param std::string characterPath - String for the full CharacterInfo file path.
       \param bool isPlayer - True if the requested character is the player, or False if an NPC.
@@ -94,21 +69,6 @@ class CharacterManager
       \return 0 on success, -1 if invalid numSprites format in CharacterInfo file, or -2 if invalid assetID format in CharacterInfo file.
     **/
     int configSprite(Character& character, std::string& line, Vector3D _pos, float _rot, Vector3D _scale);
-
-    /**
-      Converts a string to a Vector2D (x, y) coordinate.
-      \param std::string line - String in the format of int_x,int_y.
-      \return Vector2D(-1, -1) on failure, or Vector2D based on what was read.
-    **/
-    Vector2D line2coord(std::string line);
-    
-    /**
-      Reads from a string up to a delimiter character, and converts what was read to a positive int.
-      \param std::string &line - Address of a string to pull an integer from. Note characters (including delimiter) read from the string are erased.
-      \param char delimiter - Character that indicates where to stop pulling the integer from the passed string.
-      \return int >= 0 on success, or -1 on std::stoi() failure.
-    **/
-    int intPull(std::string &line, char delimiter);
     
     /**
       Retrieves CharacterManager's player, the first element of the characters vector.
@@ -116,13 +76,6 @@ class CharacterManager
       \return Character pointer to the player's Character object.
     **/
     Character* getPlayer();
-    
-    /**
-      Retrieves CharacterManager's player information.
-      \param None
-      \return The player's PlayerInfo pointer.
-    **/
-    PlayerInfo* getPlayerInfo();  // TODO!!!
     
     /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
@@ -149,24 +102,13 @@ class CharacterManager
     **/
     void moveAllNPCs(Vector3D displacement);
 
-    /**
-      Updates the player's screen coordinate record.
-      \param Vector2D v - Player's screen coordinate net change.
-      \return None
-    **/
-    void updatePlayerScreenCoord(Vector2D v);
-
-    /**
-      Updates the player's map coordinate record.
-      \param Vector2D v - Player's map coordinate net change.
-      \return None
-    **/
-    void updatePlayerMapCoord(Vector2D v);
+    // TODO
+    // Move the NPCs in a certain way as specified by their movement style (need to add that parameter!)
+    void randomizeNPCs();
 
 
   private:
-    std::string savefilePath;                // Location of the game's savefile
-    PlayerInfo playerInfo;                  // Structure containing player information
+    PlayerInfo* playerInfo;                  // Pointer to the player's PlayerInfo object (gives player's coordinates)
     std::vector<CharacterInfo*> characters;  // Vector of all characters on the current map
 };
 

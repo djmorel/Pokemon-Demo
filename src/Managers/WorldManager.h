@@ -3,27 +3,10 @@
 
 
 #include "../Engine/Actors/Entity.h"
-#include "../Managers/CharacterManager.h"
+#include "../InfoFiles/InfoFiles.h"
 #include "../Engine/Math/Vector2D.h"
 #include <vector>
 
-
-// Tile type constants
-#define DEFAULT   0  // Default tile that player steps on
-#define IMMOVABLE 1  // Tile the player can't step on
-#define ENCOUNTER 2  // Tile that grants a wild Pokemon encounter
-#define BATTLE    3  // Tile that grants a Pokemon battle
-#define LOADMAP   4  // Tile that may load a new map if the right direction is entered on the tile
-
-
-// Structure containing tile information
-struct TileInfo
-{
-  int id;             // assetID for the tile
-  int type;           // Type of the tile
-  int layeredItemID;  // assetID for the layered item on this tile (-1 means no layered item)
-};
-typedef struct TileInfo TileInfo;
 
 
 // Structure for containing tile contents
@@ -88,16 +71,6 @@ class WorldManager
       \return 0 on success, or -1 if the map vector has no elements.
     **/
     int buildWorld();  // Sets the environment to that of the save file
-
-    /**
-      Converts 3 strings into ints, and puts them into a TileInfo object.
-      \param std::string _id - String representation of the tile ID.
-      \param std::string _type - String representation of the tile type.
-      \param std::string _layeredItemID - String representation of the layered item ID.
-      \return TileInfo object containing the string to int conversions. If TileInfo.id is -42, the stoi conversion failed and the object is invalid.
-    **/
-    TileInfo str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID);
-
 
     /**
       Calls subfunctions to check if the world can move relative to the player.

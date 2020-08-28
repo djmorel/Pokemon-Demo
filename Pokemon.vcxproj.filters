@@ -90,6 +90,9 @@
     <ClCompile Include="src\Engine\Text\FancyTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\InfoFiles\InfoFiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Managers\GameManager.h">
@@ -164,6 +167,9 @@
     <ClInclude Include="src\Engine\Text\FancyTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\InfoFiles\InfoFiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -174,11 +180,50 @@
     <Text Include="src\Assets\WorldMaps\Map_World.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Grasslands_Big.txt" />
     <Text Include="src\Save\Savefile.txt" />
-    <Text Include="src\CharacterInfo\Hilda.txt" />
-    <Text Include="src\CharacterInfo\FileFormat.txt" />
     <Text Include="src\Save\FileFormat.txt" />
     <Text Include="src\Assets\WorldMaps\Map_GrassTrails_Irregular.txt" />
     <Text Include="src\Save\Savefile_OLD.txt" />
     <Text Include="src\Assets\WorldMaps\Map_Grasslands2Beach.txt" />
+    <Text Include="src\InfoFiles\MapInfo\FileFormat.txt" />
+    <Text Include="src\InfoFiles\MapInfo\Grasslands2Beach.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Drake.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\FileFormat.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Hilda.txt" />
+    <Text Include="src\InfoFiles\CharacterInfo\Zinnia.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\Assets\Art\Tyranitar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Tree_Spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Trainer_Miku.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Trainer_Hilda_Spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\MinecraftBlocks_Spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Loading.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\GameOverScreen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Emerald_StartScreen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\DefaultObject.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Trainer_Drake_Spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\Assets\Art\Trainer_Zinnia_Spritesheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

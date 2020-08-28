@@ -1,16 +1,15 @@
 #include "CharacterManager.h"
 #include "../Engine/Engine.h"
 #include <iostream>
-#include <fstream>
 #include <stdio.h>
 #include <string>
 
 
 
-CharacterManager::CharacterManager()
+CharacterManager::CharacterManager(PlayerInfo* _playerInfo)
 {
-  // Set the savefile path to the default location
-  savefilePath = "src/Save/Savefile.txt";
+  // Initialize the playerInfo pointer
+  playerInfo = _playerInfo;
 }
 
 
@@ -45,153 +44,6 @@ void CharacterManager::Render()
   {
     characters[i]->character.Render();
   }
-}
-
-
-
-int CharacterManager::createPlayer()
-{
-  // Open the passed map file
-  std::ifstream fd;
-  fd.open(savefilePath);
-
-  // Check if the file already exists
-  if (fd.is_open())
-  {
-    char response = '\0';
-
-    // Unable to open the file
-    std::cout << "CAUTION: Savefile already exists. Starting a new game will overwrite the existing savefile." << std::endl;
-
-    while (response != 'Y' && response != 'y' && response != 'N' && response != 'n')
-    {
-      std::cout << "Continue (Y/N)? ";
-      std::cin >> response;
-    }
-
-    // Handle the user response
-    if (response == 'N' || response == 'n')
-    {
-      // Close the file
-      fd.close();
-
-      // Cancel player creation
-      return -1;
-    }
-
-    // Close the file
-    fd.close();
-
-    // Delete the file
-    if (remove(savefilePath.c_str()) != 0)
-    {
-      // Unable to delete the exisiting savefile
-      return -2;
-    }
-  }  // File doesn't exist or has successfully been deleted
-
-  // Create a new savefile
-
-  // TODO: Request and add the player's name
-
-  // TODO: Request and add the player's gender (Will most likely turn out to be select your character)
-
-  // TODO: Note the player character's CharacterInfo path
-
-  // TODO: Configure the player's screen coordinates based on game start
-
-  // TODO: Configure the player's map coordinates based on game start
-
-  // Successfully created a player savefile
-  return 0;
-}
-
-
-
-int CharacterManager::loadPlayer()
-{
-  // Variables
-  std::ifstream fd;  // File descriptor/handler
-  std::string line;  // Line read from the savefile
-  int lineNum = 0;   // Tracks the current line number
-
-  // Open the save file
-  fd.open(savefilePath);
-
-  // Ensure the file is open
-  if (!fd.is_open())
-  {
-    // Unable to open savefile, so return an error
-    return -1;
-  }
-
-  // File is open, so let's read it line-by-line
-  while (getline(fd, line))
-  {
-    if (lineNum == 0)
-    {
-      // Load the player name
-      playerInfo.name = line;
-    }
-    else if (lineNum == 1)
-    {
-      // Load the player gender
-      playerInfo.gender = (line == "M");
-    }
-    else if (lineNum == 2)
-    {
-      // Load the player characterInfo path
-      playerInfo.charInfoPath = line;
-    }
-    else if (lineNum == 3)
-    {
-      playerInfo.mapPath = line;
-    }
-    else if (lineNum == 4)
-    {
-      // Load the player screen coordinates
-      playerInfo.screenCoord = line2coord(line);
-
-      // Check that line2coord didn't fail
-      if (playerInfo.screenCoord.x == -1 || playerInfo.screenCoord.y == -1)
-      {
-        // A coordinate is -1, so the stoi conversion failed
-        return -2;
-      }
-    }
-    else if (lineNum == 5)
-    {
-      // Load the player map coordinates
-      playerInfo.mapCoord = line2coord(line);
-
-      // Check that line2coord didn't fail
-      if (playerInfo.mapCoord.x == -1 || playerInfo.mapCoord.y == -1)
-      {
-        // A coordinate is -1, so the stoi conversion failed
-        return -2;
-      }
-    }
-
-    // TODO: Add more else if conditions when savefile has more information
-
-    lineNum++;
-  }
-
-  // Check that all of the lines were properly read
-  if (lineNum < 5)
-  {
-    return -3;
-  }
-
-  // Call loadCharacter to load the player sprite and animations
-  // Need (3 * 32.0f) / 2 since haven't configured the rigid body yet (Hilda sprite is 64x96 when scaled to 2.0f)
-  if ( loadCharacter(playerInfo.charInfoPath, true, Vector3D(playerInfo.screenCoord.x * 64.0f + 64.0f / 2, playerInfo.screenCoord.y * 64.0f + (3 * 32.0f) / 2, 0), 0, Vector3D(2.0f) ) < 0 )
-  {
-    return -4;
-  }
-
-  // Successfully loaded player information
-  return 0;
 }
 
 
@@ -299,7 +151,7 @@ int CharacterManager::configSprite(Character &character, std::string &line, Vect
                                Sprite::dir::UP };
 
   // Determine how many sprites are assigned to a direction's animation
-  numSprites = intPull(line, ':');
+  numSprites = InfoFiles::intPull(line, ':');
 
   // Error checking
   if (numSprites < 0)
@@ -309,10 +161,10 @@ int CharacterManager::configSprite(Character &character, std::string &line, Vect
   }
 
   // Add the assetIDs to spriteCodes
-  for (unsigned int i = 0; i < numSprites * 4; i++)
+  for (int i = 0; i < numSprites * 4; i++)
   {
     // Get the next assetID
-    id = intPull(line, ',');
+    id = InfoFiles::intPull(line, ',');
 
     // Add the valid assetID to spriteCodes
     if (id < 0)
@@ -356,106 +208,9 @@ int CharacterManager::configSprite(Character &character, std::string &line, Vect
 
 
 
-Vector2D CharacterManager::line2coord(std::string line)
-{
-  // Setup a default invalid return
-  Vector2D ret_val = Vector2D(-1);
-
-  // Setup reading variables
-  std::string x = "";
-  std::string y = "";
-  bool isX = true;
-
-  // Iterate through the passed string, line
-  for (unsigned int i = 0; i < line.length(); i++)
-  {
-    if (isX)
-    {
-      if (line[i] == ',')
-      {
-        isX = false;
-      }
-      else
-      {
-        x.push_back(line[i]);
-      }
-    }
-    else
-    {
-      y.push_back(line[i]);
-    }
-  }
-
-  // Try converting the tokens into ints
-  try
-  {
-    ret_val = Vector2D((float)std::stoi(x), (float)std::stoi(y));
-  }
-  catch (std::invalid_argument const& e)
-  {
-    // Unable to convert to an int, so we'll return the default Vector2D
-  }
-  catch (std::out_of_range const& e)
-  {
-    // Unable to convert to an int, so we'll return the default Vector2D
-  }
-
-  return ret_val;
-}
-
-
-
-int CharacterManager::intPull(std::string &line, char delimiter)
-{
-  std::string intString = "";
-
-  // Loop through the string until the delimiter is reached
-  for (unsigned int i = 0; i < line.length(); i++)
-  {
-    if (line[i] == delimiter)
-    {
-      // Empty the contents of line up to and including the delimiter
-      line.erase(0, i + 1);
-
-      // Break from the loop
-      break;
-    }
-    else
-    {
-      // Add the read character to our integer string
-      intString.push_back(line[i]);
-    }
-  }
-
-  // Attempt to convert intString to an actual int
-  try
-  {
-    return std::stoi(intString);
-  }
-  catch (std::invalid_argument const& e)
-  {
-    // Unable to convert to an int
-    return -1;
-  }
-  catch (std::out_of_range const& e)
-  {
-    // Unable to convert to an int
-    return -1;
-  }
-}
-
-
-
 Character* CharacterManager::getPlayer()
 {
   return &characters[0]->character;
-}
-
-
-
-PlayerInfo* CharacterManager::getPlayerInfo()
-{
-  return &playerInfo;
 }
 
 
@@ -510,20 +265,4 @@ void CharacterManager::moveAllNPCs(Vector3D displacement)
     // Move the NPC sprites
     characters[i]->character.getSprite().moveBy(displacement);
   }
-}
-
-
-
-void CharacterManager::updatePlayerScreenCoord(Vector2D v)
-{
-  // Add the movement coordinates to the player's screen coordinate record
-  playerInfo.screenCoord = playerInfo.screenCoord + v;
-}
-
-
-
-void CharacterManager::updatePlayerMapCoord(Vector2D v)
-{
-  // Add the movement coordinates to the player's map coordinate record
-  playerInfo.mapCoord = playerInfo.mapCoord + v;
 }

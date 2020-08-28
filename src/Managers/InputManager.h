@@ -14,11 +14,12 @@ class InputManager
   public:
     /**
       A constructor that configures the InputManager.
+      \param PlayerInfo* _playerInfo - Pointer to the GameManager's playerInfo object.
       \param CharacterManager* _cm - Pointer to the CharacterManager.
       \param WorldManager* _world - Pointer to the WorldManager.
       \return None
     **/
-    InputManager(CharacterManager* _cm, WorldManager* _world);
+    InputManager(PlayerInfo* _playerInfo, CharacterManager* _cm, WorldManager* _world);
 
     /**
       Records player input, and handles responses.
@@ -53,9 +54,8 @@ class InputManager
 
 
   private:
+    PlayerInfo* playerInfo;         // Pointer to the GameManager's PlayerInfo object (tracks player coordinates on the map and screen)
     CharacterManager* cm;           // Pointer to the CharacterManager
-    Vector2D* pScreenCoord;         // Tracks the player coordinates on the screen (x: 0-15 & y: 0-11)
-    Vector2D* pMapCoord;            // Tracks the player coordinates on the map (x & y ranges depend on map)
     WorldManager* world;            // Pointer to the world
     int animationCount = 0;         // Counter for how many times an animation has to be called
     int walkCountQuota = 8;         // Amount of times the walk animation has to be called

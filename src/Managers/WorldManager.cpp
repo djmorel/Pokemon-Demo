@@ -188,7 +188,7 @@ int WorldManager::readMap(std::string mapPath)
     // Check what character we have
     if (ch == ',')  // Finished reading a number
     {
-      _tile = str2TileInfo(_id, _type, _layeredItemID);
+      _tile = InfoFiles::str2TileInfo(_id, _type, _layeredItemID);
 
       if ( _tile.id < -1 )
       {
@@ -217,7 +217,7 @@ int WorldManager::readMap(std::string mapPath)
     }
     else if (ch == ';')  // Finished reading a number and a row
     {
-      _tile = str2TileInfo(_id, _type, _layeredItemID);
+      _tile = InfoFiles::str2TileInfo(_id, _type, _layeredItemID);
 
       if ( _tile.id < -1 )
       {
@@ -355,59 +355,6 @@ int WorldManager::buildWorld()
   return 0;
 }
 
-
-TileInfo WorldManager::str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID)
-{
-  // Create a default, invalid TileInfo object
-  TileInfo ret_val;
-  ret_val.id = -42;
-  ret_val.type = -1;
-  ret_val.layeredItemID = -1;
-
-  // Try to convert the input strings to ints
-  try
-  {
-    // Convert the tile ID string to an integer
-    ret_val.id = std::stoi(_id);
-    
-    // Check if the tile is of the default type
-    if (_type == "")
-    {
-       ret_val.type = 0;
-    }
-    else
-    {
-      // Convert the tile type string to an integer
-      ret_val.type = std::stoi(_type);
-    }
-    
-    // Check if there is a layered item to record
-    if (_layeredItemID == "")
-    {
-      ret_val.layeredItemID = -1;
-    }
-    else
-    {
-      // Convert the layered item ID string to an integer
-      ret_val.layeredItemID = std::stoi(_layeredItemID);
-    }
-  }
-  catch (std::invalid_argument const& e)
-  {
-    // Unable to convert to an int, so corrupt/invalid map
-    // Make sure the tile ID is set as -1 to mark a failed conversion
-    ret_val.id = -42;
-  }
-  catch (std::out_of_range const& e)
-  {
-    // Unable to convert to an int, so corrupt/invalid map
-    // Make sure the tile ID is set as -1 to mark a failed conversion
-    ret_val.id = -42;
-  }
-
-  // Return the current ret_val (failed or success version)
-  return ret_val;
-}
 
 
 bool WorldManager::canMoveWorld(Sprite::dir direction, int screenX, int screenY, int mapX, int mapY)

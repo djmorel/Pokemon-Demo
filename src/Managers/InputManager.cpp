@@ -1,16 +1,14 @@
 #include "InputManager.h"
 
 
-InputManager::InputManager(CharacterManager* _cm, WorldManager* _world)
+InputManager::InputManager(PlayerInfo* _playerInfo, CharacterManager* _cm, WorldManager* _world)
 {
+  playerInfo = _playerInfo;
   cm = _cm;
   world = _world;
   currentDirection = Sprite::dir::DOWN;   // Player starts in the front-facing (DOWN) direction
   previousDirection = currentDirection;
   newDirection = false;
-
-  pScreenCoord = &_cm->getPlayerInfo()->screenCoord;
-  pMapCoord = &_cm->getPlayerInfo()->mapCoord;
 }
 
 
@@ -23,10 +21,10 @@ void InputManager::Update()
   if (isActive)
   {
     // Local Variables
-    int movePlayer = world->shouldMovePlayer(currentDirection, *pScreenCoord, *pMapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
-    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);     // Flag for changing Sprite frame
-    Vector3D displacement;                                                                  // How much to move by
-    float duration;                                                                         // Duration of the animation in milliseconds
+    int movePlayer = world->shouldMovePlayer(currentDirection, playerInfo->screenCoord, playerInfo->mapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
+    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);    // Flag for changing Sprite frame
+    Vector3D displacement;                                                                 // How much to move by
+    float duration;                                                                        // Duration of the animation in milliseconds
 
     // Set displacement and duration
     if (newDirection)
@@ -47,10 +45,10 @@ void InputManager::Update()
     else if (movePlayer == 1)
     {
       // If the player is to move, make sure the player stays in the bounds of the screen
-      if ( ((currentDirection == Sprite::dir::UP   ) && (pScreenCoord->y >= Engine::SCREEN_HEIGHT / 64.0f - 1)) || 
-           ((currentDirection == Sprite::dir::DOWN ) && (pScreenCoord->y <= 0                                )) ||
-           ((currentDirection == Sprite::dir::LEFT ) && (pScreenCoord->x <= 0                                )) ||
-           ((currentDirection == Sprite::dir::RIGHT) && (pScreenCoord->x >= Engine::SCREEN_WIDTH / 64.0f  - 1))    )
+      if ( ((currentDirection == Sprite::dir::UP   ) && (playerInfo->screenCoord.y >= Engine::SCREEN_HEIGHT / 64.0f - 1)) || 
+           ((currentDirection == Sprite::dir::DOWN ) && (playerInfo->screenCoord.y <= 0                                )) ||
+           ((currentDirection == Sprite::dir::LEFT ) && (playerInfo->screenCoord.x <= 0                                )) ||
+           ((currentDirection == Sprite::dir::RIGHT) && (playerInfo->screenCoord.x >= Engine::SCREEN_WIDTH / 64.0f  - 1))    )
       {
         // Player is at the edge of the screen, so prevent movement!
         displacement = Vector3D(0);
@@ -111,12 +109,16 @@ void InputManager::Update()
         run = false;         // Reset the run flag
 
         // Update player coordinates
-        cm->updatePlayerMapCoord(Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota));
+        playerInfo->mapCoord = playerInfo->mapCoord + Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota);
         if (movePlayer)
         {
           // Update the player's screen coordinates if the player moved relative to the screen
-          cm->updatePlayerScreenCoord(Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota));
+          playerInfo->screenCoord = playerInfo->screenCoord + Vector2D(displacement.x / walkCountQuota, displacement.y / walkCountQuota);
         }
+
+        // DEBUG
+        std::cout << "Player screen coordinates: " << playerInfo->screenCoord.x << ", " << playerInfo->screenCoord.y << std::endl;
+        std::cout << "Player map coordinates   : " << playerInfo->mapCoord.x << ", " << playerInfo->mapCoord.y << std::endl;
       }
     }
   }

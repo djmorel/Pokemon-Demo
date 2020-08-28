@@ -1,8 +1,6 @@
 #include "Sprite.h"
 #include "../Engine.h"
 #include "../Math/Math.h"
-#include <thread>
-#include <chrono>
 
 
 
