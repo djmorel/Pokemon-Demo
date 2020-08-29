@@ -1,6 +1,6 @@
 Hilda
 F
 src/InfoFiles/CharacterInfo/Hilda.txt
-src/Assets/WorldMaps/Map_Grasslands2Beach.txt
+src/InfoFiles/MapInfo/Grasslands2Beach.txt
 8,0
 10,0

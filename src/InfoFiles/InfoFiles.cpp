@@ -92,6 +92,32 @@ namespace InfoFiles
   }
 
 
+  std::string InfoFiles::strPull(std::string& line, char delimiter)
+  {
+    std::string ret_string = "";
+
+    // Loop through the string until the delimiter is reached
+    for (unsigned int i = 0; i < line.length(); i++)
+    {
+      if (line[i] == delimiter)
+      {
+        // Empty the contents of line up to and including the delimiter
+        line.erase(0, i + 1);
+
+        // Break from the loop
+        break;
+      }
+      else
+      {
+        // Add the read character to our integer string
+        ret_string.push_back(line[i]);
+      }
+    }
+
+    return ret_string;
+  }
+
+
   TileInfo InfoFiles::str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID)
   {
     // Create a default, invalid TileInfo object

@@ -232,7 +232,9 @@ int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &
   {
     // Move the world relative to the player (world moves opposite of the character's intended direction)
     // Note: ALWAYS move the world BEFORE calling the character walk to ensure proper duration stalls
-    world->moveWorld(displacement * Vector3D(-1));
+    Vector3D worldDisplacement = displacement * Vector3D(-1);
+    world->moveWorld(worldDisplacement);
+    cm->moveAllNPCs(worldDisplacement);
     cm->moveCharacter(0, (changeSprite || newDirection), Vector3D(0), currentDirection, duration);
   }
   

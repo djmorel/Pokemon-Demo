@@ -1,6 +1,7 @@
 #ifndef INFOFILES_H
 #define INFOFILES_H
 
+#include "../Engine/Math/Vector3D.h"
 #include "../Engine/Math/Vector2D.h"
 #include <iostream>
 #include <fstream>
@@ -31,7 +32,7 @@ struct PlayerInfo
   std::string name;          // Player nickname
   bool gender;               // 0 for female & 1 for male
   std::string charInfoPath;  // Path to CharacterInfo
-  std::string mapPath;       // Path of last visited map
+  std::string mapInfoPath;   // MapInfo path of the last visited map
   Vector2D screenCoord;      // (x, y) coordinates on screen
   Vector2D mapCoord;         // (x, y) coordinates on map
 };
@@ -54,6 +55,14 @@ namespace InfoFiles
     \return int >= 0 on success, or -1 on std::stoi() failure.
   **/
   int intPull(std::string& line, char delimiter);
+
+  /**
+    Reads from a string up to a delimiter character, and converts what was read to a separate string.
+    \param std::string &line - Address of a string to pull an integer from. Note characters (including delimiter) read from the string are erased.
+    \param char delimiter - Character that indicates where to stop pulling the integer from the passed string.
+    \return int >= 0 on success, or -1 on std::stoi() failure.
+  **/
+  std::string strPull(std::string& line, char delimiter);
 
   /**
     Converts 3 strings into ints, and puts them into a TileInfo object.

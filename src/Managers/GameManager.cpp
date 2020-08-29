@@ -1,6 +1,6 @@
 #include "GameManager.h"
 #include <iostream>
-//#include <fstream>
+#include <fstream>
 //#include <stdio.h>
 
 
@@ -29,6 +29,10 @@ GameManager::GameManager()
 
   // Set the state to START
   mState = State::START;
+
+  // Set player spawning based on the savefile coordinates
+  newMap_StartSpawn = false;
+  newMap_EndSpawn = false;
 }
 
 
@@ -187,7 +191,6 @@ int GameManager::loadGame()
   std::cout << "Preparing to load game..." << std::endl;
 
   // Load the player from the savefile
-  //int success = mCharacterManager->loadPlayer();
   int success = loadPlayer();
   if (success == -1)
   {
@@ -225,7 +228,7 @@ int GameManager::loadGame()
     std::cout << "Player Name        : " << playerInfo.name << std::endl;
     std::cout << "Player Gender      : " << playerInfo.gender << std::endl;
     std::cout << "Character Info Path: " << playerInfo.charInfoPath << std::endl;
-    std::cout << "Map Path           : " << playerInfo.mapPath << std::endl;
+    std::cout << "MapInfo Path       : " << playerInfo.mapInfoPath << std::endl;
     std::cout << "Screen Coordinates : " << playerInfo.screenCoord.x << ", " << playerInfo.screenCoord.y << std::endl;
     std::cout << "Map Coordinates    : " << playerInfo.mapCoord.x << ", " << playerInfo.mapCoord.y << std::endl;
 
@@ -236,10 +239,17 @@ int GameManager::loadGame()
     return -5;
   }
 
+  // Load the MapInfo file to get the mapPath and create NPCs
+  if (loadMapInfo(playerInfo.mapInfoPath) < 0)
+  {
+    std::cout << "ERROR: Unable to load MapInfo file..." << std::endl;
+    return -6;
+  }
+
   // Load the world
   delete mWorldManager;  // Call delete if a previous world existed
   //mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo());
-  mWorldManager = new WorldManager(getPlayerInfo());
+  mWorldManager = new WorldManager(getPlayerInfo(), mapPath);
 
   // Enable player input
   delete mInputManager;  // Call delete if a previous InputManager was already configured
@@ -347,7 +357,7 @@ int GameManager::loadPlayer()
     }
     else if (lineNum == 3)
     {
-      playerInfo.mapPath = line;
+      playerInfo.mapInfoPath = line;
     }
     else if (lineNum == 4)
     {
@@ -387,7 +397,8 @@ int GameManager::loadPlayer()
 
   // Call loadCharacter to load the player sprite and animations
   // Need (3 * 32.0f) / 2 since haven't configured the rigid body yet (Hilda sprite is 64x96 when scaled to 2.0f)
-  if (mCharacterManager->loadCharacter(playerInfo.charInfoPath, true, Vector3D(playerInfo.screenCoord.x * 64.0f + 64.0f / 2, playerInfo.screenCoord.y * 64.0f + (3 * 32.0f) / 2, 0), 0, Vector3D(2.0f)) < 0)
+  Vector3D _pos = Vector3D(playerInfo.screenCoord.x * 64.0f + 64.0f / 2, playerInfo.screenCoord.y * 64.0f + (3 * 32.0f) / 2, 0);
+  if (mCharacterManager->loadCharacter(playerInfo.charInfoPath, true, _pos, 0, Vector3D(2.0f)) < 0)
   {
     return -4;
   }
@@ -400,4 +411,139 @@ int GameManager::loadPlayer()
 PlayerInfo* GameManager::getPlayerInfo()
 {
   return &playerInfo;
+}
+
+
+
+// TODO: Implement!
+int GameManager::loadMapInfo(std::string mapInfoPath)
+{
+  // Variables
+  std::ifstream fd;       // File descriptor
+  std::string line = "";  // Tracks the contents of the file's line
+  int lineNum = 0;        // Tracks the number of lines read
+
+  // Open the MapInfo file
+  fd.open(mapInfoPath);
+
+  // Error check the file descriptor
+  if (!fd.is_open())
+  {
+    // Unable to open the file
+    std::cout << "Failed to open file: " << mapInfoPath << std::endl;
+    return -1;
+  }
+
+  // File is open, so let's read line-by-line
+  while (getline(fd, line))
+  {
+    if (lineNum == 0)
+    {
+      // Record the path to the WorldMap
+      mapPath = line;
+    }
+    else if (lineNum == 1 && newMap_StartSpawn)
+    {
+      // Record the map's start spawn screen coordinates for the player
+      playerInfo.screenCoord.x = (float)InfoFiles::intPull(line, ',');
+      playerInfo.screenCoord.y = (float)InfoFiles::intPull(line, ',');
+
+      // Record the map's start spawn map coordinates for the player
+      playerInfo.mapCoord.x = (float)InfoFiles::intPull(line, ',');
+      playerInfo.mapCoord.y = (float)InfoFiles::intPull(line, ',');
+
+      // Check that the intPull calls were successful
+      if (playerInfo.screenCoord.x < 0 || playerInfo.screenCoord.y < 0 || playerInfo.mapCoord.x < 0 || playerInfo.mapCoord.y < 0)
+      {
+        // intPull failed, so the MapInfo file must be corrupted/invalid
+        fd.close();
+        return -2;
+      }
+
+      // Move the player Character to the start spawn
+      Vector3D _pos = Vector3D(playerInfo.screenCoord.x * 64.0f + 64.0f / 2, playerInfo.screenCoord.y * 64.0f + (3 * 32.0f) / 2, 0);
+      mCharacterManager->getPlayer()->getSprite().moveTo(_pos);
+    }
+    else if (lineNum == 2 && newMap_EndSpawn)
+    {
+      // Record the map's end spawn screen coordinates for the player
+      playerInfo.screenCoord.x = (float)InfoFiles::intPull(line, ',');
+      playerInfo.screenCoord.y = (float)InfoFiles::intPull(line, ',');
+
+      // Record the map's end spawn map coordinates for the player
+      playerInfo.mapCoord.x = (float)InfoFiles::intPull(line, ',');
+      playerInfo.mapCoord.y = (float)InfoFiles::intPull(line, ',');
+
+      // Check that the intPull calls were successful
+      if (playerInfo.screenCoord.x < 0 || playerInfo.screenCoord.y < 0 || playerInfo.mapCoord.x < 0 || playerInfo.mapCoord.y < 0)
+      {
+        // intPull failed, so the MapInfo file must be corrupted/invalid
+        fd.close();
+        return -2;
+      }
+
+      // Move the player Character to the end spawn
+      Vector3D _pos = Vector3D(playerInfo.screenCoord.x * 64.0f + 64.0f / 2, playerInfo.screenCoord.y * 64.0f + (3 * 32.0f) / 2, 0);
+      mCharacterManager->getPlayer()->getSprite().moveTo(_pos);
+    }
+    else if (lineNum >= 3)
+    {
+      // Pull the CharacterInfo path
+      std::string characterInfoPath = InfoFiles::strPull(line, ':');
+      
+      // Pull the NPC's map coordinates
+      int col = InfoFiles::intPull(line, ',');
+      int row = InfoFiles::intPull(line, ',');
+      
+      // Check that the line pulls were successful
+      if (characterInfoPath == "" || col < 0 || row < 0)
+      {
+        fd.close();
+        return -3;
+      }
+
+      // Calculate the difference between the player's map and screen tile coordinates
+      int offset_x = (int)((playerInfo.screenCoord.x - playerInfo.mapCoord.x) * 64 + 32);
+      int offset_y = (int)((playerInfo.screenCoord.y - playerInfo.mapCoord.y) * 64 + (3 * 32) / 2);
+
+      // Calculate the NPC position based on the NPC's map coordinates and the offset
+      Vector3D npcPos = Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0);
+
+      if (mCharacterManager->loadCharacter(characterInfoPath, false, npcPos, 0, Vector3D(2.0f)) < 0)
+      {
+        // loadCharacter() call failed
+        fd.close();
+        return -3;
+      }
+
+      // Record the NPC's map coordinates
+      if (mCharacterManager->setMapCoord(mCharacterManager->getCharactersSize() - 1, Vector2D(col, row)) < 0)
+      {
+        // You entered the wrong index :/
+        fd.close();
+        std::cout << "Hey! You entered an invalid index to setMapCoord()..." << std::endl;
+        return -3;
+      }
+
+      std::cout << "Success! We added an NPC to the world with map coordinates: " << col << ", " << row << std::endl;
+    }
+
+    lineNum++;
+  }
+
+  // Close the MapInfo file
+  fd.close();
+
+  // Check that the MapInfo file was actually read
+  if (lineNum < 3)
+  {
+    return -4;
+  }
+
+  // Successfully read the MapInfo file
+  return 0;
+
+
+  // TODO: Read each line and pull the Character info
+  // Have InfoFiles function return a CharacterInfo object
 }

@@ -63,12 +63,15 @@ class GameManager
 
 
   private:
-    std::string savefilePath;                // Location of the game's savefile
-    PlayerInfo playerInfo;                   // Structure containing player information
-    Engine* mEngine;
-    CharacterManager* mCharacterManager;
-    InputManager* mInputManager;
-    WorldManager* mWorldManager;
+    std::string savefilePath;             // Location of the game's savefile
+    std::string mapPath;                  // Location of the WorldMap file to build
+    bool newMap_StartSpawn;               // Flags if player reached a new map or not (true means player should spawn at the start location)
+    bool newMap_EndSpawn;                 // Flags if player reached a new map or not (true means player should spawn at the end location)
+    PlayerInfo playerInfo;                // Structure containing player information
+    Engine* mEngine;                      // Pointer to the game's Engine
+    CharacterManager* mCharacterManager;  // Pointer to the game's CharacterManager
+    WorldManager* mWorldManager;          // Pointer to the game's WorldManager
+    InputManager* mInputManager;          // Pointer to the game's InputManager
     Sprite mStartSprite;
     Sprite mGameOverSprite;
     State mState;

@@ -39,16 +39,49 @@ void CharacterManager::Update()
 
 void CharacterManager::Render()
 {
-  // Render all characters on the map
-  for (unsigned int i = 0; i < characters.size(); i++)
+  std::vector<unsigned int> renderLater;  // Contains Character indices that should appear above the player
+
+  // Determine the row and col values by accounting for 2 tiles offscreen (if possible)
+  int min_X = (int)floor(playerInfo->mapCoord.x - playerInfo->screenCoord.x - 2);
+  int max_X = (int)floor(playerInfo->mapCoord.x + (Engine::SCREEN_WIDTH / 64 - playerInfo->screenCoord.x)) + 1;
+  int min_Y = (int)floor(playerInfo->mapCoord.y - playerInfo->screenCoord.y - 2);
+  int max_Y = (int)floor(playerInfo->mapCoord.y + (Engine::SCREEN_HEIGHT / 64 - playerInfo->screenCoord.y)) + 1;
+
+  // Render all NPCs on screen and some offscreen (by 1 tile)
+  // Note: Here we assume that Characters on the top of the map appear first in the characters vector
+  for (unsigned int i = 1; i < characters.size(); i++)
   {
-    characters[i]->character.Render();
+    // Check that the character is between the min and max bounds
+    if ( characters[i]->mapCoord.x > min_X && characters[i]->mapCoord.x < max_X &&
+         characters[i]->mapCoord.y > min_Y && characters[i]->mapCoord.y < max_Y    )
+    {
+      // Check if the current NPC is below the player
+      if (characters[i]->mapCoord.y < playerInfo->mapCoord.y)
+      {
+        // Record this NPC's index since we'll need to render them again after the player
+        renderLater.push_back(i);
+      }
+      else
+      {
+        // Render the NPC now
+        characters[i]->character.Render();
+      }
+    }
+  }
+
+  // Render the player (puts player on top of the NPCs)
+  characters[0]->character.Render();
+
+  // Render appropriate NPCs on top of the player
+  for (unsigned int i = 0; i < renderLater.size(); i++)
+  {
+    characters[ renderLater[i] ]->character.Render();
   }
 }
 
 
 
-int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale)
+int CharacterManager::loadCharacter(std::string characterInfoPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale)
 {
   // Only proceed loadCharacter() if the player is loaded or is to be loaded as the characters vector's first element
   // Only one player can exist in the characters vector
@@ -68,7 +101,7 @@ int CharacterManager::loadCharacter(std::string characterPath, bool isPlayer, Ve
   characterInfo->character.setPlayerStatus(isPlayer);
 
   // Open the CharacterInfo file
-  fd.open(characterPath);
+  fd.open(characterInfoPath);
 
   // Ensure the file is open
   if (!fd.is_open())
@@ -265,4 +298,67 @@ void CharacterManager::moveAllNPCs(Vector3D displacement)
     // Move the NPC sprites
     characters[i]->character.getSprite().moveBy(displacement);
   }
+}
+
+
+
+Vector2D CharacterManager::getMapCoord(unsigned int index)
+{
+  // Check that the passed index is valid
+  if (index >= characters.size())
+  {
+    // Return a failed Vector2D
+    return Vector2D(-1);
+  }
+  else
+  {
+    return characters[index]->mapCoord;
+  }
+}
+
+
+
+int CharacterManager::setMapCoord(unsigned int index, Vector2D _mapCoord)
+{
+  // Check that the passed index is valid
+  if (index >= characters.size())
+  {
+    // Return an error
+    return -1;
+  }
+  else
+  {
+    // Index into the characters vector to set the map coordinates
+    characters[index]->mapCoord = _mapCoord;
+
+    // Return success
+    return 0;
+  }
+}
+
+
+
+int CharacterManager::setMapCoordBy(unsigned int index, Vector2D _mapCoord)
+{
+  // Check that the passed index is valid
+  if (index >= characters.size())
+  {
+    // Return an error
+    return -1;
+  }
+  else
+  {
+    // Index into the characters vector to set the map coordinates
+    characters[index]->mapCoord = characters[index]->mapCoord + _mapCoord;
+
+    // Return success
+    return 0;
+  }
+}
+
+
+
+unsigned int CharacterManager::getCharactersSize()
+{
+  return characters.size();
 }

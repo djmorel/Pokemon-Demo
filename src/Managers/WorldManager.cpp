@@ -9,13 +9,13 @@
 
 
 //WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
-WorldManager::WorldManager(PlayerInfo* _playerInfo)
+WorldManager::WorldManager(PlayerInfo* _playerInfo, std::string mapPath)
 {
   // Set the PlayerInfo pointer so that buildWorld() can access the player coordinates later
   playerInfo = _playerInfo;
 
   // Read the map blueprints into the map vector
-  if (readMap(_playerInfo->mapPath) < 0)
+  if (readMap(mapPath) < 0)
   {
     std::cout << "ERROR: Unable to read map blueprints..." << std::endl;
   }

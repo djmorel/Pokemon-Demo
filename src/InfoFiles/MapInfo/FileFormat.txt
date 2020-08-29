@@ -1,6 +1,11 @@
 WorldMap Path
-Player Start Screen Coordinates
-Player Start Map Coordinates
+Player SpawnStart Screen Coordinates, Player SpawnStart Map Coordinates
+Player SpawnEnd Screen Coordinates, Player SpawnEnd Map Coordinates
 NPC_1 CharacterInfo file path: NPC_1 map coordinates
 NPC_2 CharacterInfo file path: NPC_2 map coordinates
 ...
+
+
+
+Note: NPCs MUST be listed in this file in order of top of the map to bottom so
+      that CharacterManager::Render() presents the NPCs in proper perspective.

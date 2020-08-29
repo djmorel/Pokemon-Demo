@@ -28,7 +28,7 @@ class WorldManager
       \return None
     **/
     //WorldManager(std::string mapPath, PlayerInfo* _playerInfo);
-    WorldManager(PlayerInfo* _playerInfo);
+    WorldManager(PlayerInfo* _playerInfo, std::string mapPath);
 
     /**
       A deconstructor that frees all tiles associated with the current world, and clears the tile & map vectors.

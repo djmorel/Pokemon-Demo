@@ -13,6 +13,7 @@ struct CharacterInfo
   Character character;     // Character object, which contains a WalkAnimation
   std::string name;        // Name of the character
   std::string spritePath;  // Path to the character's spritesheet
+  Vector2D mapCoord;       // Character's map coordinates. Note: We only care about the NPC's mapCoordinates.
 };
 typedef struct CharacterInfo CharacterInfo;
 
@@ -50,14 +51,14 @@ class CharacterManager
     
     /**
       Loads either the player or a character into the characters vector. Note that the player can ONLY be loaded when the characters vector is empty.
-      \param std::string characterPath - String for the full CharacterInfo file path.
+      \param std::string characterInfoPath - String for the full CharacterInfo file path.
       \param bool isPlayer - True if the requested character is the player, or False if an NPC.
       \param Vector3D _pos - The screen position for the Character's Sprite.
       \param float _rot - The rotation for each of the Character's Sprite.
       \param Vector3D _scale - The scale for each of the Character's Sprite.
       \return 0 on success, -1 if call invalidates the player is first element assumption, -2 if unable to open CharacterInfo file, -3 if CharacterInfo file not fully read, or -4 if configAnimation() failure.
     **/
-    int loadCharacter(std::string characterPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale);
+    int loadCharacter(std::string characterInfoPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale);
     
     /**
       Configures a Sprite for the passed character.
@@ -76,7 +77,7 @@ class CharacterManager
       \return Character pointer to the player's Character object.
     **/
     Character* getPlayer();
-    
+
     /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
       \param bool savePlayer - False clears the entire characters vector, but True keeps the player's CharacterInfo in the vector.
@@ -101,6 +102,37 @@ class CharacterManager
       \return None
     **/
     void moveAllNPCs(Vector3D displacement);
+
+    /**
+      Gets the map coordinates of a specified Character.
+      \param unsigned int index - Index to the CharacterManager::characters vector.
+      \return Vector2D mapCoord of the indexed Character, or Vector2D(-1) if the passed index exceeds the size of CharacterManager::characters.
+    **/
+    Vector2D getMapCoord(unsigned int index);
+
+    /**
+      Sets the map coordinates of a specified Character to a specified amount.
+      \param unsigned int index - Index to the CharacterManager::characters vector.
+      \param Vector2D _mapCoord - New map coordinates for the Character.
+      \return 0 on success, or -1 if the passed index exceeds the size of CharacterManager::characters.
+    **/
+    int setMapCoord(unsigned int index, Vector2D _mapCoord);
+
+    /**
+      Sets the map coordinates of a specified Character by a specified amount.
+      \param unsigned int index - Index to the CharacterManager::characters vector.
+      \param Vector2D _mapCoord - Map coordinates to add to the Character's existing mapCoord.
+      \return 0 on success, or -1 if the passed index exceeds the size of CharacterManager::characters.
+    **/
+    int setMapCoordBy(unsigned int index, Vector2D _mapCoord);
+
+    /**
+      Returns the size of the CharacterManager::characters vector.
+      \param None
+      \return Size of the CharacterManager::characters vector as an unsigned int.
+    **/
+    unsigned int getCharactersSize();
+
 
     // TODO
     // Move the NPCs in a certain way as specified by their movement style (need to add that parameter!)
