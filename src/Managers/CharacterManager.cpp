@@ -362,3 +362,46 @@ unsigned int CharacterManager::getCharactersSize()
 {
   return characters.size();
 }
+
+
+
+bool CharacterManager::npcCollision(Sprite::dir direction)
+{
+  int offsetX = 0;
+  int offsetY = 0;
+
+  // Determine the projected x and y map coordinate offsets
+  if (direction == Sprite::dir::DOWN)
+  {
+    offsetY = -1;
+  }
+  else if (direction == Sprite::dir::LEFT)
+  {
+    offsetX = -1;
+  }
+  else if (direction == Sprite::dir::RIGHT)
+  {
+    offsetX = 1;
+  }
+  else if (direction == Sprite::dir::UP)
+  {
+    offsetY = 1;
+  }
+
+  // Determine the player's map coordinates if the requested direction passes
+  int col = (int)floor(playerInfo->mapCoord.x + offsetX);
+  int row = (int)floor(playerInfo->mapCoord.y + offsetY);
+
+  // Search through the NPCs for a collision
+  for (unsigned int i = 1; i < characters.size(); i++)
+  {
+    if (characters[i]->mapCoord.x == col && characters[i]->mapCoord.y == row)
+    {
+      // Collision detected!
+      return true;
+    }
+  }
+
+  // No NPC collision detected
+  return false;
+}

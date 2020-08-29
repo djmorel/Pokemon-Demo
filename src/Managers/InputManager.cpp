@@ -21,10 +21,21 @@ void InputManager::Update()
   if (isActive)
   {
     // Local Variables
-    int movePlayer = world->shouldMovePlayer(currentDirection, playerInfo->screenCoord, playerInfo->mapCoord);  // Move player (1) or world (0) or next tile is immovable (-1)
-    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);    // Flag for changing Sprite frame
-    Vector3D displacement;                                                                 // How much to move by
-    float duration;                                                                        // Duration of the animation in milliseconds
+    int movePlayer;  // 1 = move the player, 0 = move the world, -1 = next tile is immovable, -2 = next tile has an NPC
+    bool changeSprite = newDirection || (animationCount == 2) || (animationCount == 6);  // Flag for changing Sprite frame
+    Vector3D displacement;                                                               // How much to move by
+    float duration;                                                                      // Duration of the animation in milliseconds
+
+    // Check if the player would hit an NPC
+    if (cm->npcCollision(currentDirection))
+    {
+      movePlayer = -2;
+    }
+    else
+    {
+      // Have the WorldManager determine if the player should move
+      movePlayer = world->shouldMovePlayer(currentDirection, playerInfo->screenCoord, playerInfo->mapCoord);
+    }
 
     // Set displacement and duration
     if (newDirection)
@@ -35,7 +46,7 @@ void InputManager::Update()
     }
     else if (movePlayer < 0)
     {
-      // Next movement would hit an IMMOVABLE tile (or movePlayer's value is at an unknown state...)
+      // Next movement would hit an IMMOVABLE tile or an NPC
       displacement = Vector3D(0);
       duration = 50;
 

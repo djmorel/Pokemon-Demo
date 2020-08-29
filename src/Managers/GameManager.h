@@ -45,9 +45,13 @@ class GameManager
     int loadPlayer();
 
 
-    // TODO
-    // Reads a MapInfo file, and tells WorldManager and CharacterManager to build the world and NPCs respectively
+    /**
+      Loads a MapInfo file, and tells WorldManager and CharacterManager to load the world and NPCs respectively.
+      \param std::string mapInfoPath - Path of the MapInfo file to load.
+      \return 0 on success, -1 if unable to open the MapInfo file, -2 if detecting player spawn points failed, -3 if loading a NPC failed, or -4 if failed to read the minimum line count.
+    **/
     int loadMapInfo(std::string mapInfoPath);
+
 
     // TODO
     // Takes the updated PlayerInfo object, and saves its contents into the savefile

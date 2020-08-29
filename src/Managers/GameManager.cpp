@@ -415,7 +415,6 @@ PlayerInfo* GameManager::getPlayerInfo()
 
 
 
-// TODO: Implement!
 int GameManager::loadMapInfo(std::string mapInfoPath)
 {
   // Variables
@@ -503,8 +502,8 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
       }
 
       // Calculate the difference between the player's map and screen tile coordinates
-      int offset_x = (int)((playerInfo.screenCoord.x - playerInfo.mapCoord.x) * 64 + 32);
-      int offset_y = (int)((playerInfo.screenCoord.y - playerInfo.mapCoord.y) * 64 + (3 * 32) / 2);
+      int offset_x = (int)floor((playerInfo.screenCoord.x - playerInfo.mapCoord.x) * 64 + 32);
+      int offset_y = (int)floor((playerInfo.screenCoord.y - playerInfo.mapCoord.y) * 64 + (3 * 32) / 2);
 
       // Calculate the NPC position based on the NPC's map coordinates and the offset
       Vector3D npcPos = Vector3D(col * 64.0f + offset_x, row * 64.0f + offset_y, 0);
@@ -542,8 +541,4 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
 
   // Successfully read the MapInfo file
   return 0;
-
-
-  // TODO: Read each line and pull the Character info
-  // Have InfoFiles function return a CharacterInfo object
 }

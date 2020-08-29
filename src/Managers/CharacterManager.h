@@ -133,6 +133,13 @@ class CharacterManager
     **/
     unsigned int getCharactersSize();
 
+    /**
+      Checks if the player's movement in a particular direction would result in an NPC collision.
+      \param Sprite::dir direction - Direction of player's requested movement.
+      \return True if the requested direction results in an NPC collision, or False if not.
+    **/
+    bool npcCollision(Sprite::dir direction);
+
 
     // TODO
     // Move the NPCs in a certain way as specified by their movement style (need to add that parameter!)

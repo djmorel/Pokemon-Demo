@@ -2,4 +2,4 @@ src/Assets/WorldMaps/Map_Grasslands2Beach.txt
 7,0,9,0
 8,5,62,10
 src/InfoFiles/CharacterInfo/Zinnia.txt : 6,12
-src/InfoFiles/CharacterInfo/Drake.txt  : 27,16
+src/InfoFiles/CharacterInfo/Drake.txt  : 28,16
