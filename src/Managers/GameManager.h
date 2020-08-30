@@ -24,6 +24,7 @@ class GameManager
     {
       START,
       GAMEPLAY,
+      SAVE,
       GAMEOVER
     };
 
@@ -44,7 +45,6 @@ class GameManager
     **/
     int loadPlayer();
 
-
     /**
       Loads a MapInfo file, and tells WorldManager and CharacterManager to load the world and NPCs respectively.
       \param std::string mapInfoPath - Path of the MapInfo file to load.
@@ -53,10 +53,12 @@ class GameManager
     int loadMapInfo(std::string mapInfoPath);
 
 
-    // TODO
-    // Takes the updated PlayerInfo object, and saves its contents into the savefile
+    /**
+      Takes the updated PlayerInfo object, and saves its contents into the savefile.
+      \param None
+      \return 0 on success, -1 if waiting for the InputManager to handle player input, or -2 if unable to open the savefile.
+    **/
     int saveGame();
-
 
     /**
       Retrieves CharacterManager's player information.

@@ -216,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\Assets\Art\DefaultObject.png" />
+    <Image Include="src\Assets\Art\SaveGameIcon.png" />
     <Image Include="src\Assets\Art\Trainer_Drake_Spritesheet.png" />
     <Image Include="src\Assets\Art\Emerald_StartScreen.png" />
     <Image Include="src\Assets\Art\GameOverScreen.png" />

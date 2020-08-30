@@ -87,7 +87,8 @@ const tableElement AssetLookupTable[] = {
   {75, "Zinnia_U_Stand" , "src/Assets/Art/Trainer_Zinnia_Spritesheet.png" , Vector2D(0,  0) ,  4,  4,  1,  1 , Vector3D(64, 96, 0)                                      },
   {76, "Zinnia_U_Walk1" , "src/Assets/Art/Trainer_Zinnia_Spritesheet.png" , Vector2D(1,  0) ,  4,  4,  1,  1 , Vector3D(64, 96, 0)                                      },
   {77, "Zinnia_U_Walk2" , "src/Assets/Art/Trainer_Zinnia_Spritesheet.png" , Vector2D(2,  0) ,  4,  4,  1,  1 , Vector3D(64, 96, 0)                                      },
-  {78, "Zinnia_U_Walk3" , "src/Assets/Art/Trainer_Zinnia_Spritesheet.png" , Vector2D(3,  0) ,  4,  4,  1,  1 , Vector3D(64, 96, 0)                                      }
+  {78, "Zinnia_U_Walk3" , "src/Assets/Art/Trainer_Zinnia_Spritesheet.png" , Vector2D(3,  0) ,  4,  4,  1,  1 , Vector3D(64, 96, 0)                                      },
+  {79, "SaveGameIcon"   , "src/Assets/Art/SaveGameIcon.png"               , Vector2D(0,  0) ,  1,  1,  1,  1 , Vector3D(192, 194, 0)                                    }
 };
 
 

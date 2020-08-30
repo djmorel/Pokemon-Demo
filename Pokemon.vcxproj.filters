@@ -225,5 +225,8 @@
     <Image Include="src\Assets\Art\Trainer_Zinnia_Spritesheet.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="src\Assets\Art\SaveGameIcon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

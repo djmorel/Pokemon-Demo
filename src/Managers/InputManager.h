@@ -52,6 +52,28 @@ class InputManager
     **/
     int processMovement(bool movePlayer, bool changeSprite, Vector3D &displacement, float duration);
 
+    // Waits for the current input to finish
+    /**
+      Blocks new input from being received by setting InputManager::enableInput to false.
+      \param None
+      \return None
+    **/
+    void blockNewInput();
+
+    /**
+      Enables new input from being received by setting InputManager::enableInput to true.
+      \param None
+      \return None
+    **/
+    void enableNewInput();
+
+    /**
+      Gets the current value of the isActive flag.
+      \param None
+      \return bool value representing the current isActive state.
+    **/
+    bool getIsActive();
+
 
   private:
     PlayerInfo* playerInfo;         // Pointer to the GameManager's PlayerInfo object (tracks player coordinates on the map and screen)
@@ -59,6 +81,7 @@ class InputManager
     WorldManager* world;            // Pointer to the world
     int animationCount = 0;         // Counter for how many times an animation has to be called
     int walkCountQuota = 8;         // Amount of times the walk animation has to be called
+    bool enableInput = true;        // Enables new input to be received
     bool isActive = false;          // Blocks incoming input from processing
     bool run = false;               // Makes the player "run" by halving the animation duration
     Sprite::dir currentDirection;   // Specifies the current animation direction

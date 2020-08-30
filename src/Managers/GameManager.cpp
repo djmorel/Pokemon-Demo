@@ -1,11 +1,7 @@
 #include "GameManager.h"
 #include <iostream>
 #include <fstream>
-//#include <stdio.h>
 
-
-// TODO
-// - Implement save file system
 
 
 GameManager::GameManager()
@@ -51,14 +47,11 @@ GameManager::~GameManager()
 // Returns 0 on success, -1 on loadGame() error, or -2 on undefined state error
 int GameManager::Start()
 {
-  // Optional stuff
-  Sprite npcSprite = Sprite("Tyranitar", Vector3D((float)(Engine::SCREEN_WIDTH / 1.3), (float)(Engine::SCREEN_HEIGHT / 1.3), 0), 0, Vector3D(0.5f));
-  npcSprite.setDimensions(128.0f);
-  Character npc(npcSprite);
-  // End of optional stuff
-
   // Add a Loading Icon for state changes
   Sprite loadingIcon = Sprite("Loading", Vector3D((float)(Engine::SCREEN_WIDTH / 2), (float)(Engine::SCREEN_HEIGHT / 5), 0), 0, Vector3D(0.3f));
+
+  // Add a Save Game Icon for saving the game
+  Sprite saveGameIcon = Sprite(79, Vector3D((float)Engine::SCREEN_WIDTH / 1.1f, (float)Engine::SCREEN_HEIGHT / 9, 0), 0, Vector3D(0.75f));
 
   // Game loop
   while (true)
@@ -115,21 +108,46 @@ int GameManager::Start()
 
         mWorldManager->Update();
         mCharacterManager->Update();
-        npc.Update();
         mInputManager->Update();
 
         mEngine->BeginRender();
         mWorldManager->RenderTiles();
         mCharacterManager->Render();
         mWorldManager->RenderLayeredItems();
-        npc.Render();
         mEngine->EndRender();
 
-        bool collision = RigidBody::isColliding(mCharacterManager->getPlayer()->getRB(), npc.getRB());
-        if (collision)
+        // K key results in a game over
+        if (Keyboard::keyDown(GLFW_KEY_K))
         {
           setState(State::GAMEOVER);
-          std::cout << "Oh no! You touched the scary Tyranitar!\nGame Over :(" << std::endl;
+          std::cout << "Thanks for playing!" << std::endl;
+        }
+
+        // P key saves the game
+        if (Keyboard::keyDown(GLFW_KEY_P))
+        {
+          setState(State::SAVE);
+        }
+
+        break;
+      }
+      case State::SAVE:
+      {
+        mWorldManager->Update();
+        mCharacterManager->Update();
+        mInputManager->Update();
+
+        mEngine->BeginRender();
+        mWorldManager->RenderTiles();
+        mCharacterManager->Render();
+        mWorldManager->RenderLayeredItems();
+        saveGameIcon.Render();
+        mEngine->EndRender();
+
+        if (saveGame() == 0)
+        {
+          // Game successfully saved, so exit the SAVE state
+          setState(State::GAMEPLAY);
         }
 
         break;
@@ -140,7 +158,6 @@ int GameManager::Start()
         mWorldManager->RenderTiles();
         mCharacterManager->Render();
         mWorldManager->RenderLayeredItems();
-        npc.Render();
         mGameOverSprite.Render();
         mEngine->EndRender();
 
@@ -214,16 +231,6 @@ int GameManager::loadGame()
   }
   else if (success == 0)
   {
-    /*
-    std::cout << "Successfully loaded game!" << std::endl;
-    std::cout << "Player Name        : " << mCharacterManager->getPlayerInfo()->name << std::endl;
-    std::cout << "Player Gender      : " << mCharacterManager->getPlayerInfo()->gender << std::endl;
-    std::cout << "Character Info Path: " << mCharacterManager->getPlayerInfo()->charInfoPath << std::endl;
-    std::cout << "Map Path           : " << mCharacterManager->getPlayerInfo()->mapPath << std::endl;
-    std::cout << "Screen Coordinates : " << mCharacterManager->getPlayerInfo()->screenCoord.x << ", " << mCharacterManager->getPlayerInfo()->screenCoord.y << std::endl;
-    std::cout << "Map Coordinates    : " << mCharacterManager->getPlayerInfo()->mapCoord.x << ", " << mCharacterManager->getPlayerInfo()->mapCoord.y << std::endl;
-    */
-
     std::cout << "Successfully loaded game!" << std::endl;
     std::cout << "Player Name        : " << playerInfo.name << std::endl;
     std::cout << "Player Gender      : " << playerInfo.gender << std::endl;
@@ -231,7 +238,6 @@ int GameManager::loadGame()
     std::cout << "MapInfo Path       : " << playerInfo.mapInfoPath << std::endl;
     std::cout << "Screen Coordinates : " << playerInfo.screenCoord.x << ", " << playerInfo.screenCoord.y << std::endl;
     std::cout << "Map Coordinates    : " << playerInfo.mapCoord.x << ", " << playerInfo.mapCoord.y << std::endl;
-
   }
   else
   {
@@ -248,7 +254,6 @@ int GameManager::loadGame()
 
   // Load the world
   delete mWorldManager;  // Call delete if a previous world existed
-  //mWorldManager = new WorldManager(mCharacterManager->getPlayerInfo());
   mWorldManager = new WorldManager(getPlayerInfo(), mapPath);
 
   // Enable player input
@@ -384,8 +389,7 @@ int GameManager::loadPlayer()
       }
     }
 
-    // TODO: Add more else if conditions when savefile has more information
-
+    // Record that a line was just read
     lineNum++;
   }
 
@@ -405,12 +409,6 @@ int GameManager::loadPlayer()
 
   // Successfully loaded player information
   return 0;
-}
-
-
-PlayerInfo* GameManager::getPlayerInfo()
-{
-  return &playerInfo;
 }
 
 
@@ -492,11 +490,11 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
 
       // Pull the NPC's default facing direction
       int direction = InfoFiles::intPull(line, ':');
-      
+
       // Pull the NPC's map coordinates
       int col = InfoFiles::intPull(line, ',');
       int row = InfoFiles::intPull(line, ',');
-      
+
       // Check that the line pulls were successful
       if (characterInfoPath == "" || col < 0 || row < 0)
       {
@@ -545,6 +543,7 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
       std::cout << "Success! We added an NPC to the world with map coordinates: " << col << ", " << row << std::endl;
     }
 
+    // Record that a line was just read
     lineNum++;
   }
 
@@ -559,4 +558,89 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
 
   // Successfully read the MapInfo file
   return 0;
+}
+
+
+
+int GameManager::saveGame()
+{
+  // DEBUG
+  std::cout << "Preparing to save game..." << std::endl;
+
+  // Block the InputManager from handling new input
+  mInputManager->blockNewInput();
+
+  // Wait for the InputManager to finish processing its last input (if necessary)
+  if (mInputManager->getIsActive())
+  {
+    // DEBUG
+    std::cout << "We need to wait for the input to finish processing..." << std::endl;
+
+    // Wait for the InputManager to finish processing its last input
+    // The game will save the game at a later time in the game loop
+    return -1;
+  }
+  else
+  {
+    // Open the savefile and prepare to write over it
+    std::ofstream fd(savefilePath);
+
+    if (!fd.is_open())
+    {
+      // Unable to open the savefile, so return an error
+      return -2;
+    }
+
+    // Write the player's name to the savefile
+    fd << playerInfo.name << std::endl;
+
+    // Write the player's gender to the savefile
+    if (playerInfo.gender)
+    {
+      fd << "M" << std::endl;
+    }
+    else
+    {
+      fd << "F" << std::endl;
+    }
+
+    // Write the player's CharacterInfo file path to the savefile
+    fd << playerInfo.charInfoPath << std::endl;
+
+    // Write the current map's MapInfo file path to the savefile
+    fd << playerInfo.mapInfoPath << std::endl;
+
+    // Write the player's current screen coordinates to the savefile
+    fd << (int)floor(playerInfo.screenCoord.x) << "," << (int)floor(playerInfo.screenCoord.y) << std::endl;
+
+    // Write the player's current map coordinates to the savefile
+    fd << (int)floor(playerInfo.mapCoord.x) << "," << (int)floor(playerInfo.mapCoord.y) << std::endl;
+
+    // Close the file
+    fd.close();
+
+    // Add a delay of 2 seconds
+    while (((float)glfwGetTime() - Engine::getLastTime()) < 2)
+    {
+      // Stall in the while loop until the timer reaches the target duration of 2 seconds
+      // This stalling method ensures that the player sees the save icon
+      // Note: glfwGetTime records time in seconds since the GLFW window was created
+    }
+
+    // Enable input again
+    mInputManager->enableNewInput();
+
+    // DEBUG
+    std::cout << "Game saved!" << std::endl;
+
+    // Successfully saved game
+    return 0;
+  }
+}
+
+
+
+PlayerInfo* GameManager::getPlayerInfo()
+{
+  return &playerInfo;
 }

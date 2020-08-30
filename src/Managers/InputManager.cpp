@@ -9,6 +9,10 @@ InputManager::InputManager(PlayerInfo* _playerInfo, CharacterManager* _cm, World
   currentDirection = Sprite::dir::DOWN;  // Player starts in the front-facing (DOWN) direction
   previousDirection = currentDirection;
   newDirection = false;
+
+  // Enable new input
+  enableInput = true;
+  isActive = false;
 }
 
 
@@ -154,31 +158,31 @@ void InputManager::handleInput()
   */
 
   // Enable running
-  if (!isActive && (Keyboard::key(GLFW_KEY_SPACE)))
+  if (enableInput && !isActive && (Keyboard::key(GLFW_KEY_SPACE)))
   {
     run = true;
   }
 
   // Enable keyboard support (WASD movement)
-  if (!isActive && (Keyboard::key(GLFW_KEY_W) || Keyboard::key(GLFW_KEY_UP)))
+  if (enableInput && !isActive && (Keyboard::key(GLFW_KEY_W) || Keyboard::key(GLFW_KEY_UP)))
   {
     // "W" and "UP Arrow" keys set to move up
     isActive = true;
     updateDirections(Sprite::dir::UP);
   }
-  if (!isActive && (Keyboard::key(GLFW_KEY_A) || Keyboard::key(GLFW_KEY_LEFT)))
+  if (enableInput && !isActive && (Keyboard::key(GLFW_KEY_A) || Keyboard::key(GLFW_KEY_LEFT)))
   {
     // "A" and "Left Arrow" keys set to move left
     isActive = true;
     updateDirections(Sprite::dir::LEFT);
   }
-  if (!isActive && (Keyboard::key(GLFW_KEY_S) || Keyboard::key(GLFW_KEY_DOWN)))
+  if (enableInput && !isActive && (Keyboard::key(GLFW_KEY_S) || Keyboard::key(GLFW_KEY_DOWN)))
   {
     // "S" and "Down Arrow" keys set to move down
     isActive = true;
     updateDirections(Sprite::dir::DOWN);
   }
-  if (!isActive && (Keyboard::key(GLFW_KEY_D) || Keyboard::key(GLFW_KEY_RIGHT)))
+  if (enableInput && !isActive && (Keyboard::key(GLFW_KEY_D) || Keyboard::key(GLFW_KEY_RIGHT)))
   {
     // "D" and "Right Arrow" keys set to move right
     isActive = true;
@@ -255,4 +259,25 @@ int InputManager::processMovement(bool movePlayer, bool changeSprite, Vector3D &
 
   // Return success
   return 0;
+}
+
+
+
+void InputManager::blockNewInput()
+{
+  enableInput = false;
+}
+
+
+
+void InputManager::enableNewInput()
+{
+  enableInput = true;
+}
+
+
+
+bool InputManager::getIsActive()
+{
+  return isActive;
 }
