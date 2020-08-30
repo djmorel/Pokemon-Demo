@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\Assets\WorldMaps\Map_Beach.txt" />

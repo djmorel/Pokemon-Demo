@@ -8,7 +8,8 @@ This project was inspired by Progrematic's [YouTube tutorials](https://www.youtu
 ## Project Demos
 Demos for the project can be found on YouTube.
 
-* [Pokemon-Demo Project: Basic Game Handling Demo](https://youtu.be/BHsuPTwoN3Q)
+* [Pokemon-Demo Project: Basic Game Handling (Demo 1)](https://youtu.be/BHsuPTwoN3Q)
+* [Pokemon-Demo Project: World Generation and Game Saves (Demo 2)](https://youtu.be/9JCG7Plug4Y)
 
 ## Art Credits
 While I wrote code for this project, the currently used art isn't mine. All rights for the art goes to their respective owners. The location for each src/Assets/Art/ image is listed below:
