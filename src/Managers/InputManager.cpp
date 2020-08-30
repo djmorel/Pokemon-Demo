@@ -6,7 +6,7 @@ InputManager::InputManager(PlayerInfo* _playerInfo, CharacterManager* _cm, World
   playerInfo = _playerInfo;
   cm = _cm;
   world = _world;
-  currentDirection = Sprite::dir::DOWN;   // Player starts in the front-facing (DOWN) direction
+  currentDirection = Sprite::dir::DOWN;  // Player starts in the front-facing (DOWN) direction
   previousDirection = currentDirection;
   newDirection = false;
 }
@@ -139,8 +139,8 @@ void InputManager::Update()
 
 void InputManager::handleInput()
 {
-  // Enable mouse button support
   /*
+  // Enable mouse button support
   if (Mouse::buttonDown(GLFW_MOUSE_BUTTON_LEFT))
   {
     // Left click means rotate counter clockwise
@@ -190,6 +190,7 @@ void InputManager::handleInput()
 
 void InputManager::updateDirections(Sprite::dir direction)
 {
+  previousDirection = cm->getPlayer()->getSprite().getFacing();
   currentDirection = direction;
 
   // Check if going in a new direction
@@ -201,7 +202,7 @@ void InputManager::updateDirections(Sprite::dir direction)
   {
     newDirection = false;
   }
-  previousDirection = currentDirection;
+  //previousDirection = currentDirection;
 }
 
 

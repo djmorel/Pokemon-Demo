@@ -79,6 +79,13 @@ class CharacterManager
     Character* getPlayer();
 
     /**
+      Index the CharacterManager::characters vector and returns a pointer to the CharacterInfo of the specified element.
+      \param unsigned int index - Index to the CharacterManager::characters vector.
+      \return CharacterInfo pointer to the characters element, or nullptr if invalid passed index.
+    **/
+    CharacterInfo* getCharacterInfo(unsigned int index);
+
+    /**
       Clears CharacterInfo objects in CharacterManager's characters vector.
       \param bool savePlayer - False clears the entire characters vector, but True keeps the player's CharacterInfo in the vector.
       \return None
@@ -102,29 +109,6 @@ class CharacterManager
       \return None
     **/
     void moveAllNPCs(Vector3D displacement);
-
-    /**
-      Gets the map coordinates of a specified Character.
-      \param unsigned int index - Index to the CharacterManager::characters vector.
-      \return Vector2D mapCoord of the indexed Character, or Vector2D(-1) if the passed index exceeds the size of CharacterManager::characters.
-    **/
-    Vector2D getMapCoord(unsigned int index);
-
-    /**
-      Sets the map coordinates of a specified Character to a specified amount.
-      \param unsigned int index - Index to the CharacterManager::characters vector.
-      \param Vector2D _mapCoord - New map coordinates for the Character.
-      \return 0 on success, or -1 if the passed index exceeds the size of CharacterManager::characters.
-    **/
-    int setMapCoord(unsigned int index, Vector2D _mapCoord);
-
-    /**
-      Sets the map coordinates of a specified Character by a specified amount.
-      \param unsigned int index - Index to the CharacterManager::characters vector.
-      \param Vector2D _mapCoord - Map coordinates to add to the Character's existing mapCoord.
-      \return 0 on success, or -1 if the passed index exceeds the size of CharacterManager::characters.
-    **/
-    int setMapCoordBy(unsigned int index, Vector2D _mapCoord);
 
     /**
       Returns the size of the CharacterManager::characters vector.

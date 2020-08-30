@@ -489,6 +489,9 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
     {
       // Pull the CharacterInfo path
       std::string characterInfoPath = InfoFiles::strPull(line, ':');
+
+      // Pull the NPC's default facing direction
+      int direction = InfoFiles::intPull(line, ':');
       
       // Pull the NPC's map coordinates
       int col = InfoFiles::intPull(line, ',');
@@ -516,13 +519,28 @@ int GameManager::loadMapInfo(std::string mapInfoPath)
       }
 
       // Record the NPC's map coordinates
-      if (mCharacterManager->setMapCoord(mCharacterManager->getCharactersSize() - 1, Vector2D(col, row)) < 0)
+      mCharacterManager->getCharacterInfo(mCharacterManager->getCharactersSize() - 1)->mapCoord = Vector2D(col, row);
+
+      // Set the NPC's default facing direction
+      Sprite::dir dir;
+      if (direction == 1)
       {
-        // You entered the wrong index :/
-        fd.close();
-        std::cout << "Hey! You entered an invalid index to setMapCoord()..." << std::endl;
-        return -3;
+        dir = Sprite::dir::LEFT;
       }
+      else if (direction == 2)
+      {
+        dir = Sprite::dir::RIGHT;
+      }
+      else if (direction == 3)
+      {
+        dir = Sprite::dir::UP;
+      }
+      else
+      {
+        // Default to DOWN
+        dir = Sprite::dir::DOWN;
+      }
+      mCharacterManager->getCharacterInfo(mCharacterManager->getCharactersSize() - 1)->character.getSprite().setFacing(dir);
 
       std::cout << "Success! We added an NPC to the world with map coordinates: " << col << ", " << row << std::endl;
     }

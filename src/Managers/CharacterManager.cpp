@@ -248,6 +248,21 @@ Character* CharacterManager::getPlayer()
 
 
 
+CharacterInfo* CharacterManager::getCharacterInfo(unsigned int index)
+{
+  // Check for a valid index
+  if (index >= characters.size())
+  {
+    return nullptr;
+  }
+  else
+  {
+    return characters[index];
+  }
+}
+
+
+
 void CharacterManager::clearCharacters(bool savePlayer)
 {
   int end;
@@ -297,62 +312,6 @@ void CharacterManager::moveAllNPCs(Vector3D displacement)
   {
     // Move the NPC sprites
     characters[i]->character.getSprite().moveBy(displacement);
-  }
-}
-
-
-
-Vector2D CharacterManager::getMapCoord(unsigned int index)
-{
-  // Check that the passed index is valid
-  if (index >= characters.size())
-  {
-    // Return a failed Vector2D
-    return Vector2D(-1);
-  }
-  else
-  {
-    return characters[index]->mapCoord;
-  }
-}
-
-
-
-int CharacterManager::setMapCoord(unsigned int index, Vector2D _mapCoord)
-{
-  // Check that the passed index is valid
-  if (index >= characters.size())
-  {
-    // Return an error
-    return -1;
-  }
-  else
-  {
-    // Index into the characters vector to set the map coordinates
-    characters[index]->mapCoord = _mapCoord;
-
-    // Return success
-    return 0;
-  }
-}
-
-
-
-int CharacterManager::setMapCoordBy(unsigned int index, Vector2D _mapCoord)
-{
-  // Check that the passed index is valid
-  if (index >= characters.size())
-  {
-    // Return an error
-    return -1;
-  }
-  else
-  {
-    // Index into the characters vector to set the map coordinates
-    characters[index]->mapCoord = characters[index]->mapCoord + _mapCoord;
-
-    // Return success
-    return 0;
   }
 }
 

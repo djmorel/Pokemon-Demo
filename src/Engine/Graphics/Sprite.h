@@ -256,8 +256,6 @@ class Sprite
     **/
     int updateFrameIndex(Sprite::dir direction);
 
-
-    // 
     /**
       Animates the Sprite to "walk" in a specified direction.
       \param bool changeFrame - True if the Sprite should update its frame, and False if not.
@@ -267,6 +265,20 @@ class Sprite
       \return 0 on success, -1 if framesPerDirection doesn't match spriteInfo's size, or -2 if invalid direction.
     **/
     void walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, float duration);
+
+    /**
+      Gets the Sprite's current frame directions.
+      \param None
+      \return Sprite::dir direction (DOWN, LEFT, RIGHT, UP). Note: Returns Sprite::dir::DOWN by default if framesPerDirection < 1.
+    **/
+    Sprite::dir getFacing();
+
+    /**
+      Sets the Sprite's current frame to idle in a specified direction.
+      \param Sprite::dir direction - Direction to set the idle Sprite frame.
+      \return 0 on success, or -1 if framesPerDirection doesn't match the spriteInfo's size, or -2 if invalid direction.
+    **/
+    int setFacing(Sprite::dir direction);
 
 
   private:

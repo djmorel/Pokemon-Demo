@@ -1,8 +1,8 @@
 WorldMap Path
 Player SpawnStart Screen Coordinates, Player SpawnStart Map Coordinates
 Player SpawnEnd Screen Coordinates, Player SpawnEnd Map Coordinates
-NPC_1 CharacterInfo file path: NPC_1 map coordinates
-NPC_2 CharacterInfo file path: NPC_2 map coordinates
+NPC_1 CharacterInfo file path: NPC_1 Facing Direction: NPC_1 map coordinates
+NPC_2 CharacterInfo file path: NPC_2 Facing Direction: NPC_2 map coordinates
 ...
 
 

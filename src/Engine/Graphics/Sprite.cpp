@@ -549,3 +549,72 @@ void Sprite::walk(bool changeFrame, Vector3D displacement, Sprite::dir direction
     // Note: glfwGetTime records time in seconds since the GLFW window was created
   }
 }
+
+
+
+Sprite::dir Sprite::getFacing()
+{
+  // Check that framesPerDirection is greater than 0
+  if (framesPerDirection < 1)
+  {
+    // Just return DOWN by default
+    return Sprite::dir::DOWN;
+  }
+
+  // Calculate the direction facement
+  int face = frameIndex / framesPerDirection;
+
+  if (face == 0)
+  {
+    return Sprite::dir::DOWN;
+  }
+  else if (face == 1)
+  {
+    return Sprite::dir::LEFT;
+  }
+  else if (face == 2)
+  {
+    return Sprite::dir::RIGHT;
+  }
+  else
+  {
+    return Sprite::dir::UP;
+  }
+}
+
+
+
+int Sprite::setFacing(Sprite::dir direction)
+{
+  // Check that framesPerDirection and the size of the spriteInfo vector match
+  if (spriteInfo.size() != framesPerDirection * 4)
+  {
+    return -1;
+  }
+
+  // Assign the frameIndex to the idle Sprite frame of the passed direction
+  if (direction == dir::DOWN)
+  {
+    frameIndex = 0 * framesPerDirection;
+  }
+  else if (direction == dir::LEFT)
+  {
+    frameIndex = 1 * framesPerDirection;
+  }
+  else if (direction == dir::RIGHT)
+  {
+    frameIndex = 2 * framesPerDirection;
+  }
+  else if (direction == dir::UP)
+  {
+    frameIndex = 3 * framesPerDirection;
+  }
+  else
+  {
+    // Invalid direction, so report an error
+    return -2;
+  }
+
+  // Successfully changed the frameIndex to the Sprite's idle frame
+  return 0;
+}
