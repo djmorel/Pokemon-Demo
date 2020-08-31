@@ -11,13 +11,12 @@
 #include <vector>
 
 
-// The actual game sprite
-// Takes the image (texture) and manipulates its position, rotation, etc
+// The actual game Sprite that moves in the game. Takes the image (Texture) and manipulates its position, rotation, etc.
 class Sprite
 {
   public:
     /**
-      A constructor that configures a placeholder sprite.
+      A constructor that configures a placeholder Sprite.
       \param None
       \return None
     **/
@@ -25,40 +24,42 @@ class Sprite
 
     /**
       A constructor that configures a Sprite according to an asset name.
-      \param std::string assetName - Name of an asset to search for in the AssetLookupTable.
+      \param std::string assetName --> Name of an asset to search for in the AssetLookupTable.
       \return None
     **/
     Sprite(std::string assetName);
 
     /**
       A constructor that configures a Sprite according to an asset ID.
-      \param int assetID - ID used to index into the AssetLookupTable for an asset.
+      \param int assetID --> ID used to index into the AssetLookupTable for an asset.
       \return None
     **/
     Sprite(int assetID);
 
     /**
       A constructor that configures a Sprite according to an asset name and a set of properties.
-      \param std::string assetName - Name of an asset to search for in the AssetLookupTable.
-      \param Vector3D _pos - Position to set the Sprite to.
-      \param float _rot - Rotation to set the Sprite to.
-      \param Vector3D _scale - Scale to set the Sprite to.
+      \param std::string assetName --> Name of an asset to search for in the AssetLookupTable.
+      \param Vector3D _pos --> Position to set the Sprite to.
+      \param float _rot --> Rotation to set the Sprite to.
+      \param Vector3D _scale --> Scale to set the Sprite to.
       \return None
     **/
     Sprite(std::string assetName, Vector3D _pos, float _rot, Vector3D _scale);
 
     /**
       A constructor that configures a Sprite according to an asset ID and a set of properties.
-      \param int assetID - ID used to index into the AssetLookupTable for an asset.
-      \param Vector3D _pos - Position to set the Sprite to.
-      \param float _rot - Rotation to set the Sprite to.
-      \param Vector3D _scale - Scale to set the Sprite to.
+      \param int assetID --> ID used to index into the AssetLookupTable for an asset.
+      \param Vector3D _pos --> Position to set the Sprite to.
+      \param float _rot --> Rotation to set the Sprite to.
+      \param Vector3D _scale --> Scale to set the Sprite to.
       \return None
     **/
     Sprite(int assetID, Vector3D _pos, float _rot, Vector3D _scale);
 
-    // Defines the 4 possible directions for a Sprite's frame orientation
-    // Follows the order of directions in the Sprite's spriteInfo vector, and CharacterInfo files
+    /**
+      Defines the 4 possible directions for a Sprite's frame orientation.
+      Note: This exact order MUST be used in the spriteInfo vector and CharacterInfo files.
+    **/
     enum class dir
     {
       DOWN,
@@ -83,14 +84,14 @@ class Sprite
 
     /**
       Sets the Sprite's speed to an absolute value.
-      \param float _speed - Speed to set the Sprite to.
+      \param float _speed --> Speed to set the Sprite to.
       \return None
     **/
     void setSpeedTo(float _speed);
 
     /**
       Sets the Sprite's position to a fixed value.
-      \param Vector3D _pos - Position to set the Sprite to.
+      \param Vector3D _pos --> Position to set the Sprite to.
       \return None
     **/
     void moveTo(Vector3D _pos);
@@ -132,56 +133,56 @@ class Sprite
 
     /**
       Sets the Sprite's rotation to a fixed value in degrees.
-      \param float _rot - Rotation (degrees) to set the Sprite to.
+      \param float _rot --> Rotation (degrees) to set the Sprite to.
       \return None
     **/
     void rotateTo(float _rot);
 
     /**
       Sets the Sprite's rotation by a relative value in degrees.
-      \param float x - Rotation (degrees) to rotate the Sprite by.
+      \param float x --> Rotation (degrees) to rotate the Sprite by.
       \return None
     **/
     void rotateBy(float x);
 
     /**
       Sets the Sprite's scale to a fixed value (x by x by 0).
-      \param float x - Scale to set the Sprite to.
+      \param float x --> Scale to set the Sprite to.
       \return None
     **/
     void setScale(float x);
 
     /**
       Sets the Sprite's scale to a fixed Vector3D value.
-      \param Vector3D _scale - Scale to set the Sprite to.
+      \param Vector3D _scale --> Scale to set the Sprite to.
       \return None
     **/
     void setScale(Vector3D _scale);
 
     /**
       Sets the Sprite's dimensions on the screen to a fixed pixel count (x by x by 0). Calculates the appropriate scale.
-      \param float x - Screen size to set the Sprite to (only affects x and y).
+      \param float x --> Screen size to set the Sprite to (only affects x and y).
       \return None
     **/
     void setDimensions(float x);
 
     /**
       Sets the Sprite's dimensions on the screen to a fixed Vector3D pixel count. Calculates the appropriate scale.
-      \param float x - Screen size to set the Sprite to (only affects x and y).
+      \param float x --> Screen size to set the Sprite to (only affects x and y).
       \return None
     **/
     void setDimensions(Vector3D v);
 
     /**
       Sets the Sprite's framesPerDirection to a fixed value.
-      \param int _framesPerDirection - Number of frames for per direction. Each direction has the same number of frames.
+      \param int _framesPerDirection --> Number of frames for per direction. Each direction has the same number of frames.
       \return None
     **/
     void setFramesPerDirection(int _framesPerDirection);
 
     /**
       Sets the Sprite's frameIndex to a fixed value.
-      \param int _frameIndex - Number to index into the spriteInfo vector. Should be between 0 and spriteInfo.size()-1 inclusively.
+      \param int _frameIndex --> Number to index into the spriteInfo vector. Should be between 0 and (spriteInfo.size() - 1) inclusively.
       \return None
     **/
     void setFrameIndex(int _frameIndex);
@@ -230,14 +231,14 @@ class Sprite
 
     /**
       Adds an assetInfo element to the Sprite's spriteInfo vector.
-      \param std::string assetName - Name of the asset to add.
+      \param std::string assetName --> Name of the asset to add.
       \return 0 on success, or -1 if couldn't find the assetName in the AssetLookupTable.
     **/
     int pushSpriteInfo(std::string assetName);
 
     /**
       Adds an assetInfo element to the Sprite's spriteInfo vector.
-      \param int assetID - ID of the asset to add.
+      \param int assetID --> ID of the asset to add.
       \return 0 on success, or -1 if invalid AssetLookupTable index.
     **/
     int pushSpriteInfo(int assetID);
@@ -251,17 +252,17 @@ class Sprite
 
     /**
       Sets the frame index to point to the next frame for the passed direction.
-      \param Sprite::dir direction - Direction for the next frame (DOWN, LEFT, RIGHT, or UP).
+      \param Sprite::dir direction --> Direction for the next frame (DOWN, LEFT, RIGHT, or UP).
       \return 0 on success, -1 if framesPerDirection doesn't match spriteInfo's size, or -2 if invalid direction.
     **/
     int updateFrameIndex(Sprite::dir direction);
 
     /**
       Animates the Sprite to "walk" in a specified direction.
-      \param bool changeFrame - True if the Sprite should update its frame, and False if not.
-      \param Vector3D displacement - Position to move the Sprite by.
-      \param Sprite::dir direction - Direction of the "walk" relative to the Sprite on the screen.
-      \param float duration - How long the "walk" should take (milliseconds).
+      \param bool changeFrame --> True if the Sprite should update its frame, and False if not.
+      \param Vector3D displacement --> Position to move the Sprite by.
+      \param Sprite::dir direction --> Direction of the "walk" relative to the Sprite on the screen.
+      \param float duration --> How long the "walk" should take (milliseconds).
       \return 0 on success, -1 if framesPerDirection doesn't match spriteInfo's size, or -2 if invalid direction.
     **/
     void walk(bool changeFrame, Vector3D displacement, Sprite::dir direction, float duration);
@@ -275,7 +276,7 @@ class Sprite
 
     /**
       Sets the Sprite's current frame to idle in a specified direction.
-      \param Sprite::dir direction - Direction to set the idle Sprite frame.
+      \param Sprite::dir direction --> Direction to set the idle Sprite frame.
       \return 0 on success, or -1 if framesPerDirection doesn't match the spriteInfo's size, or -2 if invalid direction.
     **/
     int setFacing(Sprite::dir direction);

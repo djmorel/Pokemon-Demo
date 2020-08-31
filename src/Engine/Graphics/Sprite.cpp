@@ -251,11 +251,13 @@ void Sprite::Render()
 }
 
 
+
 void Sprite::setSpeedTo(float _speed)
 {
   // Make sure speed is set an absolute value
   speed = Math::abs(_speed);
 }
+
 
 
 void Sprite::moveTo(Vector3D _pos)

@@ -1,6 +1,7 @@
 #include "Texture.h"
 
 
+
 Texture::Texture()
 {
   // Empty constructor for array/vector setup
@@ -13,6 +14,7 @@ Texture::Texture()
 }
 
 
+
 Texture::Texture(int _id)
 {
   id = _id;
@@ -22,6 +24,7 @@ Texture::Texture(int _id)
     std::cout << "Error loading image with ID: " << id << std::endl;
   }
 }
+
 
 
 Texture::Texture(std::string path)
@@ -36,10 +39,12 @@ Texture::Texture(std::string path)
 }
 
 
+
 int Texture::getID()
 {
   return id;
 }
+
 
 
 int Texture::getWidth()
@@ -48,10 +53,12 @@ int Texture::getWidth()
 }
 
 
+
 int Texture::getHeight()
 {
   return height;
 }
+
 
 
 bool Texture::getTextureParams()

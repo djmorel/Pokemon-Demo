@@ -1,10 +1,12 @@
 #include "Keyboard.h"
 
 
+
 // Initialize static variables
 bool Keyboard::keys[GLFW_KEY_LAST] = { 0 };
 bool Keyboard::keysDown[GLFW_KEY_LAST] = { 0 };
 bool Keyboard::keysUp[GLFW_KEY_LAST] = { 0 };
+
 
 
 void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -34,6 +36,14 @@ void Keyboard::keyCallback(GLFWwindow* window, int key, int scancode, int action
 }
 
 
+
+bool Keyboard::key(int key)
+{
+  return keys[key];
+}
+
+
+
 bool Keyboard::keyDown(int key)
 {
   bool x = keysDown[key];
@@ -42,15 +52,10 @@ bool Keyboard::keyDown(int key)
 }
 
 
+
 bool Keyboard::keyUp(int key)
 {
   bool x = keysUp[key];
   keysUp[key] = false;
   return x;
-}
-
-
-bool Keyboard::key(int key)
-{
-  return keys[key];
 }
