@@ -2,5 +2,5 @@ Hilda
 F
 src/InfoFiles/CharacterInfo/Hilda.txt
 src/InfoFiles/MapInfo/Grasslands2Beach.txt
-7,5
-27,11
+7,0
+10,0

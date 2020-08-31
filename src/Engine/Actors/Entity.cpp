@@ -2,10 +2,12 @@
 #include "../Math/Rect.h"
 
 
+
 Entity::Entity()
 {
   sprite = Sprite("Assets/Art/DefaultObj.png");
 }
+
 
 
 Entity::Entity(std::string assetName)
@@ -14,10 +16,12 @@ Entity::Entity(std::string assetName)
 }
 
 
+
 Entity::Entity(int _id)
 {
   sprite = Sprite(_id);
 }
+
 
 
 Entity::Entity(std::string assetName, Vector3D _pos, float _rot, float _scale)
@@ -27,6 +31,7 @@ Entity::Entity(std::string assetName, Vector3D _pos, float _rot, float _scale)
 }
 
 
+
 Entity::Entity(int _id, Vector3D _pos, float _rot, float _scale)
 {
   sprite = Sprite(_id, _pos, _rot, _scale);
@@ -34,10 +39,13 @@ Entity::Entity(int _id, Vector3D _pos, float _rot, float _scale)
 }
 
 
+
 void Entity::Update()
 {
+  sprite.Update();
   rb.Update();
 }
+
 
 
 void Entity::Render()
@@ -47,16 +55,12 @@ void Entity::Render()
 }
 
 
+
 Vector2D Entity::getDimensions()
 {
   return Vector2D(sprite.getSize()->x * sprite.getScale()->x, sprite.getSize()->x * sprite.getScale()->y);
 }
 
-
-Vector3D Entity::getPos()
-{
-  return Vector3D(sprite.getPos()->x, sprite.getPos()->y, sprite.getPos()->z);
-}
 
 
 Sprite& Entity::getSprite()
@@ -65,12 +69,14 @@ Sprite& Entity::getSprite()
 }
 
 
+
 void Entity::setDimensions(Vector3D v)
 {
   // Set the sprite dimensions, then update the rigid body
   sprite.setDimensions(v);
   configRB();
 }
+
 
 
 void Entity::configRB()

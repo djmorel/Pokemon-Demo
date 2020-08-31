@@ -2,10 +2,12 @@
 #include "../Engine.h"
 
 
+
 Character::Character()
 {
   // Does nothing (just acts as a placeholder)
 }
+
 
 
 Character::Character(Sprite _sprite)
@@ -17,6 +19,7 @@ Character::Character(Sprite _sprite)
   boundingRect.setSize(*sprite.getSize() * *sprite.getScale());
   rb.Initialize(sprite.getPos(), sprite.getRot(), sprite.getScale(), sprite.getSize(), 0, 1, boundingRect);  // No gravity or friction
 }
+
 
 
 Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOffset)
@@ -31,10 +34,12 @@ Character::Character(Sprite _sprite, Vector3D rectSizeOffset, Vector3D rectPosOf
 }
 
 
+
 Character::~Character()
 {
   // Do nothing since didn't allocate anything on the heap
 }
+
 
 
 void Character::Update()
@@ -44,12 +49,13 @@ void Character::Update()
 }
 
 
+
 void Character::Render()
 {
   sprite.Render();
   rb.Render(Vector3D(0, 0, 0));  // Black rigid body
-  //rb.Render(Vector3D(0.51f, 0.86f, 0.87f));  // Light-Blue rigid body
 }
+
 
 
 Sprite& Character::getSprite()
@@ -58,10 +64,12 @@ Sprite& Character::getSprite()
 }
 
 
+
 RigidBody& Character::getRB()
 {
   return rb;
 }
+
 
 
 void Character::setSprite(Sprite _sprite)
@@ -71,9 +79,10 @@ void Character::setSprite(Sprite _sprite)
 }
 
 
+
 int Character::setRB()
 {
-  // Check that the sprite was set
+  // Check that the Sprite was set
   if (!hasSprite)
   {
     return -1;
@@ -87,9 +96,10 @@ int Character::setRB()
 }
 
 
+
 int Character::setRB(Vector3D rectSizeOffset, Vector3D rectPosOffset)
 {
-  // Check that the sprite was set
+  // Check that the Sprite was set
   if (!hasSprite)
   {
     return -1;
@@ -102,6 +112,7 @@ int Character::setRB(Vector3D rectSizeOffset, Vector3D rectPosOffset)
 
   return 0;
 }
+
 
 
 void Character::setPlayerStatus(bool _isPlayer)

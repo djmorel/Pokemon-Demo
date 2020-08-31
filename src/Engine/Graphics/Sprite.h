@@ -32,7 +32,7 @@ class Sprite
 
     /**
       A constructor that configures a Sprite according to an asset ID.
-      \param int assetID - An ID used to index into the AssetLookupTable for an asset.
+      \param int assetID - ID used to index into the AssetLookupTable for an asset.
       \return None
     **/
     Sprite(int assetID);
@@ -49,7 +49,7 @@ class Sprite
 
     /**
       A constructor that configures a Sprite according to an asset ID and a set of properties.
-      \param int assetID - An ID used to index into the AssetLookupTable for an asset.
+      \param int assetID - ID used to index into the AssetLookupTable for an asset.
       \param Vector3D _pos - Position to set the Sprite to.
       \param float _rot - Rotation to set the Sprite to.
       \param Vector3D _scale - Scale to set the Sprite to.

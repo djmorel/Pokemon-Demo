@@ -2,11 +2,12 @@
 #define ASSETLOOKUPTABLE_H
 
 
-#include <string>
 #include "../Engine/Math/Vector2D.h"
 #include "../Engine/Math/Vector3D.h"
+#include <string>
 
 
+// Struct for asset information stored in the AssetLookupTable.
 struct tableElement
 {
   int assetID;                   // Numerical ID for the asset (indexable)
@@ -22,7 +23,7 @@ struct tableElement
 typedef struct tableElement tableElement;
 
 
-// Struct initialized to invalid asset entry
+// Struct for sending asset information to other classes. Note: Struct initialized to mark an invalid asset entry.
 struct assetInfo
 {
   std::string assetPath = "";                // Path for the asset
@@ -35,25 +36,26 @@ struct assetInfo
 typedef struct assetInfo assetInfo;
 
 
+// Functions to pull information from the AssetLookupTable.
 namespace AssetLT
 {
   /**
     Finds the asset's information from the AssetLookupTable.
-    \param std::string assetName - Name shortcut for the asset.
+    \param std::string assetName --> Name shortcut for the asset.
     \return assetInfo object from the asset's entry.
   **/
   assetInfo findAsset(std::string assetName);
 
   /**
     Finds the asset's information from the AssetLookupTable.
-    \param int _id - assetID that indexes to the AssetLookupTable.
+    \param int _id --> assetID that indexes to the AssetLookupTable.
     \return assetInfo object from the asset's entry.
   **/
   assetInfo findAsset(int _id);
 
   /**
     Finds the asset's suggested dimensions from the AssetLookupTable.
-    \param int _id - assetID that indexes to the AssetLookupTable.
+    \param int _id --> assetID that indexes to the AssetLookupTable.
     \return Vector3D containing the asset's suggested default dimensions. If invalid assetID, returns Vector3D(0).
   **/
   Vector3D getDefaultDimensions(int _id);

@@ -1,6 +1,5 @@
 #include "AssetLookupTable.h"
 #include "../Engine/Engine.h"
-#include <string.h>
 
 
 // Note: Spritesheets are organized based on x & y coordinates in the FIRST QUADRANT
@@ -8,7 +7,8 @@
 //   (1, 1) --> Top Right
 // If the texture isn't a spritesheet, spriteRows == sprite Columns
 const tableElement AssetLookupTable[] = {
-// ID  assetName          assetPath                                         sheetIndex       rows cols
+// ID  assetName          assetPath                                         sheetIndex       #Rows   unitsWide      SuggestedDimensions 
+//                                                                                               #Cols   unitsHigh
   { 0, "DefaultObj"     , "src/Assets/Art/DefaultObject.png"              , Vector2D( 0,  0) ,  1,  1,  1,  1 , Vector3D(64, 64, 0)                                     },
   { 1, "StartScreen"    , "src/Assets/Art/Emerald_StartScreen.png"        , Vector2D( 0,  0) ,  1,  1,  1,  1 , Vector3D(Engine::SCREEN_WIDTH, Engine::SCREEN_HEIGHT, 0)},
   { 2, "EndScreen"      , "src/Assets/Art/GameOverScreen.png"             , Vector2D( 0,  0) ,  1,  1,  1,  1 , Vector3D(Engine::SCREEN_WIDTH, Engine::SCREEN_HEIGHT, 0)},
@@ -92,6 +92,7 @@ const tableElement AssetLookupTable[] = {
 };
 
 
+
 namespace AssetLT
 {
   assetInfo findAsset(std::string assetName)
@@ -110,10 +111,6 @@ namespace AssetLT
         // Found the asset in the lookup table!
         ret_val.assetPath = AssetLookupTable[i].assetPath;
         ret_val.sheetIndex = AssetLookupTable[i].sheetIndex;
-        //ret_val.spriteRows = AssetLookupTable[i].sprite_Cols_Rows.y;
-        //ret_val.spriteColumns = AssetLookupTable[i].sprite_Cols_Rows.x;
-        //ret_val.unitsHigh = AssetLookupTable[i].units_Wide_High.y;
-        //ret_val.unitsWide = AssetLookupTable[i].units_Wide_High.x;
         ret_val.spriteRows = AssetLookupTable[i].spriteRows;
         ret_val.spriteColumns = AssetLookupTable[i].spriteColumns;
         ret_val.unitsHigh = AssetLookupTable[i].unitsHigh;
@@ -150,6 +147,7 @@ namespace AssetLT
     // Return the ret_val regardless if valid ID or not (invalid ID returns default ret_val)
     return ret_val;
   }
+
 
 
   Vector3D getDefaultDimensions(int _id)
