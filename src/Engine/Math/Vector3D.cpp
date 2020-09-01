@@ -2,6 +2,7 @@
 #include <math.h>
 
 
+
 Vector3D::Vector3D()
 {
   x = 0;
@@ -9,13 +10,6 @@ Vector3D::Vector3D()
   z = 0;
 }
 
-
-Vector3D::Vector3D(const Vector3D& other)
-{
-  x = other.x;
-  y = other.y;
-  z = other.z;
-}
 
 
 Vector3D::Vector3D(float _x)
@@ -26,12 +20,23 @@ Vector3D::Vector3D(float _x)
 }
 
 
+
 Vector3D::Vector3D(float _x, float _y, float _z)
 {
   x = _x;
   y = _y;
   z = _z;
 }
+
+
+
+Vector3D::Vector3D(const Vector3D& other)
+{
+  x = other.x;
+  y = other.y;
+  z = other.z;
+}
+
 
 
 Vector3D& Vector3D::operator=(const Vector3D& other)
@@ -42,6 +47,7 @@ Vector3D& Vector3D::operator=(const Vector3D& other)
 
   return *this;
 }
+
 
 
 Vector3D Vector3D::operator+(const Vector3D& other)
@@ -56,6 +62,7 @@ Vector3D Vector3D::operator+(const Vector3D& other)
 }
 
 
+
 Vector3D Vector3D::operator-(const Vector3D& other)
 {
   Vector3D ret;
@@ -66,6 +73,7 @@ Vector3D Vector3D::operator-(const Vector3D& other)
 
   return ret;
 }
+
 
 
 Vector3D Vector3D::operator*(const Vector3D& other)
@@ -80,6 +88,7 @@ Vector3D Vector3D::operator*(const Vector3D& other)
 }
 
 
+
 Vector3D Vector3D::operator*(float _x)
 {
   Vector3D ret;
@@ -90,6 +99,7 @@ Vector3D Vector3D::operator*(float _x)
 
   return ret;
 }
+
 
 
 Vector3D Vector3D::operator/(const Vector3D& other)
@@ -104,6 +114,7 @@ Vector3D Vector3D::operator/(const Vector3D& other)
 }
 
 
+
 Vector3D Vector3D::operator/(float _x)
 {
   Vector3D ret;
@@ -116,10 +127,12 @@ Vector3D Vector3D::operator/(float _x)
 }
 
 
+
 bool Vector3D::operator==(const Vector3D& other)
 {
   return (x == other.x && y == other.y && z == other.z);
 }
+
 
 
 bool Vector3D::operator!=(const Vector3D& other)
@@ -128,10 +141,12 @@ bool Vector3D::operator!=(const Vector3D& other)
 }
 
 
+
 float Vector3D::dot(const Vector3D& a, const Vector3D& b)
 {
   return (a.x * b.x + a.y * b.y);
 }
+
 
 
 Vector3D Vector3D::project(const Vector3D& a, const Vector3D& b)

@@ -29,7 +29,7 @@ void RigidBody::Initialize(Vector3D* _pos, float* _rot, Vector3D* _scale, Vector
 }
 
 
-// TODO: Modify so that Pokemon game doesn't worry about gravity or friction
+
 void RigidBody::Update()
 {
   velocity.x *= friction;
@@ -40,13 +40,12 @@ void RigidBody::Update()
   if (lastRot != *rot)
   {
     // Replaces OpenGL's glRotate() function
-    boundingRect.lowerLeftVertex  = Math::rotatePoint( boundingRect.lowerLeftVertex, Vector3D(0), *rot - lastRot);
-    boundingRect.lowerRightVertex = Math::rotatePoint(boundingRect.lowerRightVertex, Vector3D(0), *rot - lastRot);
-    boundingRect.upperLeftVertex  = Math::rotatePoint( boundingRect.upperLeftVertex, Vector3D(0), *rot - lastRot);
-    boundingRect.upperRightVertex = Math::rotatePoint(boundingRect.upperRightVertex, Vector3D(0), *rot - lastRot);
+    boundingRect.setLowerLeftVertex( Math::rotatePoint( boundingRect.getLowerLeftVertex(), Vector3D(0), *rot - lastRot) );
+    boundingRect.setLowerRightVertex(Math::rotatePoint(boundingRect.getLowerRightVertex(), Vector3D(0), *rot - lastRot) );
+    boundingRect.setUpperLeftVertex( Math::rotatePoint( boundingRect.getUpperLeftVertex(), Vector3D(0), *rot - lastRot) );
+    boundingRect.setUpperRightVertex(Math::rotatePoint(boundingRect.getUpperRightVertex(), Vector3D(0), *rot - lastRot) );
     lastRot = *rot;
   }
-  
 }
 
 
@@ -64,21 +63,20 @@ void RigidBody::Render(Vector3D c)
     // Note: Drawing lines come in pairs (NOT the same as drawing full sprites)
 
     // Draw line from bottom left to bottom right
-    glVertex2f(boundingRect.lowerLeftVertex.x, boundingRect.lowerLeftVertex.y);
-    glVertex2f(boundingRect.lowerRightVertex.x, boundingRect.lowerRightVertex.y);
+    glVertex2f(boundingRect.getLowerLeftVertex().x, boundingRect.getLowerLeftVertex().y);
+    glVertex2f(boundingRect.getLowerRightVertex().x, boundingRect.getLowerRightVertex().y);
 
     // Draw line from bottom right to top right
-    glVertex2f(boundingRect.lowerRightVertex.x, boundingRect.lowerRightVertex.y);
-    glVertex2f(boundingRect.upperRightVertex.x, boundingRect.upperRightVertex.y);
+    glVertex2f(boundingRect.getLowerRightVertex().x, boundingRect.getLowerRightVertex().y);
+    glVertex2f(boundingRect.getUpperRightVertex().x, boundingRect.getUpperRightVertex().y);
 
     // Draw line from top right to top left
-    glVertex2f(boundingRect.upperRightVertex.x, boundingRect.upperRightVertex.y);
-    glVertex2f(boundingRect.upperLeftVertex.x, boundingRect.upperLeftVertex.y);
+    glVertex2f(boundingRect.getUpperRightVertex().x, boundingRect.getUpperRightVertex().y);
+    glVertex2f(boundingRect.getUpperLeftVertex().x, boundingRect.getUpperLeftVertex().y);
 
     // Draw line from top left to bottom left
-    glVertex2f(boundingRect.upperLeftVertex.x, boundingRect.upperLeftVertex.y);
-    glVertex2f(boundingRect.lowerLeftVertex.x, boundingRect.lowerLeftVertex.y);
-
+    glVertex2f(boundingRect.getUpperLeftVertex().x, boundingRect.getUpperLeftVertex().y);
+    glVertex2f(boundingRect.getLowerLeftVertex().x, boundingRect.getLowerLeftVertex().y);
 
     /*
     // The following for when we didn't have the Rect class
@@ -98,10 +96,8 @@ void RigidBody::Render(Vector3D c)
     glVertex2f(-size->x / 2,  size->y / 2);  // Top left
     glVertex2f(-size->x / 2, -size->y / 2);  // Bottom left
     */
-
   }
   glEnd();  // End our drawing
-
 }
 
 
@@ -137,14 +133,14 @@ bool RigidBody::isColliding(const RigidBody& rbA, const RigidBody& rbB)
   Rect rcB = rbB.boundingRect;
 
   // Get the vertices
-  Vector3D aUR = rcA.upperRightVertex + *rbA.pos;
-  Vector3D aUL = rcA.upperLeftVertex  + *rbA.pos;
-  Vector3D aLR = rcA.lowerRightVertex + *rbA.pos;
-  Vector3D aLL = rcA.lowerLeftVertex  + *rbA.pos;
-  Vector3D bUR = rcB.upperRightVertex + *rbB.pos;
-  Vector3D bUL = rcB.upperLeftVertex  + *rbB.pos;
-  Vector3D bLR = rcB.lowerRightVertex + *rbB.pos;
-  Vector3D bLL = rcB.lowerLeftVertex  + *rbB.pos;
+  Vector3D aUR = rcA.getUpperRightVertex() + *rbA.pos;
+  Vector3D aUL = rcA.getUpperLeftVertex() + *rbA.pos;
+  Vector3D aLR = rcA.getLowerRightVertex() + *rbA.pos;
+  Vector3D aLL = rcA.getLowerLeftVertex() + *rbA.pos;
+  Vector3D bUR = rcB.getUpperRightVertex() + *rbB.pos;
+  Vector3D bUL = rcB.getUpperLeftVertex() + *rbB.pos;
+  Vector3D bLR = rcB.getLowerRightVertex() + *rbB.pos;
+  Vector3D bLL = rcB.getLowerLeftVertex() + *rbB.pos;
 
   float aMax = 0;
   float aMin = 0;
