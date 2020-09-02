@@ -8,7 +8,7 @@
 
 
 
-//WorldManager::WorldManager(std::string mapPath, PlayerInfo* _playerInfo)
+
 WorldManager::WorldManager(PlayerInfo* _playerInfo, std::string mapPath)
 {
   // Set the PlayerInfo pointer so that buildWorld() can access the player coordinates later
@@ -312,8 +312,7 @@ int WorldManager::buildWorld()
   int mapX    = (int)floor(playerInfo->mapCoord.x);
   int mapY    = (int)floor(playerInfo->mapCoord.y);
 
-  // Calculate the difference between map and screen tile coordinates
-  // Used to get the tile offset multiple
+  // Calculate the difference between map and screen tile coordinates. Variables used to get the tile offset multiple.
   int offset_x = (screenX - mapX) * 64 + 32;
   int offset_y = (screenY - mapY) * 64 + 32;
 
@@ -373,7 +372,7 @@ bool WorldManager::canMoveWorld(Sprite::dir direction, int screenX, int screenY,
     return false;
   }
 
-  // All checks passed, so the world can safely be moved in the requested direction
+  // All world checks passed, so the world can safely be moved in the requested direction
   return true;
 }
 

@@ -92,6 +92,7 @@ namespace InfoFiles
   }
 
 
+
   std::string InfoFiles::strPull(std::string& line, char delimiter)
   {
     std::string ret_string = "";
@@ -116,6 +117,7 @@ namespace InfoFiles
 
     return ret_string;
   }
+
 
 
   TileInfo InfoFiles::str2TileInfo(std::string _id, std::string _type, std::string _layeredItemID)

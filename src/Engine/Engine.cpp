@@ -3,12 +3,12 @@
 #include "IO/Keyboard.h"
 
 
-// Declare our static variables from Engine.h
-//int Engine::SCREEN_WIDTH = 1024;
-//int Engine::SCREEN_HEIGHT = 768;
+
+// Declare our static variables
 GLFWwindow* Engine::window = NULL;
 float Engine::dt = 0;
 float Engine::lastTime = 0;
+
 
 
 Engine::Engine()
@@ -17,10 +17,12 @@ Engine::Engine()
 }
 
 
+
 Engine::~Engine()
 {
   // Do nothing so we initialize our destructor in the Initialize() function
 }
+
 
 
 bool::Engine::Initialize(const char* windowTitle)
@@ -43,8 +45,7 @@ bool::Engine::Initialize(const char* windowTitle)
   }
 
   /*
-  TODO: Use in new repo if I go for the glDrawArrays() route for sprites
-  // Initialize GLEW
+  // Initialize GLEW (needed if using glDrawArrays()
   glewExperimental = true;
   if (!glewInit())
   {
@@ -74,8 +75,7 @@ bool::Engine::Initialize(const char* windowTitle)
   int yPos = (mode->height - SCREEN_HEIGHT) / 2;
   glfwSetWindowPos(window, xPos, yPos);
 
-  // GL Setup
-  // Viewport
+  // GL Setup (Viewport)
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);  // How our viewport is handled (look into more options)
   glLoadIdentity();  // Start our identity matrix
@@ -84,7 +84,6 @@ bool::Engine::Initialize(const char* windowTitle)
   glMatrixMode(GL_MODELVIEW);
 
   // Alpha Blending (allows PNG backgrounds to be transparent)
-  // Look into wiki for more info
   glEnable(GL_ALPHA_TEST);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -94,6 +93,7 @@ bool::Engine::Initialize(const char* windowTitle)
 
   return true;
 }
+
 
 
 void Engine::Update()
@@ -108,12 +108,14 @@ void Engine::Update()
 }
 
 
+
 void Engine::BeginRender()
 {
-  //glClearColor(0.56f, 0.4f, 0.32f, 1);  // Clear back buffer to brown (R, G, B, alpha) <- Floats (Divide RGB values by 255)
-  glClearColor(0.0f/255.0f, 128.0f/255.0f, 64.0f/255.0f, 1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the depth
+  glClearColor(0.0f/255.0f, 128.0f/255.0f, 64.0f/255.0f, 1);  // Clear back buffer to a color (R, G, B, alpha). Needs floats so divide values by 255.
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);         // Clear the depth
 }
+
+
 
 void Engine::EndRender()
 {
@@ -123,14 +125,16 @@ void Engine::EndRender()
   glfwSwapBuffers(window);
 
   // Note: NOTHING after here will be presented to the screen
-  // Already swapped buffer and Render() begins with a clear
+  // Already swapped buffer and BeginRender() begins with a clear
 }
+
 
 
 float Engine::getDT()
 {
   return dt;
 }
+
 
 
 float Engine::getLastTime()

@@ -32,6 +32,7 @@ GameManager::GameManager()
 }
 
 
+
 GameManager::~GameManager()
 {
   // Delete our dynamically allocated members
@@ -43,8 +44,7 @@ GameManager::~GameManager()
 }
 
 
-// Starts game states
-// Returns 0 on success, -1 on loadGame() error, or -2 on undefined state error
+
 int GameManager::Start()
 {
   // Add a Loading Icon for state changes
@@ -182,7 +182,7 @@ int GameManager::Start()
 }
 
 
-// Provides set up and clean up between states
+
 void GameManager::setState(State state)
 {
   mState = state;
@@ -202,9 +202,9 @@ void GameManager::setState(State state)
 }
 
 
+
 int GameManager::loadGame()
 {
-  // TODO: Implement save file system
   std::cout << "Preparing to load game..." << std::endl;
 
   // Load the player from the savefile
@@ -217,17 +217,17 @@ int GameManager::loadGame()
   else if (success == -2)
   {
     std::cout << "ERROR: line2coord() failure" << std::endl;
-    return -2;
+    return -1;
   }
   else if (success == -3)
   {
     std::cout << "ERROR: Corrupt savefile" << std::endl;
-    return -3;
+    return -1;
   }
   else if (success == -4)
   {
     std::cout << "ERROR: loadCharacter() failure" << std::endl;
-    return -4;
+    return -1;
   }
   else if (success == 0)
   {
@@ -242,14 +242,14 @@ int GameManager::loadGame()
   else
   {
     std::cout << "ERROR: Don't know what happened... Reached an invalid loadPlayer() return value..." << std::endl;
-    return -5;
+    return -1;
   }
 
   // Load the MapInfo file to get the mapPath and create NPCs
   if (loadMapInfo(playerInfo.mapInfoPath) < 0)
   {
     std::cout << "ERROR: Unable to load MapInfo file..." << std::endl;
-    return -6;
+    return -2;
   }
 
   // Load the world

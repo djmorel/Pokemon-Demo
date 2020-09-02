@@ -12,14 +12,25 @@
 #include <string>
 
 
-
+// Handles the game's states, and calls upon the other Managers for their respective handling.
 class GameManager
 {
   public:
+    /**
+      A constructor that initializes a GameManager by configuring the game engine, managers, and sets the game to the START state.
+      \param None
+      \return None
+    **/
     GameManager();
+
+    /**
+      A deconstructor that deletes the dynamically allocated managers.
+      \param None
+      \return None
+    **/
     ~GameManager();
 
-    // TODO: Modify based on the StateStack in the Pokemon Lua video
+    // TODO: Modify based on the future StateStack design
     enum class State
     {
       START,
@@ -28,7 +39,18 @@ class GameManager
       GAMEOVER
     };
 
+    /**
+      Starts the game loop to handle game states.
+      \param None
+      \return 0 on success, -1 on loadGame() error, or -2 on undefined state error.
+    **/
     int Start();
+
+    /**
+      Loads the game from the savefile by first loading the player and then the MapInfo. Configures the GameManager's CharacterManager, WorldManager, and InputManager appropriately.
+      \param None
+      \return 0 on success, -1 on loadPlayer() failure, or -2 on loadMapInfo() failure.
+    **/
     int loadGame();
 
     /**
@@ -51,7 +73,6 @@ class GameManager
       \return 0 on success, -1 if unable to open the MapInfo file, -2 if detecting player spawn points failed, -3 if loading a NPC failed, or -4 if failed to read the minimum line count.
     **/
     int loadMapInfo(std::string mapInfoPath);
-
 
     /**
       Takes the updated PlayerInfo object, and saves its contents into the savefile.
@@ -78,10 +99,16 @@ class GameManager
     CharacterManager* mCharacterManager;  // Pointer to the game's CharacterManager
     WorldManager* mWorldManager;          // Pointer to the game's WorldManager
     InputManager* mInputManager;          // Pointer to the game's InputManager
-    Sprite mStartSprite;
-    Sprite mGameOverSprite;
-    State mState;
-    void setState(State state);  // Private since GameManager will handle its own state
+    Sprite mStartSprite;                  // Sprite to display on the screen at the beginning of the game (game menu)
+    Sprite mGameOverSprite;               // Sprite to display on the screen for a Game Over
+    State mState;                         // Current state the game is in
+
+    /**
+      Handles switching between states by providing the setup and clean up. Private since GameManager will handle its own state.
+      \param None
+      \return None
+    **/
+    void setState(State state);
 };
 
 

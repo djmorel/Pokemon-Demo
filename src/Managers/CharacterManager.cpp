@@ -83,7 +83,7 @@ void CharacterManager::Render()
 
 int CharacterManager::loadCharacter(std::string characterInfoPath, bool isPlayer, Vector3D _pos, float _rot, Vector3D _scale)
 {
-  // Only proceed loadCharacter() if the player is loaded or is to be loaded as the characters vector's first element
+  // Only proceed loadCharacter() if the player is loaded or is to be loaded as the CharacterManager::characters vector's first element
   // Only one player can exist in the characters vector
   if ( (isPlayer && characters.size() != 0) || (!isPlayer && characters.size() == 0) )
   {
@@ -147,8 +147,6 @@ int CharacterManager::loadCharacter(std::string characterInfoPath, bool isPlayer
       }
     }
 
-    // TODO: Add more else if conditions when savefile has more information
-
     lineNum++;
   }
 
@@ -172,12 +170,12 @@ int CharacterManager::loadCharacter(std::string characterInfoPath, bool isPlayer
 
 
 
-int CharacterManager::configSprite(Character &character, std::string &line, Vector3D _pos, float _rot, Vector3D _scale)
+int CharacterManager::configSprite(Character& character, std::string& line, Vector3D _pos, float _rot, Vector3D _scale)
 {
   int numSprites = 0;            // Holds the number of sprites per animation's direction
   int id = -1;                   // Holds an assetID
   std::vector<int> spriteCodes;  // Tracks the assetIDs for the animation sprites
-  Sprite _sprite;                 // Pointer to a new Sprite
+  Sprite _sprite;                // Pointer to a new Sprite
   Sprite::dir directions[] = { Sprite::dir::DOWN,
                                Sprite::dir::LEFT,
                                Sprite::dir::RIGHT,

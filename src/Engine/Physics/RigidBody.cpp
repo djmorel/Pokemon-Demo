@@ -4,6 +4,7 @@
 #include <vector>
 
 
+
 RigidBody::RigidBody()
 {
   pos = nullptr;
@@ -13,6 +14,7 @@ RigidBody::RigidBody()
   friction = 1;  // Means no friction -> velocity.x *= friction
   velocity = 0;
 }
+
 
 
 void RigidBody::Initialize(Vector3D* _pos, float* _rot, Vector3D* _scale, Vector3D* _size, float _gravity, float _friction, Rect _boundingRect)
@@ -49,6 +51,7 @@ void RigidBody::Update()
 }
 
 
+
 void RigidBody::Render(Vector3D c)
 {
   glLoadIdentity();
@@ -57,7 +60,7 @@ void RigidBody::Render(Vector3D c)
   //glScalef(scale->x, scale->y, scale->z);
 
   // Rendering
-  glColor4f(c.x, c.y, c.z, 0);  // Set asset color to white in case some other code changed it (set to 0 for no visibility)
+  glColor4f(c.x, c.y, c.z, 1);  // Set asset color to white in case some other code changed it (set to 0 for no visibility)
   glBegin(GL_LINES);            // Begin rendering as lines
   {
     // Note: Drawing lines come in pairs (NOT the same as drawing full sprites)
@@ -77,34 +80,10 @@ void RigidBody::Render(Vector3D c)
     // Draw line from top left to bottom left
     glVertex2f(boundingRect.getUpperLeftVertex().x, boundingRect.getUpperLeftVertex().y);
     glVertex2f(boundingRect.getLowerLeftVertex().x, boundingRect.getLowerLeftVertex().y);
-
-    /*
-    // The following for when we didn't have the Rect class
-    // Draw line from bottom left to bottom right
-    glVertex2f(-size->x / 2, -size->y / 2);  // Bottom left
-    glVertex2f( size->x / 2, -size->y / 2);  // Bottom right
-
-    // Draw line from bottom right to top right
-    glVertex2f( size->x / 2, -size->y / 2);  // Bottom right
-    glVertex2f( size->x / 2,  size->y / 2);  // Top right
-
-    // Draw line from top right to top left
-    glVertex2f( size->x / 2,  size->y / 2);  // Top right
-    glVertex2f(-size->x / 2,  size->y / 2);  // Top left
-
-    // Draw line from top left to bottom left
-    glVertex2f(-size->x / 2,  size->y / 2);  // Top left
-    glVertex2f(-size->x / 2, -size->y / 2);  // Bottom left
-    */
   }
   glEnd();  // End our drawing
 }
 
-
-void RigidBody::addForce(Vector3D force)
-{
-  velocity = velocity + force;
-}
 
 
 Vector3D RigidBody::getVelocity()
@@ -113,10 +92,19 @@ Vector3D RigidBody::getVelocity()
 }
 
 
+
 Vector3D* RigidBody::getPos()
 {
   return pos;
 }
+
+
+
+void RigidBody::addForce(Vector3D force)
+{
+  velocity = velocity + force;
+}
+
 
 
 void RigidBody::setVelocity(Vector3D _velocity)
@@ -125,7 +113,7 @@ void RigidBody::setVelocity(Vector3D _velocity)
 }
 
 
-// Determines if 2 RigidBodies collide via the Separating Axis Theorem
+
 bool RigidBody::isColliding(const RigidBody& rbA, const RigidBody& rbB)
 {
   // Get the boundingRects
@@ -142,6 +130,7 @@ bool RigidBody::isColliding(const RigidBody& rbA, const RigidBody& rbB)
   Vector3D bLR = rcB.getLowerRightVertex() + *rbB.pos;
   Vector3D bLL = rcB.getLowerLeftVertex() + *rbB.pos;
 
+  // Variables to hold the max and min values of the RigidBody scalars
   float aMax = 0;
   float aMin = 0;
   float bMax = 0;

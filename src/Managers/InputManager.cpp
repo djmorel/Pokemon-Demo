@@ -1,6 +1,7 @@
 #include "InputManager.h"
 
 
+
 InputManager::InputManager(PlayerInfo* _playerInfo, CharacterManager* _cm, WorldManager* _world)
 {
   playerInfo = _playerInfo;
@@ -206,7 +207,6 @@ void InputManager::updateDirections(Sprite::dir direction)
   {
     newDirection = false;
   }
-  //previousDirection = currentDirection;
 }
 
 
