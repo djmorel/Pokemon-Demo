@@ -1,4 +1,7 @@
 # Pokemon-Demo
+## Repo Status Note
+Please note that this repo isn't currently supported for future project development. A new private repo was made to reorganize project development under a CMake format, to test different game engine designs, and to build new game mechanics that differ from typical Pokemon ones. This repo merely serves as an example of my coding style and documentation, and an idea of how I decided to structure a custom game engine.  
+
 ## Project Goal
 The goal of this project is to create a C++ application to test game development. As the name of the repo suggests, this game is based on Pokemon (specifically Pokemon Emerald). On top of using C++ to learn how to build Pokemon mechanics from scratch, the repo also explores how to build a custom game engine instead of relying on popular game engines like Unity and Unreal for game development.
 
